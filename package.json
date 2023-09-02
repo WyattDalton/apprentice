@@ -22,6 +22,7 @@
     "ai": "^2.1.27",
     "autoprefixer": "10.4.14",
     "axios": "^1.2.3",
+    "cheerio": "^1.0.0-rc.12",
     "clsx": "^1.2.1",
     "concurrently": "^8.0.1",
     "dompurify": "^3.0.4",

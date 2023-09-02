@@ -22,16 +22,11 @@ const AppNavigation = () => {
                         <UilPen /> Generator
                     </Link>
                 </li>
-                <li>
-                    <Link
-                        href="/saved-threads"
-                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}><UilBookmark /> Saved</Link>
-                </li>
-                <li>
+                {/* <li>
                     <Link
                         href="/campaigns"
                         className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}><UilSitemap /> Campaigns</Link>
-                </li>
+                </li> */}
                 <li>
                     <Link
                         href="/formula-library"
@@ -47,11 +42,11 @@ const AppNavigation = () => {
                         href="/source-library"
                         className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}><UilFileBookmarkAlt /> Sources</Link>
                 </li>
-                <li>
+                {/* <li>
                     <Link
                         href="/layout-Library"
                         className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}><UilWindowGrid /> Layouts</Link>
-                </li>
+                </li> */}
             </ul>
             <div className='flex flex-col gap-2 p-2'>
                 <div className="flex gap-2 font-bold py-2 px-4 rounded-lg bg-primary">

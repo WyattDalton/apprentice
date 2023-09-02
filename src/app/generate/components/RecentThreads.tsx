@@ -1,4 +1,4 @@
-import Card from "../UI/Card";
+import Card from "@/components/UI/Card";
 import { UilBookmark, UilTrashAlt } from '@iconscout/react-unicons'
 
 

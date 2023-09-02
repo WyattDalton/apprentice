@@ -1,9 +1,9 @@
 import { useEffect, useCallback, useState, useRef, useMemo } from "react";
-import Card from "../UI/Card";
-import { UilSlidersV, UilAngleDoubleRight, UilQuestionCircle, UilBookmark } from '@iconscout/react-unicons'
-import LoadingText from "../LoadingText";
 import { useChat } from 'ai/react'
-import LoadingSpinner from "../LoadingSpinner";
+import Card from "@/components/UI/Card";
+import LoadingText from "@/components/LoadingText";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { UilSlidersV, UilAngleDoubleRight, UilQuestionCircle, UilBookmark } from '@iconscout/react-unicons'
 
 type GeneratorActionsProps = {
     className?: string | '';

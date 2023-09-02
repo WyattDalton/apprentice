@@ -5,11 +5,16 @@ import Card from "@/components/UI/Card";
 import { Tab } from "@headlessui/react";
 import pdfParse from 'pdf-parse';
 import mammoth from 'mammoth';
+import { set } from "lodash";
+import LoadingText from "@/components/LoadingText";
 
 
 
 function AddSource() {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
     const [files, setFiles] = useState([]);
+    const [url, setUrl] = useState("");
     const fileInputRef = useRef(null);
 
     const handleFileChange = (event: any) => {
@@ -66,7 +71,52 @@ function AddSource() {
         });
 
         if (!data.ok) {
+            setError('Failed to fetch data');
             throw new Error('Failed to fetch data')
+        }
+    }
+
+    const onSubmitUrl = async (url: string) => {
+        try {
+
+            // ###
+            // ### Check that url is a valid url
+            const urlObject = new URL(url);
+            if (urlObject.protocol !== 'http:' && urlObject.protocol !== 'https:') {
+                setError('Invalid url');
+                throw new Error('Invalid url');
+            }
+
+            // ###
+            // ### Set Loading to true
+            setLoading(true);
+
+            // ###
+            // ### Fetch the url
+            const data = await fetch("/api/sourcesUpdate", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ "dataType": "url", "data": [{ "url": url }] })
+            });
+
+            // ###
+            // ### Check if the fetch was successful
+            if (!data.ok) {
+                setError('Failed to fetch data');
+                throw new Error('Failed to fetch data')
+            }
+
+            // ###
+            // ### Reset after success
+            setLoading(false);
+            setUrl("");
+
+        } catch (error) {
+            console.error(error);
+            setError("Failed to add url to sources");
+            setLoading(false);
         }
     }
 
@@ -109,7 +159,15 @@ function AddSource() {
                             </div>
                         </div>
                     </Tab.Panel>
-                    <Tab.Panel>Content 2</Tab.Panel>
+                    <Tab.Panel>
+                        <div
+                            className="flex flex-col gap-4 p-4 items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-md"
+                        >
+                            <input type="text" className="w-full rounded-md bg-gray-100 px-4 py-2" value={url} onChange={(e) => setUrl(e.target.value)} />
+
+                            <button onClick={() => onSubmitUrl(url)} className="ml-auto px-4 py-2 text-white bg-theme_primary-500 rounded-md">{!!loading ? <LoadingText text="Getting URL Content" className={""} iconClassName={""} /> : "Add URL to Sources"}</button>
+                        </div>
+                    </Tab.Panel>
                 </Tab.Panels>
             </Tab.Group>
         </Card>

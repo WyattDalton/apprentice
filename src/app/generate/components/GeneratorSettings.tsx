@@ -1,7 +1,7 @@
 import { Transition } from '@headlessui/react';
 import React, { Fragment, useEffect, useState, memo } from 'react';
 
-import Card from '../UI/Card';
+import Card from '@/components/UI/Card';
 import { IoSchool } from "react-icons/io5";
 
 import Intention from './settings/Intention';

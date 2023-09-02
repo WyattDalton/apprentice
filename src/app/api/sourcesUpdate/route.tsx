@@ -10,6 +10,7 @@ const openai = new OpenAIApi(configuration);
 
 const mammoth = require("mammoth");
 const pdfParse = require('pdf-parse');
+const cheerio = require('cheerio');
 
 
 export async function POST(req: NextRequest) {
@@ -68,6 +69,9 @@ export async function POST(req: NextRequest) {
 
         let newSource = null as any;
 
+        const db = await getMongoDB();
+        const sourcesCollection = db.collection("sources");
+
         if (dataType === 'file') {
             const processedSources = await Promise.all(sources.map(async (source: any) => {
                 const sourcePayload = {} as any;
@@ -108,14 +112,9 @@ export async function POST(req: NextRequest) {
                 sourcePayload.category = 'general';
 
 
-
                 /* * * * * * * * * * * * * */
                 /* Add to MongoDB
                 /* * * * * * * * * * * * * */
-                const db = await getMongoDB();
-                const sourcesCollection = db.collection("sources");
-
-                // Search for an existing document with the same "name" and "type" and return it
                 newSource = await sourcesCollection.updateOne(
                     { name: name, type: 'file' }, // Filter
                     { $set: sourcePayload },     // Update
@@ -124,6 +123,52 @@ export async function POST(req: NextRequest) {
 
                 return newSource;
             }));
+        } else if (dataType === 'url') {
+            const processedSources = await Promise.all(sources.map(async (source: any) => {
+
+                // ###
+                // ### Initiate variables
+                const sourcePayload = {} as any;
+
+                // ###
+                // ### Fetch the url
+                const url = source.url;
+                const res = await fetch(url);
+                const html = await res.text();
+                const $ = cheerio.load(html);
+
+                // ###
+                // ### Get the data
+                const name = url;
+                const title = $('title').text();
+                const text = $('body').text();
+
+                const chunks = createChunks(text);
+                const embeddings = await Promise.all(chunks.map((chunk, index) => getEmbedding(chunk, title, index)));
+
+                // ###
+                // ### Create the payload
+                sourcePayload.name = name;
+                sourcePayload.title = title;
+                sourcePayload.type = 'url';
+                sourcePayload.text = text;
+                sourcePayload.embeddings = embeddings;
+                sourcePayload.category = 'general';
+
+                /* * * * * * * * * * * * * */
+                /* Add to MongoDB
+                /* * * * * * * * * * * * * */
+                newSource = await sourcesCollection.updateOne(
+                    { name: sourcePayload.name, type: sourcePayload.type }, // Filter
+                    { $set: sourcePayload },     // Update
+                    { upsert: true }             // Options: if no match is found, create a new document
+                );
+
+                console.log("\n\n\n", newSource)
+
+                return newSource;
+            }));
+
         } else if (dataType === 'update') {
             const processedSources = await Promise.all(sources.map(async (source: any) => {
 

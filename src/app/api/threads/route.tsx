@@ -8,50 +8,52 @@ export async function POST(req: NextRequest) {
         const db = await getMongoDB();
         const body = await req.json();
         const { dataType, data } = body;
+        const collection = db.collection("threads");
 
         if (dataType === 'create') {
 
             // get the mongodb _id for the new item after creating it
-            const res = await db.collection("formulas").insertOne(data);
+            const res = await collection.insertOne(data);
             return NextResponse.json({
                 'success': true,
-                'formula': res.insertedId,
+                'thread': res.insertedId,
             });
 
         } else if (dataType === 'update') {
 
             const { _id, update } = data;
-            console.log(_id, update);
-            const res = await db.collection("formulas").updateOne({ _id: new ObjectId(_id) }, { $set: update }, { upsert: true });
+            const res = await collection.updateOne({ _id: new ObjectId(_id) }, { $set: update }, { upsert: true });
+            const threads = await collection.find({}).toArray();
             return NextResponse.json({
                 'success': true,
-                'formula': res,
+                'thread': res,
+                'threads': threads,
             });
 
         } else if (dataType === 'delete') {
 
             const { _id } = data;
-            const res = await db.collection("formulas").deleteOne({ _id: new ObjectId(_id) });
-            const formulas = await db.collection("formulas").find({}).toArray();
+            const deleteThread = await collection.deleteOne({ _id: new ObjectId(_id) });
+            const threads = await collection.find({}).toArray();
             return NextResponse.json({
                 'success': true,
-                'formulas': formulas,
+                'threads': threads,
             });
 
         } else if (dataType === 'get') {
 
             const { _id } = data;
             if (!!_id) {
-                const res = await db.collection("formulas").findOne({ _id: new ObjectId(_id) });
+                const res = await collection.findOne({ _id: new ObjectId(_id) });
                 return NextResponse.json({
                     'success': true,
-                    'formula': res,
+                    'thread': res,
                 });
             } else {
-                const res = await db.collection("formulas").find({}).toArray();
+                const res = await collection.find({}).toArray();
                 return NextResponse.json({
                     'success': true,
-                    'formulas': res,
+                    'threads': res,
                 });
             }
 

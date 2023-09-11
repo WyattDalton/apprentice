@@ -17,7 +17,5 @@ export async function DELETE(req: Request) {
 
     } catch (error) {
         return NextResponse.json({ message: error, success: false });
-    } finally {
-        await closeMongoDB();
     }
 };

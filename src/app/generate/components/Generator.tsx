@@ -4,15 +4,16 @@ import GeneratorActions from "./GeneratorActions";
 import GeneratorContent from "./GeneratorContent";
 import GeneratorSettings from "./GeneratorSettings";
 import { useEffect, useState } from "react";
-import RecentThreads from "./RecentThreads";
 import { Transition } from "@headlessui/react";
 
 type GeneratorProps = {
     initConversation?: any | null;
+    className?: string | '';
+    launcher?: any;
 }
 
 
-export default function Generator({ initConversation }: GeneratorProps) {
+export default function Generator({ initConversation, className, launcher }: GeneratorProps) {
     const [active, setActive] = useState(false);
     const [threads, setThreads] = useState([]);
     const [saved, setSaved] = useState(false);
@@ -32,9 +33,6 @@ export default function Generator({ initConversation }: GeneratorProps) {
         formula: '',
         useSources: false,
     });
-    useEffect(() => {
-        console.log(settings);
-    }, [settings])
 
     // ###
     // ### INIT CONVERSATION
@@ -86,12 +84,8 @@ export default function Generator({ initConversation }: GeneratorProps) {
     // ###
     // ### Render Generator
     return (
-        // round the top corners of the generator
         <section className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-5">
-            {/* recent threads */}
-            {/* generator container */}
-
-            <div className={`transition-all duration-300 flex-col flex flex-col h-full grow-1 w-full min-h-screen max-w-[90%] mx-auto bg-gray-200/50 rounded-t-3xl p-4 ${!!activateSettings ? 'lg:col-span-3' : 'lg:col-span-full'}`}>
+            <div className={`transition-all duration-300 flex-col flex flex-col h-full grow-1 w-full min-h-screen max-w-[90%] mx-auto bg-gray-200/50 rounded-t-3xl p-4 ${!!activateSettings ? 'lg:col-span-3' : 'lg:col-span-full'} ${className}`}>
                 <Transition
                     show={active}
                     enter="transition-opacity duration-500"
@@ -122,6 +116,7 @@ export default function Generator({ initConversation }: GeneratorProps) {
                     active={active}
                     activateSettings={activateSettings}
                     setActivateSettings={setActivateSettings}
+                    launcher={launcher}
                 />
             </div>
 

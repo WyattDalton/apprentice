@@ -11,7 +11,5 @@ export async function GET(req: Request) {
 
     } catch (error) {
         return NextResponse.json({ message: error, success: false });
-    } finally {
-        await closeMongoDB();
     }
 };

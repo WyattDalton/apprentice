@@ -4,6 +4,7 @@ import Card from "@/components/UI/Card";
 import LoadingText from "@/components/LoadingText";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { UilSlidersV, UilAngleDoubleRight, UilQuestionCircle, UilBookmark } from '@iconscout/react-unicons'
+import { getUserData } from "@/components/utils/getUserData";
 
 type GeneratorActionsProps = {
     className?: string | '';
@@ -18,6 +19,7 @@ type GeneratorActionsProps = {
     setActive: any;
     activateSettings: boolean | false;
     setActivateSettings: any;
+    launcher?: any;
 };
 
 const GeneratorActions = ({
@@ -32,7 +34,8 @@ const GeneratorActions = ({
     active,
     setActive,
     activateSettings,
-    setActivateSettings
+    setActivateSettings,
+    launcher,
 }: GeneratorActionsProps) => {
 
     /* * * * * * * * * * * * * * * * * * * */
@@ -40,14 +43,12 @@ const GeneratorActions = ({
     /* * * * * * * * * * * * * * * * * * * */
     const searchBarRef = useRef({} as any);
     const [generation, setGeneration] = useState<any>('');
-    const [prompt, setPrompt] = useState<string>('');
-    const [promptResponseLoading, setPromptResponseLoading] =
-        useState<boolean>(false);
-    const [response, setResponse] = useState([]);
     const [lastUserMessageIndex, setLastUserMessageIndex] = useState<number>(0);
     const [sources, setSources] = useState<any[]>([]);
     const [toneLibrary, setToneLibrary] = useState([]);
     const [formulaLibrary, setFormulaLibrary] = useState([]);
+    const [available_words_count, setAvailableWordsCount] = useState(null);
+
 
     /* * * * * * * * * * * * * * * * * * */
     /* Preserve thread as it is generated
@@ -83,6 +84,9 @@ const GeneratorActions = ({
             if (!!settings.enabled) {
                 setLastUserMessageIndex(messages.length);
             }
+        },
+        onFinish: async (res) => {
+            await getAvailableWordsCount();
         },
         body: { settings, sources, toneLibrary, formulaLibrary },
         initialMessages: conversation,
@@ -247,8 +251,31 @@ const GeneratorActions = ({
         }
     }
 
+    // ### 
+    // ### Get available words count
+    const getAvailableWordsCount = async () => {
+        try {
+            const userdata = await getUserData();
+            const userId = userdata.userId;
+
+            const res = await fetch('/api/users', {
+                method: 'POST',
+                body: JSON.stringify({ dataType: 'get', data: { userId: userId } })
+            })
+            if (!res.ok) {
+                throw new Error(res.statusText);
+            }
+            const userRes = await res.json();
+            setAvailableWordsCount(userRes.user.available_words);
+            console.log(available_words_count)
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     // ###
-    // ### Get all gnerator data
+    // ### Get all generator data
     const getGeneratorData = async () => {
         try {
             const data = await fetch("/api/data", {
@@ -257,10 +284,11 @@ const GeneratorActions = ({
             });
             if (data.status === 200) {
                 const res = await data.json();
-                console.log(res);
                 setSources(res.data.sources);
                 setToneLibrary(res.data.tones);
                 setFormulaLibrary(res.data.formulas);
+                setAvailableWordsCount(res.data.user.available_words);
+
             }
         } catch (error) {
             console.log(error);
@@ -323,10 +351,15 @@ const GeneratorActions = ({
 
             <div className="flex flex-row justify-end items-center gap-2">
                 <div className="flex gap-2">
-                    <button className={`rounded-md text-theme_primary-700 p-2 ${saved ? 'bg-theme_primary-700 text-white' : ''}`}
-                        onClick={saveThread}>
-                        <UilBookmark className="h-6 w-6" />
-                    </button>
+                    {available_words_count !== null ? (
+                        <span className="text-gray-500 py-2 px-4 rounded-3xl border-gray-500">{available_words_count} Words Available</span>
+                    ) : ('')}
+                    {!launcher && (
+                        <button className={`rounded-md text-theme_primary-700 p-2 ${saved ? 'bg-theme_primary-700 text-white' : ''}`}
+                            onClick={saveThread}>
+                            <UilBookmark className="h-6 w-6" />
+                        </button>
+                    )}
                     <button className="rounded-md text-theme_primary-700 p-2" onClick={handleActivateSettings}>
                         <UilSlidersV className="h-6 w-6" />
                     </button>

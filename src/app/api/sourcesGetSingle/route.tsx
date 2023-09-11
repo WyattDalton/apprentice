@@ -14,7 +14,5 @@ export async function POST(req: Request) {
 
     } catch (error) {
         return NextResponse.json({ 'message': error, 'success': false });
-    } finally {
-        closeMongoDB();
     }
 };

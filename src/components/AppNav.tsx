@@ -49,9 +49,6 @@ const AppNavigation = () => {
                 </li> */}
             </ul>
             <div className='flex flex-col gap-2 p-2'>
-                <div className="flex gap-2 font-bold py-2 px-4 rounded-lg bg-primary">
-                    7500 available words
-                </div>
                 <Link
                     href="/settings"
                     className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}

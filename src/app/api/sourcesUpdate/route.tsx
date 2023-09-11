@@ -221,7 +221,5 @@ export async function POST(req: NextRequest) {
 
     } catch (error) {
         return NextResponse.json({ message: error, success: false });
-    } finally {
-        closeMongoDB();
     }
 };

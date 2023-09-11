@@ -1,7 +1,9 @@
+import Link from 'next/link';
 import React from "react";
 import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+
 
 type GeneratorContentProps = {
     conversation: any;
@@ -9,13 +11,13 @@ type GeneratorContentProps = {
 
 const GeneratorContent = ({ conversation }: GeneratorContentProps) => {
 
-
     useEffect(() => {
         const handleScroll = () => {
             const stickyElements = document.querySelectorAll(".sticky-message");
             let currentSticky;
 
             stickyElements.forEach((sticky, index) => {
+                const stickyContainer = sticky.querySelector(".sticky-content");
                 const stickyContent = sticky.querySelector(".sticky-content");
                 const nextSticky = stickyElements[index + 1];
 
@@ -43,10 +45,13 @@ const GeneratorContent = ({ conversation }: GeneratorContentProps) => {
 
             // Remove shadow-md class from all stickies
             stickyElements.forEach(sticky => sticky.classList.remove("shadow-md"));
+
             // Add shadow-md class to the current sticky
             if (currentSticky) currentSticky.classList.add("shadow-md");
+
             // Remove bg-white class from all stickies
             stickyElements.forEach(sticky => sticky.classList.remove("bg-white"));
+
             // Add bg-white class to the current sticky
             if (currentSticky) currentSticky.classList.add("bg-white");
         };
@@ -55,17 +60,18 @@ const GeneratorContent = ({ conversation }: GeneratorContentProps) => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-
-
     return (
-        <div>
+        <div >
+            <Link
+                href="/generate"
+                className="sticky top-6 ml-2 z-50 max-w-max font-semibold flex items-center rounded-md bg-theme_primary hover:bg-theme_primary-600 py-0 px-4 text-white"
+            >
+                Back
+            </Link>
             {conversation.map((item, index) => (
                 <React.Fragment key={item.id}>
                     {item.role === 'user' && (
                         <>
-                            {index == 0 && (
-                                <button className="fixed top-6 left-6 z-10 max-w-max">Back</button>
-                            )}
                             <div className="w-full p-2 sticky sticky-message top-0 z-10 rounded-b-3xl transition-all duration-300">
                                 <div className="sticky-content flex justify-end items-center gap-5 p-2 px-6 rounded-tl-3xl rounded-b-3xl roundedtr-sm prose bg-gray-100 ml-auto p-2 max-w-max transition-opacity duration-300">
                                     <h2 className="text-sm m-0 flex items-center">{item.content}</h2>

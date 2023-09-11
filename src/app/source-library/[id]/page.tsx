@@ -12,8 +12,6 @@ async function fetchData(idString: string) {
         return source;
     } catch (error) {
         return { success: false, message: error }
-    } finally {
-        closeMongoDB();
     }
 };
 async function handleUpdate(updatedData: any) {
@@ -41,8 +39,6 @@ async function handleUpdate(updatedData: any) {
 
     } catch (error) {
         console.log(error);
-    } finally {
-        closeMongoDB();
     }
 }
 

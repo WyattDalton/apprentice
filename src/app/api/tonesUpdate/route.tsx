@@ -58,7 +58,5 @@ export async function POST(req: NextRequest) {
             'success': false,
             'message': error,
         });
-    } finally {
-        closeMongoDB();
     }
 }

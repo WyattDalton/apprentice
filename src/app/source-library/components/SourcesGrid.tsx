@@ -1,7 +1,6 @@
 'use client'
 
 import Card from "@/components/UI/Card";
-import { revalidatePath } from "next/cache";
 import { useRouter, usePathname } from 'next/navigation'
 import { useEffect, useState } from "react";
 import { IoFileTrayFullOutline } from "react-icons/io5";

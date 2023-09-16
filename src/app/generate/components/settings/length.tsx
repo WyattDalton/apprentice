@@ -10,7 +10,7 @@ type Props = {
     settingFocus: boolean;
     setSettingFocus: any;
 }
-function length({ length, setLength, settingFocus, setSettingFocus }: Props) {
+function Length({ length, setLength, settingFocus, setSettingFocus }: Props) {
     const [active, setActive] = useState<boolean>(false);
     return (
         <Card className="!mb-0">
@@ -95,4 +95,4 @@ function length({ length, setLength, settingFocus, setSettingFocus }: Props) {
     )
 }
 
-export default length
+export default Length

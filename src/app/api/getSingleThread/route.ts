@@ -6,7 +6,7 @@ export async function POST(req: Request) {
     try {
         const data = await req.json();
         const id = new ObjectId(data.id); // Convert to ObjectId
-        const db = await getMongoDB();
+        const db = await getMongoDB() as any;
         const thread = await db.collection("threads").findOne({ _id: id });
         return NextResponse.json({ "data": thread });
 

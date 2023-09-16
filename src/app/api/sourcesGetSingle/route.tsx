@@ -7,7 +7,7 @@ export async function POST(req: Request) {
 
         const data = await req.json();
         const id = new ObjectId(data.id); // Convert to ObjectId
-        const db = await getMongoDB();
+        const db = await getMongoDB() as any;
         const source = await db.collection("sources").findOne({ _id: id });
 
         return NextResponse.json({ 'source': source, 'success': true });

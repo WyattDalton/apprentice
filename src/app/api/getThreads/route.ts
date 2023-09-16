@@ -4,7 +4,7 @@ import { closeMongoDB, getMongoDB } from '@/components/utils/getMongo';
 export async function GET(req: Request) {
     try {
 
-        const db = await getMongoDB();
+        const db = await getMongoDB() as any;
         const threads = await db.collection("threads").find({}).toArray();
         return NextResponse.json({ "data": threads });
 

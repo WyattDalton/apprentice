@@ -3,9 +3,6 @@
 import { useState, useRef } from "react";
 import Card from "@/components/UI/Card";
 import { Tab } from "@headlessui/react";
-import pdfParse from 'pdf-parse';
-import mammoth from 'mammoth';
-import { set } from "lodash";
 import LoadingText from "@/components/LoadingText";
 
 
@@ -15,7 +12,7 @@ function AddSource() {
     const [error, setError] = useState("");
     const [files, setFiles] = useState([]);
     const [url, setUrl] = useState("");
-    const fileInputRef = useRef(null);
+    const fileInputRef = useRef(null) as any;
 
     const handleFileChange = (event: any) => {
         setFiles(event.target.files);
@@ -34,11 +31,11 @@ function AddSource() {
         onSubmitFiles(event.dataTransfer.files);
     };
 
-    const readFileAsBase64 = (file) => {
+    const readFileAsBase64 = (file: Blob) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = (event) => {
-                const result = event.target.result;
+                const result = event.target!.result as string;
                 const base64 = result.split(',')[1];
                 resolve(base64);
             };
@@ -46,7 +43,6 @@ function AddSource() {
             reader.readAsDataURL(file);
         });
     };
-
 
     const onSubmitFiles = async (files: FileList) => {
         const processedFiles = [];
@@ -145,7 +141,7 @@ function AddSource() {
                                 <p className="text-gray-500">or</p>
                                 <button
                                     className="px-4 py-2 text-white bg-theme_primary-500 rounded-md"
-                                    onClick={() => fileInputRef.current.click()}
+                                    onClick={() => fileInputRef.current!.click()}
                                 >
                                     Select a file
                                 </button>

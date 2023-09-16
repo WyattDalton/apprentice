@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
 
         let newSource = null as any;
 
-        const db = await getMongoDB();
+        const db = await getMongoDB() as any;
         const sourcesCollection = db.collection("sources");
 
         if (dataType === 'file') {
@@ -101,8 +101,8 @@ export async function POST(req: NextRequest) {
                         content = "";
                 }
 
-                const chunks = createChunks(content);
-                const embeddings = await Promise.all(chunks.map((chunk, index) => getEmbedding(chunk, title, index)));
+                const chunks = createChunks(content) as any;
+                const embeddings = await Promise.all(chunks.map((chunk: any, index: number) => getEmbedding(chunk, title, index)));
 
                 sourcePayload.name = name;
                 sourcePayload.title = title;
@@ -143,8 +143,8 @@ export async function POST(req: NextRequest) {
                 const title = $('title').text();
                 const text = $('body').text();
 
-                const chunks = createChunks(text);
-                const embeddings = await Promise.all(chunks.map((chunk, index) => getEmbedding(chunk, title, index)));
+                const chunks = createChunks(text) as any;
+                const embeddings = await Promise.all(chunks.map((chunk: any, index: any) => getEmbedding(chunk, title, index)));
 
                 // ###
                 // ### Create the payload
@@ -175,7 +175,7 @@ export async function POST(req: NextRequest) {
                 /* * * * * * * * * * * * * */
                 /* Get MongoDB
                 /* * * * * * * * * * * * * */
-                const db = await getMongoDB();
+                const db = await getMongoDB() as any;
                 const sourcesCollection = db.collection("sources");
 
                 /* * * * * * * * * * * * * */

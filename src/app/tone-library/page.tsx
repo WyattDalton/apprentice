@@ -2,16 +2,10 @@
 
 import Card from '@/components/UI/Card';
 import React, { useEffect, useMemo, useState } from 'react';
-import { UilTrashAlt, UilPlus } from '@iconscout/react-unicons'
 import AddTone from './components/AddTone';
 import { useRouter } from 'next/navigation';
 
-
-type ToneOfVoiceLibraryProps = {
-    toneLibrary: any;
-};
-
-export default function ToneOfVoiceLibrary({ toneLibrary }: ToneOfVoiceLibraryProps) {
+export default function ToneOfVoiceLibrary() {
     const router = useRouter();
     const [tones, setTones] = useState([]);
     const [showForm, setShowForm] = useState(false);
@@ -103,7 +97,7 @@ export default function ToneOfVoiceLibrary({ toneLibrary }: ToneOfVoiceLibraryPr
             <div className="flex justify-between items-center gap-4">
                 <h1 className="text-2xl font-bold text-gray-700 mb-4">Tone of Voice Library</h1>
                 <button onClick={() => { setShowForm(!showForm) }} className={`flex gap-1 transition-all ${!!showForm ? 'text-gray' : 'text-theme_primary'}`}>
-                    {!!showForm ? 'Close' : 'Add Tone'}<UilPlus className={`h-6 w-6 transition-all ${!!showForm ? 'rotate-45' : 'rotate-0'}`} />
+                    {!!showForm ? 'Close' : 'Add Tone'}
                 </button>
             </div>
 
@@ -115,7 +109,7 @@ export default function ToneOfVoiceLibrary({ toneLibrary }: ToneOfVoiceLibraryPr
                 <div className="flex flex-col gap-4">
                     {/* Map through all tones and display */}
                     {tones.map((tone: any, index: number) => (
-                        <Card className=''>
+                        <Card key={index} className=''>
                             <div className='flex items-center gap-4'>
                                 <h2 className="text-xl font-semibold text-gray-700 w-full">{tone.title || 'Default Title'}</h2>
                                 <button
@@ -128,7 +122,7 @@ export default function ToneOfVoiceLibrary({ toneLibrary }: ToneOfVoiceLibraryPr
                                     className="flex items-center text-red-700 !mt-0"
                                     onClick={() => handleDeleteTone(tone._id)}
                                 >
-                                    <UilTrashAlt className="h-6 w-6" />
+                                    Delete
                                 </button>
                             </div>
 
@@ -141,7 +135,7 @@ export default function ToneOfVoiceLibrary({ toneLibrary }: ToneOfVoiceLibraryPr
                                         tone.keywords ? (
                                             <div className="flex flex-wrap gap-4 w-full col-span-1">
                                                 {tone.keywords.map((word: any, index: number) => (
-                                                    <div className="bg-theme_primary-700 text-white px-2 py-1 rounded-md">
+                                                    <div key={index} className="bg-theme_primary-700 text-white px-2 py-1 rounded-md">
                                                         {word}
                                                     </div>
                                                 ))}

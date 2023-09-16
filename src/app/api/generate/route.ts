@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 		/* * * * * * * * * * * * * * * * * * * * * * * */
 		try {
 			const userData = await getUserData();
-			const db = await getMongoDB();
+			const db = await getMongoDB() as any;
 			const collection = db.collection('users');
 
 			const user = await collection.findOne({ userId: userData.userId });
@@ -214,7 +214,7 @@ export async function POST(req: NextRequest) {
 					// ###
 					// ### Update available words
 					const userData = await getUserData();
-					const db = await getMongoDB();
+					const db = await getMongoDB() as any;
 					const collection = db.collection('users');
 					const user = await collection.findOne({ userId: userData.userId });
 					const adjusted_words = user?.available_words - total_words_count;

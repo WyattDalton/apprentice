@@ -1,6 +1,3 @@
-import Card from "@/components/UI/Card";
-import { UilBookmark, UilTrashAlt } from '@iconscout/react-unicons'
-
 
 type SavedThreadProps = {
     threads: any,
@@ -14,9 +11,9 @@ const SavedThreads = ({ threads, className, handleActivateThread, saveThread, de
 
     return (
         <div className={`flex flex-col gap-4 mt-4  ${className}`}>
-            {threads.map((thread: any) => {
+            {threads.map((thread: any, index: number) => {
                 return (
-                    <div className="flex justify-between items-center hover:bg-white px-4 py-2 rounded-md gap-4">
+                    <div key={index} className="flex justify-between items-center hover:bg-white px-4 py-2 rounded-md gap-4">
                         <h3 className="prose text-lg font-semibold mr-auto">{thread.initial_prompt}</h3>
                         <button
                             className="group w-max font-semibold flex items-center rounded-md bg-theme_primary hover:bg-theme_primary-600 py-0 px-4 text-white !mt-0"
@@ -27,13 +24,11 @@ const SavedThreads = ({ threads, className, handleActivateThread, saveThread, de
                         <button
                             className={`flex items-center text-theme_primary !mt-0 ${thread.saved ? 'text-white bg-theme_primary-500 rounded-md' : ''} $ }`}
                             onClick={() => saveThread(thread._id, !thread.saved)} >
-                            <UilBookmark className="h-6 w-6" />
-                        </button>
+                            Save                        </button>
                         <button
                             className="flex items-center text-red-700 !mt-0"
                             onClick={() => deleteThread(thread._id)} >
-                            <UilTrashAlt className="h-6 w-6" />
-                        </button>
+                            Delete                        </button>
                     </div>
                 )
             })}

@@ -14,11 +14,11 @@ const GeneratorContent = ({ conversation }: GeneratorContentProps) => {
     useEffect(() => {
         const handleScroll = () => {
             const stickyElements = document.querySelectorAll(".sticky-message");
-            let currentSticky;
+            let currentSticky: any;
 
             stickyElements.forEach((sticky, index) => {
                 const stickyContainer = sticky.querySelector(".sticky-content");
-                const stickyContent = sticky.querySelector(".sticky-content");
+                const stickyContent = sticky.querySelector(".sticky-content") as any;
                 const nextSticky = stickyElements[index + 1];
 
                 const rectSticky = sticky.getBoundingClientRect();
@@ -27,6 +27,9 @@ const GeneratorContent = ({ conversation }: GeneratorContentProps) => {
                 if (rectSticky.top <= viewportOffsetTop && (!nextSticky || (nextSticky && rectSticky.bottom < nextSticky.getBoundingClientRect().top))) {
                     currentSticky = sticky;
                 }
+
+                // if stickyContent is null, stop
+                if (!stickyContent) return;
 
                 if (nextSticky) {
                     const rectNextSticky = nextSticky.getBoundingClientRect();
@@ -68,7 +71,7 @@ const GeneratorContent = ({ conversation }: GeneratorContentProps) => {
             >
                 Back
             </Link>
-            {conversation.map((item, index) => (
+            {conversation.map((item: { id: React.Key | null | undefined; role: string; content: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.PromiseLikeOfReactNode | null | undefined; }, index: any) => (
                 <React.Fragment key={item.id}>
                     {item.role === 'user' && (
                         <>
@@ -91,7 +94,7 @@ const GeneratorContent = ({ conversation }: GeneratorContentProps) => {
                                     skipHtml={false}
                                     rehypePlugins={[rehypeRaw]}
                                 >
-                                    {item.content}
+                                    {(item.content || '') as string}
                                 </ReactMarkdown>
                             </div>
                         </div>

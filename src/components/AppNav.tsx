@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { UilPen, UilSitemap, UilBookmark, UilFlaskPotion, UilMegaphone, UilFileBookmarkAlt, UilWindowGrid, UilSetting } from '@iconscout/react-unicons';
+
 
 const AppNavigation = () => {
 
@@ -19,33 +19,33 @@ const AppNavigation = () => {
                     <Link
                         href="/generate"
                         className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}>
-                        <UilPen /> Generator
+                        Generator
                     </Link>
                 </li>
                 {/* <li>
                     <Link
                         href="/campaigns"
-                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}><UilSitemap /> Campaigns</Link>
+                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}>Campaigns</Link>
                 </li> */}
                 <li>
                     <Link
                         href="/formula-library"
-                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}><UilFlaskPotion /> Formulas</Link>
+                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}>Formulas</Link>
                 </li>
                 <li>
                     <Link
                         href="/tone-library"
-                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}><UilMegaphone /> Tones</Link>
+                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}>Tones</Link>
                 </li>
                 <li>
                     <Link
                         href="/source-library"
-                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}><UilFileBookmarkAlt /> Sources</Link>
+                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}>Sources</Link>
                 </li>
                 {/* <li>
                     <Link
                         href="/layout-Library"
-                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}><UilWindowGrid /> Layouts</Link>
+                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}>Layouts</Link>
                 </li> */}
             </ul>
             <div className='flex flex-col gap-2 p-2'>
@@ -53,7 +53,7 @@ const AppNavigation = () => {
                     href="/settings"
                     className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}
                 >
-                    <UilSetting /> Settings
+                    Settings
                 </Link>
             </div>
         </nav>

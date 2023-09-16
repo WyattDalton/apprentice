@@ -17,7 +17,7 @@ export default function Generator({ initConversation, className, launcher }: Gen
     const [active, setActive] = useState(false);
     const [threads, setThreads] = useState([]);
     const [saved, setSaved] = useState(false);
-    const [conversation, setConversation] = useState([]);
+    const [conversation, setConversation] = useState<any[]>([]);
     const [currentResponse, setcurrentResponse] = useState({});
     const [activateSettings, setActivateSettings] = useState(false);
     const [toneLibrary, setToneLibrary] = useState([]);

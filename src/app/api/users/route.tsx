@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
 
         const body = await req.json();
         const { dataType, data } = body;
-        const db = await getMongoDB();
+        const db = await getMongoDB() as any;
         const collection = db.collection("users");
 
         if (dataType === 'update') {

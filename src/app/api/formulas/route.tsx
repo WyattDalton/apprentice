@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb';
 export async function POST(req: NextRequest) {
     try {
 
-        const db = await getMongoDB();
+        const db = await getMongoDB() as any;
         const body = await req.json();
         const { dataType, data } = body;
 

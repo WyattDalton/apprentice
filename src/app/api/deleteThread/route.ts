@@ -9,7 +9,7 @@ export async function DELETE(req: Request) {
         const created = data.created
 
 
-        const db = await getMongoDB();
+        const db = await getMongoDB() as any;
         await db.collection("threads").deleteOne({ initial_prompt: initial_prompt, created: created });
 
         return NextResponse.json({ "success": true });

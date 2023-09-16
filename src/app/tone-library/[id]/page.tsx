@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 
 
 
-function page({ params }: { params: { id: string } }) {
+function Page({ params }: { params: { id: string } }) {
     const [title, setTitle] = useState('');
     const [examples, setExamples] = useState([]);
     const [newExample, setNewExample] = useState('');
@@ -86,7 +86,7 @@ function page({ params }: { params: { id: string } }) {
     /* * * * * * * * * * * * * * * * */
     const handleAddExample = (example: any) => {
         if (!example) return;
-        const newExamples = [...examples];
+        const newExamples = [...examples] as any;
         newExamples.push({ "text": example });
         setNewExample('');
         setExamples(newExamples);
@@ -97,7 +97,7 @@ function page({ params }: { params: { id: string } }) {
     /* * * * * * * * * * * * * * * * * */
     const handleUpdateExample = (index: number, example: any) => {
         if (!example) return;
-        const newExamples = [...examples];
+        const newExamples = [...examples] as any;
         newExamples[index] = example;
         setExamples(newExamples);
     }
@@ -175,4 +175,4 @@ function page({ params }: { params: { id: string } }) {
 }
 
 
-export default page;
+export default Page;

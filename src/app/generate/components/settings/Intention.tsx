@@ -11,7 +11,7 @@ type Props = {
     setSettingFocus: any;
 }
 
-function intention({ intention, setIntention, settingFocus, setSettingFocus }: Props) {
+function Intention({ intention, setIntention, settingFocus, setSettingFocus }: Props) {
 
     const [active, setActive] = useState<boolean>(false);
 
@@ -95,4 +95,4 @@ function intention({ intention, setIntention, settingFocus, setSettingFocus }: P
     )
 }
 
-export default intention
+export default Intention;

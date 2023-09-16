@@ -4,7 +4,7 @@ import { closeMongoDB, getMongoDB } from '@/components/utils/getMongo';
 export async function POST(req: Request) {
     try {
 
-        const db = await getMongoDB();
+        const db = await getMongoDB() as any;
         const threads = db.collection("threads");
 
         // extract the data from req.body

@@ -5,7 +5,7 @@ import { getUserData } from '@/components/utils/getUserData';
 export async function POST(req: NextRequest) {
     try {
 
-        const db = await getMongoDB();
+        const db = await getMongoDB() as any;
         const body = await req.json();
         const userData = await getUserData();
         const { dataFor } = body;

@@ -9,7 +9,7 @@ import ContentType from './settings/ContentType';
 import Tone from './settings/Tone';
 import Formula from './settings/Formula';
 import Details from './settings/Details';
-import Length from './settings/length';
+import Length from './settings/Length';
 
 
 type GeneratorSettingsProps = {

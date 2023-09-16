@@ -4,7 +4,7 @@ import Generator from '../components/Generator';
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from "react";
 
-export default function page() {
+export default function Page() {
     const [messages, setMessages] = useState([]);
     const params = useParams()
     const id = params.id;
@@ -29,7 +29,7 @@ export default function page() {
         }
 
         fetchData();
-    }, []);
+    }, [id]);
 
     return <Generator initConversation={messages} />;
 }

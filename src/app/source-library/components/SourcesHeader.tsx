@@ -1,6 +1,5 @@
 'use client'
 
-import { UilPlus } from '@iconscout/react-unicons'
 import SearchBar from "@/components/UI/SearchBar"
 import { useEffect, useState } from "react";
 
@@ -17,7 +16,7 @@ function SourcesHeader() {
             <SearchBar query={""} setQuery={setQuery} />
 
             <button className="bg-theme_primary text-white font-bold py-2 px-4 rounded text-sm">
-                <UilPlus className="h-6 w-6" />
+                Add Source
             </button>
         </div>
     )

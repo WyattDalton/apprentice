@@ -1,18 +1,16 @@
-import { useEffect, useCallback, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { useChat } from 'ai/react'
 import Card from "@/components/UI/Card";
-import LoadingText from "@/components/LoadingText";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { UilSlidersV, UilAngleDoubleRight, UilQuestionCircle, UilBookmark } from '@iconscout/react-unicons'
 import { getUserData } from "@/components/utils/getUserData";
 
 type GeneratorActionsProps = {
     className?: string | '';
     settings: any;
     conversation: any[];
-    handleConversationChange: (conversation: any[]) => void;
+    handleConversationChange: any;
     currentResponse: any;
-    handleCurrentResponseChange: (currentResponse: any) => void;
+    handleCurrentResponseChange: any;
     saved: boolean | false;
     setSaved: any;
     active: boolean | false;
@@ -342,9 +340,7 @@ const GeneratorActions = ({
                             className="h-10 w-10"
                         />
                     ) : (
-                        <>
-                            <UilAngleDoubleRight className="h-10 w-10 stroke-2" />
-                        </>
+                            'Submit'
                     )}
                 </button>
             </Card>
@@ -357,15 +353,13 @@ const GeneratorActions = ({
                     {!launcher && (
                         <button className={`rounded-md text-theme_primary-700 p-2 ${saved ? 'bg-theme_primary-700 text-white' : ''}`}
                             onClick={saveThread}>
-                            <UilBookmark className="h-6 w-6" />
+                            Save
                         </button>
                     )}
                     <button className="rounded-md text-theme_primary-700 p-2" onClick={handleActivateSettings}>
-                        <UilSlidersV className="h-6 w-6" />
+                        Generator Settings
                     </button>
-                    <button className="rounded-md text-theme_primary-700 p-2">
-                        <UilQuestionCircle className="h-6 w-6" />
-                    </button>
+
                 </div>
             </div>
         </form >

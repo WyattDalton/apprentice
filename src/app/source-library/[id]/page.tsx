@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache'
 async function fetchData(idString: string) {
     try {
         const id = new ObjectId(idString);
-        const db = await getMongoDB();
+        const db = await getMongoDB() as any;
         const source = await db.collection("sources").findOne({ _id: id });
         return source;
     } catch (error) {

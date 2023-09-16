@@ -7,7 +7,7 @@ export async function POST(req: Request) {
         const data = await req.json();
         const id = new ObjectId(data.id);
 
-        const db = await getMongoDB();
+        const db = await getMongoDB() as any;
 
         // delete source by id
         const sources = await db.collection("sources").deleteOne({ "_id": id });

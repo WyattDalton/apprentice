@@ -161,7 +161,7 @@ const GeneratorLauncher = ({ className, active, setActive }: LauncherProps) => {
             </Card > */}
             <div className="bg-gray-200/50 p-4 rounded-3xl">
                 <h2 className="text-xl font-bold">Generate Marketing Content from Scratch!</h2>
-                <Generator launcher={true} setLauncher-focused={setLauncherFocused} handleLauncherGenerate={ } className="bg-transparent min-h-0 max-w-full" />
+                <Generator launcher={true} setLauncher-focused={setLauncherFocused} className="bg-transparent min-h-0 max-w-full" />
             </div>
 
             {/* animate up on load */}

@@ -1,17 +1,14 @@
 'use client'
 
 import Card from '@/components/UI/Card';
-import React, { useEffect, useMemo, useState } from 'react';
-import { UilTrashAlt, UilPlus } from '@iconscout/react-unicons'
+import React, { useEffect, useState } from 'react';
 import AddFormula from './components/AddFormula';
 import { useRouter } from 'next/navigation';
 import { Transition } from '@headlessui/react';
 
-type FormulaLibraryProps = {
-    formulaLibrary: any;
-};
 
-export default function FormulaLibrary({ formulaLibrary }: FormulaLibraryProps) {
+export default function FormulaLibrary() {
+
     const router = useRouter();
     const [noFormulas, setNoFormulas] = useState(false);
     const [formulas, setFormulas] = useState([]);
@@ -45,11 +42,11 @@ export default function FormulaLibrary({ formulaLibrary }: FormulaLibraryProps) 
         }
     }
 
-    useMemo(() => {
-        fetchFormulas();
-        if (!formulaLibrary) {
+    useEffect(() => {
+        (async () => {
+            await fetchFormulas();
             setNoFormulas(true);
-        }
+        })()
     }, []);
 
     /* * * * * * * * ** * * * * * * *
@@ -115,7 +112,7 @@ export default function FormulaLibrary({ formulaLibrary }: FormulaLibraryProps) 
             <div className="flex justify-between items-center gap-4">
                 <h1 className="text-2xl font-bold text-gray-700 mb-4">Formula Library</h1>
                 <button onClick={() => { setShowForm(!showForm) }} className={`flex gap-1 transition-all ${!!showForm ? 'text-gray' : 'text-theme_primary'}`}>
-                    {!!showForm ? 'Close' : 'Add Formula'}<UilPlus className={`h-6 w-6 transition-all ${!!showForm ? 'rotate-45' : 'rotate-0'}`} />
+                    {!!showForm ? 'Close' : 'Add Formula'}
                 </button>
             </div>
 
@@ -150,7 +147,7 @@ export default function FormulaLibrary({ formulaLibrary }: FormulaLibraryProps) 
             {!!formulas.length && (
                 <div className="flex flex-col gap-4">
                     {formulas.map((formula: any, index: number) => (
-                        <Card className=''>
+                        <Card key={index} className=''>
                             <div className='flex items-center gap-4 max-w-[300px]'>
                                 <h2 className="text-xl font-semibold text-gray-700 w-full">{formula.title || 'Default Title'}</h2>
                                 <button
@@ -163,7 +160,7 @@ export default function FormulaLibrary({ formulaLibrary }: FormulaLibraryProps) 
                                     className="flex items-center text-red-700 !mt-0"
                                     onClick={() => handleDeleteFormula(formula._id)}
                                 >
-                                    <UilTrashAlt className="h-6 w-6" />
+                                    Delete
                                 </button>
                             </div>
                         </Card>

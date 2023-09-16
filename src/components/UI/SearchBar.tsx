@@ -1,4 +1,4 @@
-import { UilSearchAlt } from '@iconscout/react-unicons';
+
 import { useState } from "react";
 import Card from "./Card";
 
@@ -16,8 +16,8 @@ const SearchBar = ({ query, setQuery }: SearchBarProps) => {
                     style={{ paddingRight: '30px' }} // To avoid text under the icon
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Type to Search..."
                 />
-                <UilSearchAlt style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }} className="h-6 w-6 text-theme_gray m-0" />
             </div>
         </Card>
     )

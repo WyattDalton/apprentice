@@ -2,7 +2,7 @@
 
 import Card from '@/components/UI/Card';
 import React, { useEffect, useState } from 'react';
-import AddFormula from './components/AddFormula';
+import AddFormula from './_components/AddFormula';
 import { useRouter } from 'next/navigation';
 import { Transition } from '@headlessui/react';
 

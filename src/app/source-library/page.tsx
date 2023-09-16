@@ -1,6 +1,6 @@
-import SourcesHeader from './components/SourcesHeader'
-import SourcesGrid from './components/SourcesGrid'
-import AddSource from './components/AddSource'
+import SourcesHeader from './_components/SourcesHeader'
+import SourcesGrid from './_components/SourcesGrid'
+import AddSource from './_components/AddSource'
 import { revalidatePath } from 'next/cache';
 
 async function getData() {

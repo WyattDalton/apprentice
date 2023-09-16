@@ -2,7 +2,7 @@
 
 import Card from '@/components/UI/Card';
 import React, { useEffect, useMemo, useState } from 'react';
-import AddTone from './components/AddTone';
+import AddTone from './_components/AddTone';
 import { useRouter } from 'next/navigation';
 
 export default function ToneOfVoiceLibrary() {

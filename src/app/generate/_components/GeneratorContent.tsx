@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import React from "react";
 import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
@@ -65,12 +64,6 @@ const GeneratorContent = ({ conversation }: GeneratorContentProps) => {
 
     return (
         <div >
-            <Link
-                href="/generate"
-                className="sticky top-6 ml-2 z-50 max-w-max font-semibold flex items-center rounded-md bg-theme_primary hover:bg-theme_primary-600 py-0 px-4 text-white"
-            >
-                Back
-            </Link>
             {conversation.map((item: { id: React.Key | null | undefined; role: string; content: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.PromiseLikeOfReactNode | null | undefined; }, index: any) => (
                 <React.Fragment key={item.id}>
                     {item.role === 'user' && (

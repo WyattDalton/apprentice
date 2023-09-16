@@ -1,6 +1,6 @@
 'use client';
 
-import Generator from '../components/Generator';
+import Generator from '../_components/Generator';
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from "react";
 

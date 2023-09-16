@@ -1,6 +1,6 @@
 import { closeMongoDB, getMongoDB } from '@/components/utils/getMongo';
 import { ObjectId } from 'mongodb';
-import Source from './components/Source';
+import Source from './_components/Source';
 import { revalidatePath } from 'next/cache'
 
 

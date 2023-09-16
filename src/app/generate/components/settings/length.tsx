@@ -95,4 +95,4 @@ function Length({ length, setLength, settingFocus, setSettingFocus }: Props) {
     )
 }
 
-export default Length
+export default Length;

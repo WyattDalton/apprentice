@@ -6,7 +6,10 @@ import AddSource from './_components/AddSource'
 async function getData() {
 
     try {
-        const api = process.env.API_URL;
+        const api = process.env.API_URL ? process.env.API_URL : false;
+        if (!api) {
+            throw new Error('API_URL not found')
+        }
         const res = await fetch(`${api}/sourcesGetAll`)
 
         if (!res.ok) {
@@ -16,7 +19,7 @@ async function getData() {
 
         return res.json()  
     } catch (error) {
-        console.log(error)
+        return false;
     }
 }
 
@@ -26,7 +29,7 @@ export default async function Page() {
         <section className='w-[90%] marginx-auto'>
             <SourcesHeader />
             <AddSource />
-            <SourcesGrid data={!!sources.sources ? sources.sources : []} />
+            {!!sources ? <SourcesGrid data={!!sources.sources ? sources.sources : []} /> : 'Loading...'}
         </section>
     )
 }

@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 
 async function getData() {
 
-    revalidatePath(`/source-library`);
+    // revalidatePath(`/source-library`);
 
     const { signal } = new AbortController()
 

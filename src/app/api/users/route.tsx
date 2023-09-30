@@ -7,44 +7,30 @@ export async function POST(req: NextRequest) {
 
         const body = await req.json();
         const { dataType, data } = body;
-        const db = await getMongoDB() as any;
+
+        let db;
+
+        if (dataType === 'create') {
+            db = await getMongoDB(data.userId, data.organization) as any;
+        } else {
+            db = await getMongoDB() as any;
+        }
+
         const collection = db.collection("users");
 
         if (dataType === 'create') {
 
-            const { userId, username, email, organization, available_words } = data;
-            const { secretKey, apiKey, access } = body.auth;
-
-            const client = await clientPromise;
-
-            const id = userId
-                .toString()
-                .toLowerCase()
-                .replace(/ /g, '_');
-            const org = organization
-                .toLowerCase()
-                .replace(/ /g, '_');
-            const _mongoUserId = `${id}-${org}`;
-
-            const newDb = client.db(_mongoUserId);
-            const newCollection = newDb.collection("users");
+            const { userId, username, email, organization, available_words, auth } = data;
 
             const payload = {
                 userId: userId,
                 username: username,
                 email: email,
                 organization: organization,
-                available_words: available_words,
-                auth: {
-                    secretKey: secretKey,
-                    apiKey: apiKey,
-                    access: access,
-                }
+                auth: auth,
             };
 
-            console.log(payload)
-
-            const res = await newCollection.insertOne(payload);
+            const res = await collection.updateOne({ userId: userId }, { $set: payload }, { upsert: true });
 
             return NextResponse.json({
                 'success': true,

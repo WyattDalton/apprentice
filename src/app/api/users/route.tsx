@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { closeMongoDB, getMongoDB } from '@/components/utils/getMongo';
+import clientPromise from '@/components/utils/getMongoClient';
 
 export async function POST(req: NextRequest) {
     try {
@@ -9,7 +10,48 @@ export async function POST(req: NextRequest) {
         const db = await getMongoDB() as any;
         const collection = db.collection("users");
 
-        if (dataType === 'update') {
+        if (dataType === 'create') {
+
+            const { userId, username, email, organization, available_words } = data;
+            const { secretKey, apiKey, access } = body.auth;
+
+            const client = await clientPromise;
+
+            const id = userId
+                .toString()
+                .toLowerCase()
+                .replace(/ /g, '_');
+            const org = organization
+                .toLowerCase()
+                .replace(/ /g, '_');
+            const _mongoUserId = `${id}-${org}`;
+
+            const newDb = client.db(_mongoUserId);
+            const newCollection = newDb.collection("users");
+
+            const payload = {
+                userId: userId,
+                username: username,
+                email: email,
+                organization: organization,
+                available_words: available_words,
+                auth: {
+                    secretKey: secretKey,
+                    apiKey: apiKey,
+                    access: access,
+                }
+            };
+
+            console.log(payload)
+
+            const res = await newCollection.insertOne(payload);
+
+            return NextResponse.json({
+                'success': true,
+                'user': res,
+            });
+
+        } else if (dataType === 'update') {
 
             const { userId, update } = data;
             const res = await collection.updateOne({ userId: userId }, { $set: update }, { upsert: true });

@@ -25,6 +25,7 @@
     "cheerio": "^1.0.0-rc.12",
     "clsx": "^1.2.1",
     "concurrently": "^8.0.1",
+    "cookies-next": "^4.0.0",
     "dompurify": "^3.0.4",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.2",

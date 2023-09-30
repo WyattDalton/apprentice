@@ -1,6 +1,6 @@
 export async function getUserData() {
 	const rawUserData = await fetch(
-		'https://makerdigital/wp-json/wp/v2/makerdigital/v1/get-user-data'
+		'https://makerdigital.io/wp-json/wp/v2/makerdigital/v1/get-user-data'
 	);
 
 	if (!rawUserData.ok) {

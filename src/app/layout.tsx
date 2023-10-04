@@ -2,6 +2,7 @@ import AppNavigation from '@/components/AppNav'
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { cookies } from 'next/headers'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,15 +16,17 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
   }) {
+
+  const cookieStore = cookies();
+  const nonce = cookieStore.get('mkr_user');
+
   const auth = fetch('https://makerdigital.io/wp-json/wp/v2/makerdigital/v1/get-current-user', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-WP-Nonce': `${localStorage.getItem('mkr_user')}`,
+      'X-WP-Nonce': `${nonce}`,
     },
-  })
-
-  auth.then((response) => {
+  }).then((response) => {
     return response.json()
   }).then((data) => {
     console.log('auth: ', data)

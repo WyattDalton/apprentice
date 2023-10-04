@@ -14,7 +14,21 @@ export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
-}) {
+  }) {
+  const auth = fetch('https://makerdigital.io/wp-json/wp/v2/makerdigital/v1/get-current-user', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-WP-Nonce': `${localStorage.getItem('mkr_user')}`,
+    },
+  })
+
+  auth.then((response) => {
+    return response.json()
+  }).then((data) => {
+    console.log('auth: ', data)
+  })
+
   return (
     <html lang="en">
       <body className={inter.className}>

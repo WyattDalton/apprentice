@@ -17,12 +17,11 @@ export default function RootLayout({
   children: React.ReactNode
   }) {
 
-  const auth = getAuth().then((res) => { return true; }).catch((err) => { return false; });
+  getAuth().then((res) => { return true; }).catch((err) => { return false; });
 
   return (
     <html lang="en">
       <body className={inter.className}>
-        {!!auth ?
           <div className="flex min-h-screen bg-gray-100 p-4 gap-4">
             <div className="flex flex-col w-1/4 max-w-[300px]">
               <AppNavigation />
@@ -30,8 +29,7 @@ export default function RootLayout({
             <div className="flex flex-col min-h-screen grow-1 w-full">
               {children}
             </div>
-          </div>
-          : 'Loading...'}
+        </div>
       </body>
     </html>
   )

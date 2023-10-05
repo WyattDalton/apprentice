@@ -17,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode
   }) {
 
-  getAuth().then((res) => { return true; }).catch((err) => { return false; });
+  getAuth();
 
   return (
     <html lang="en">

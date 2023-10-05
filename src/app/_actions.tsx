@@ -25,20 +25,11 @@ export const getMongoDB = async () => {
 
 export const getAuth = async () => {
 
-    // check if userData has already been set, and if it has, returned the cached data
-
     let authData: any;
     const cookieStore = cookies();
 
     // if the env is not production, use the dev auth
-    if (process.env.NODE_ENV !== 'production') {
-        authData = {
-            'id': process.env.DEV_AUTH_ID,
-            'auth': process.env.DEV_AUTH_TOKEN,
-        }
-    } else {
-        authData = cookieStore.get('mkr_user') as any;
-    }
+    authData = cookieStore.get('mkr_user') as any;
 
     const id = authData?.id;
     const auth = authData?.auth;

@@ -23,11 +23,6 @@ export const getMongoDB = async () => {
     return db;
 };
 
-/**
- * Retrieves the authenticated user data from the Maker Digital API.
- * If the environment is not production, it uses the dev auth.
- * @returns {Promise<any>} A promise that resolves to the user data if successful, or false if unsuccessful.
- */
 export const getAuth = async () => {
 
     // check if userData has already been set, and if it has, returned the cached data
@@ -66,6 +61,7 @@ export const getAuth = async () => {
 
         // If the response is 200, return the user data
         const userData = await authorizedUser.json();
+
         return userData;
     } catch (err) {
         console.log('ERROR: ', err);

@@ -1,12 +1,6 @@
 'use server';
-
-import useSWR from 'swr';
 import { cookies } from 'next/headers';
 
-/**
- * Retrieves the authentication data for the logged-in user.
- * @returns {Promise<boolean | any>} A promise that resolves to the user data if the user is logged in, or false if the user is not logged in.
- */
 export const getAuth = async () => {
 
     let authData: any;
@@ -25,35 +19,31 @@ export const getAuth = async () => {
 
     const reqUrl = `https://makerdigital.io/wp-json/makerdigital/v1/get-user-data/${id}`;
 
-    const fetcher = async (url: string) => {
-        const authorizedUser = await fetch(url, {
+    try {
+        const authorizedUser = await fetch(reqUrl, {
             method: 'GET',
             headers: {
                 'Authorization': `Basic ${auth}`,
             },
-        });
+            cache: 'no-store',
+        })
 
-        // If the response is not 200, throw an error
+        // If the response is not 200, return false
         if (authorizedUser.status !== 200) {
-            throw new Error('Failed to fetch user data');
+            return false;
         }
 
         // If the response is 200, return the user data
         const userData = await authorizedUser.json();
 
         return userData;
-    };
-
-    const { data, error } = useSWR(['auth', reqUrl], fetcher);
-
-    if (error) {
-        console.log('ERROR: ', error);
+    } catch (err) {
+        console.log('ERROR: ', err);
         return {
             success: false,
             coockieData: authData,
-            message: error,
+            message: err,
         };
     }
 
-    return data;
 }

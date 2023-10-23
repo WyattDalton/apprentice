@@ -10,7 +10,6 @@ export const AuthProvider = async ({ children }: any) => {
     } else {
         return (
             <>
-                <pre>{auth}</pre>
                 <div className="flex flex-col w-full min-h-screen justify-center items-center">
                     <h1 className="text-4xl font-bold">You are not authorized to view this page.</h1>
                     <LoginButton />

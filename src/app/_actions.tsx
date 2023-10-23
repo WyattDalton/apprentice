@@ -8,9 +8,10 @@ export const getAuth = async () => {
 
     // if the env is not production, use the dev auth
     authData = cookieStore.get('mkr_user') as any;
+    authData = JSON.parse(authData.value);
 
-    const id = authData?.id;
-    const auth = authData?.auth;
+    const id = authData.id;
+    const auth = authData.auth;
 
     // If the user is not logged in, return false
     if (!id || !auth) {

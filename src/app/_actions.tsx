@@ -13,6 +13,13 @@ export const getAuth = async () => {
     const id = authData?.id;
     const auth = authData?.auth;
 
+    // If the user is not logged in, return false
+    if (!id || !auth) {
+        return false;
+    }
+
+    console.log(authData)
+
     const reqUrl = `https://makerdigital.io/wp-json/makerdigital/v1/get-user-data/${id}`;
 
     try {
@@ -22,6 +29,9 @@ export const getAuth = async () => {
             headers: {
                 'Authorization': `Basic ${auth}`,
             },
+            next: {
+                tags: ['auth'],
+            }
         })
 
         // If the response is not 200, return false

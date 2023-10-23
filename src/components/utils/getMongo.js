@@ -5,6 +5,7 @@ export const getMongoDB = async (id, org) => {
 	try {
 		const client = await clientPromise;
 		let rawUserData;
+
 		if (!id && !org) {
 			rawUserData = await getUserData();
 		} else {
@@ -13,13 +14,14 @@ export const getMongoDB = async (id, org) => {
 				organization: org,
 			};
 		}
-		const userId = rawUserData.userId
-			.toString()
-			.toLowerCase()
-			.replace(/ /g, '_');
+
+		console.log('RAW USER: ', rawUserData, '\n\n\n###\n\n\n');
+		const userId = rawUserData.id.toString().toLowerCase().replace(/ /g, '_');
+
 		const userOrganization = rawUserData.organization
 			.toLowerCase()
 			.replace(/ /g, '_');
+		
 		const _mongoUserId = `${userId}-${userOrganization}`;
 
 		const db = client.db(_mongoUserId);

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { closeMongoDB, getMongoDB } from '@/components/utils/getMongo';
-import clientPromise from '@/components/utils/getMongoClient';
+import { getMongoDB } from '@/components/utils/getMongo';
+
 
 export async function POST(req: NextRequest) {
     try {

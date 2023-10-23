@@ -8,8 +8,6 @@ export async function POST(req: NextRequest) {
         const db = await getMongoDB() as any;
         const collection = db.collection("users");
 
-        console.log('auth: ', auth)
-
         const user = await collection.findOne({ userId: userId });
 
         if (user.auth.secretKey === auth.secretKey && user.auth.apiKey === auth.apiKey) {

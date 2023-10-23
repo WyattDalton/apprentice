@@ -18,8 +18,6 @@ export const getAuth = async () => {
         return false;
     }
 
-    console.log(authData)
-
     const reqUrl = `https://makerdigital.io/wp-json/makerdigital/v1/get-user-data/${id}`;
 
     try {
@@ -45,7 +43,11 @@ export const getAuth = async () => {
         return userData;
     } catch (err) {
         console.log('ERROR: ', err);
-        return false;
+        return {
+            success: false,
+            coockieData: authData,
+            message: err,
+        };
     }
 
 }

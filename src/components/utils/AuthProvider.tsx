@@ -10,10 +10,13 @@ export const AuthProvider = async ({ children }: any) => {
         return children;
     } else {
         return (
-            <div className="flex flex-col w-full min-h-screen justify-center items-center">
-                <h1 className="text-4xl font-bold">You are not authorized to view this page.</h1>
-                <LoginButton />
-            </div>
+            <>
+                <pre>{JSON.stringify(auth, null, 2)}</pre>
+                <div className="flex flex-col w-full min-h-screen justify-center items-center">
+                    <h1 className="text-4xl font-bold">You are not authorized to view this page.</h1>
+                    <LoginButton />
+                </div>
+            </>
         )
     }
 }

@@ -1,3 +1,5 @@
+'use server';
+
 import useSWR from 'swr';
 import { cookies } from 'next/headers';
 

@@ -191,7 +191,7 @@ const GeneratorActions = ({
     const getAvailableWordsCount = async () => {
         try {
             const userdata = await getUserData();
-            const userId = userdata.userId;
+            const userId = userdata.id;
 
             const res = await fetch('/api/users', {
                 method: 'POST',
@@ -205,7 +205,7 @@ const GeneratorActions = ({
             console.log(available_words_count)
 
         } catch (error) {
-            console.log(error);
+            console.log("ERROR OF ERRORS: ", error);
         }
     }
 
@@ -213,12 +213,15 @@ const GeneratorActions = ({
     // ### Get all generator data
     const getGeneratorData = async () => {
         try {
+
             const data = await fetch("/api/data", {
                 method: 'POST',
                 body: JSON.stringify({ dataFor: 'generator' })
             });
+
             if (data.status === 200) {
                 const res = await data.json();
+                console.log('initial data: ', res)
                 setSources(res.data.sources);
                 setToneLibrary(res.data.tones);
                 setFormulaLibrary(res.data.formulas);

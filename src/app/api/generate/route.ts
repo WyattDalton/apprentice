@@ -1,3 +1,4 @@
+'use server'
 import { Configuration, OpenAIApi } from 'openai-edge'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 import { getResponseSources } from './utils/getResponseSources'
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
 			const db = await getMongoDB() as any;
 			const collection = db.collection('users');
 
-			const user = await collection.findOne({ userId: userData.userId });
+			const user = await collection.findOne({ userId: userData.id });
 			const available_words = user?.available_words;
 
 			if (available_words <= 0) {
@@ -218,6 +219,8 @@ export async function POST(req: NextRequest) {
 					const collection = db.collection('users');
 					const user = await collection.findOne({ userId: userData.userId });
 					const adjusted_words = user?.available_words - total_words_count;
+
+					console.log('adjusted_words', adjusted_words)
 
 					await collection.updateOne({ userId: userData.userId }, { $set: { available_words: adjusted_words } });
 

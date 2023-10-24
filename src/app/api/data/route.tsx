@@ -8,13 +8,14 @@ export async function POST(req: NextRequest) {
         const db = await getMongoDB() as any;
         const body = await req.json();
         const userData = await getUserData();
+
         const { dataFor } = body;
 
         if (dataFor === 'generator') {
             const sources = await db.collection("sources").find({}).toArray();
             const tones = await db.collection("tones").find({}).toArray();
             const formulas = await db.collection("formulas").find({}).toArray();
-            const user = await db.collection("users").findOne({ userId: userData.userId });
+            const user = await db.collection("users").findOne({ userId: userData.id });
 
             const payload = {
                 'sources': sources,

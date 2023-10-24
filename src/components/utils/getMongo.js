@@ -10,16 +10,13 @@ export const getMongoDB = async (id, org, username) => {
 			rawUserData = await getUserData();
 		} else {
 			rawUserData = {
-				userId: id,
+				id: id,
 				organization: org,
 				username: username,
 			};
 		}
 
-		const userId = rawUserData.userId
-			.toString()
-			.toLowerCase()
-			.replace(/ /g, '_');
+		const userId = rawUserData.id.toString().toLowerCase().replace(/ /g, '_');
 
 		const userOrganization = rawUserData.organization
 			.toLowerCase()

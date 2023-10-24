@@ -6,6 +6,17 @@ export const getAuth = async () => {
     let authData: any;
     const cookieStore = cookies();
 
+    // get a cookie that contains the substring "wordpress_logged_in"
+    const allCookies = cookieStore.getAll()
+    const loggedInCookie = allCookies.find((cookie) => {
+        return cookie.name.includes('wordpress_logged_in');
+    });
+
+    // If the user is not logged in, return false
+    if (!loggedInCookie) {
+        return false;
+    }
+
     // if the env is not production, use the dev auth
     authData = cookieStore.get('mkr_user') as any;
     if (!authData) {

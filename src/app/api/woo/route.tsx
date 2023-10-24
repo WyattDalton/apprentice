@@ -10,22 +10,39 @@ import { getMongoDB } from '@/components/utils/getMongo';
 export async function POST(req: NextRequest) {
     try {
 
+        console.log('### connected to route\n\n')
+
         //### Get data from request body
         const body = await req.json();
-        const { data } = body;
-        const { userId, organization, words, datetime } = data;
+        const { userId, organization, words, datetime, username } = body;
+
+        console.log("### Data destructured from body: ", userId, organization, words, datetime, username, "\n\n")
 
         //### Init db
         let db;
 
         //### Get db for {userId}-{organization}
-        db = await getMongoDB(userId, organization) as any;
+        db = await getMongoDB(userId, organization, username) as any;
 
         //### Access the users collection
         const collection = db.collection("users");
 
-        //### find user in collection by finding userId
+        //### find user in collection by finding userId. If no user exists, create one with userId, organization, and words as "available_words"
         const user = await collection.findOne({ userId: userId });
+        if (!user) {
+            const res = await collection.insertOne({
+                userId: userId,
+                organization: organization,
+                available_words: parseInt(words),
+                history: [{ words: words, datetime: datetime }]
+            }
+            );
+
+            return NextResponse.json({
+                'success': true,
+                'user': res,
+            });
+        }
 
         //### Get the words from the user
         const currentWords = user.available_words ? user.available_words : 0;
@@ -51,6 +68,7 @@ export async function POST(req: NextRequest) {
         });
 
     } catch (error) {
+        console.log(error)
         return NextResponse.json({
             'success': false,
             'message': error,

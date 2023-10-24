@@ -1,7 +1,7 @@
 import { getUserData } from '@/components/utils/getUserData';
 import clientPromise from './getMongoClient';
 
-export const getMongoDB = async (id, org) => {
+export const getMongoDB = async (id, org, username) => {
 	try {
 		const client = await clientPromise;
 		let rawUserData;
@@ -12,17 +12,22 @@ export const getMongoDB = async (id, org) => {
 			rawUserData = {
 				userId: id,
 				organization: org,
+				username: username,
 			};
 		}
 
-		console.log('RAW USER: ', rawUserData, '\n\n\n###\n\n\n');
-		const userId = rawUserData.id.toString().toLowerCase().replace(/ /g, '_');
+		const userId = rawUserData.userId
+			.toString()
+			.toLowerCase()
+			.replace(/ /g, '_');
 
 		const userOrganization = rawUserData.organization
 			.toLowerCase()
 			.replace(/ /g, '_');
-		
-		const _mongoUserId = `${userId}-${userOrganization}`;
+
+		const userUsername = rawUserData.username.toLowerCase().replace(/ /g, '_');
+
+		const _mongoUserId = `${userId}-${userUsername}-${userOrganization}`;
 
 		const db = client.db(_mongoUserId);
 

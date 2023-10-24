@@ -217,12 +217,12 @@ export async function POST(req: NextRequest) {
 					const userData = await getUserData();
 					const db = await getMongoDB() as any;
 					const collection = db.collection('users');
-					const user = await collection.findOne({ userId: userData.userId });
+					const user = await collection.findOne({ userId: userData.id });
 					const adjusted_words = user?.available_words - total_words_count;
 
 					console.log('adjusted_words', adjusted_words)
 
-					await collection.updateOne({ userId: userData.userId }, { $set: { available_words: adjusted_words } });
+					await collection.updateOne({ userId: userData.id }, { $set: { available_words: adjusted_words } });
 
 				} catch (error: any) {
 					console.log(error.message)

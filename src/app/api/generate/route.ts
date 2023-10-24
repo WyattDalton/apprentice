@@ -218,7 +218,7 @@ export async function POST(req: NextRequest) {
 					const db = await getMongoDB() as any;
 					const collection = db.collection('users');
 					const user = await collection.findOne({ userId: userData.id });
-					const adjusted_words = user?.available_words - total_words_count;
+					const adjusted_words = Math.floor(user?.available_words - total_words_count);
 
 					console.log('adjusted_words', adjusted_words)
 

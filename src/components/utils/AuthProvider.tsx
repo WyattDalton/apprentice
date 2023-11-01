@@ -4,10 +4,6 @@ import { getAuth } from '@/app/_actions';
 import { LoginButton } from '@/components/UI/LoginButton';
 import { cookies } from 'next/headers';
 
-
-
-
-
 export const AuthProvider = async ({ children }: any) => {
 
     const auth = await getAuth() as any;
@@ -31,13 +27,10 @@ export const AuthProvider = async ({ children }: any) => {
         return parts[0];
     }
 
-    let username = 'unset';
+    let username = false as any;
     if (!!loggedInCookie) {
         username = extractUsername(loggedInCookie.value);
     }
-
-    // const makr_cookie = cookieStore.get('mkr_user');
-    // const makr_user = makr_cookie ? makr_cookie.value : null;
 
     if (!!username) {
         return children;

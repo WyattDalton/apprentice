@@ -16,7 +16,7 @@ export const AuthProvider = async ({ children }: any) => {
     const allCookies = cookieStore.getAll()
     const loggedInCookie = allCookies.find((cookie) => {
         if (cookie.name.includes('wordpress_logged_in')) {
-            return JSON.parse(cookie.value);
+            return cookie.value;
         } else {
             return false;
         }
@@ -35,16 +35,15 @@ export const AuthProvider = async ({ children }: any) => {
     }
 
     const makr_cookie = cookieStore.get('mkr_user');
-    const makr_user = makr_cookie ? JSON.parse(makr_cookie.value) : null;
+    const makr_user = makr_cookie ? makr_cookie.value : null;
     if (!!auth && !!auth.active) {
         return children;
     } else {
         return (
             <>
                 <pre>
-                    {loggedInCookie?.toString()}
                     {username}
-                    {makr_user?.toString()}
+                    {makr_user}
                 </pre>
                 <div className="flex flex-col w-full min-h-screen justify-center items-center">
                     <h1 className="text-4xl font-bold">You are not authorized to view this page.</h1>

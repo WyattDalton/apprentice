@@ -39,14 +39,11 @@ export const AuthProvider = async ({ children }: any) => {
     // const makr_cookie = cookieStore.get('mkr_user');
     // const makr_user = makr_cookie ? makr_cookie.value : null;
 
-    if (!!auth && !!auth.active) {
+    if (!!username) {
         return children;
     } else {
         return (
             <>
-                <pre>
-                    {username}
-                </pre>
                 <div className="flex flex-col w-full min-h-screen justify-center items-center">
                     <h1 className="text-4xl font-bold">You are not authorized to view this page.</h1>
                     <LoginButton />

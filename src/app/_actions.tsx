@@ -12,33 +12,29 @@ export const getAuth = async () => {
         return cookie.name.includes('wordpress_logged_in');
     });
 
+    function extractUsername(cookieValue: string) {
+        // Split the string by the pipe character
+        let parts = cookieValue.split('|');
+        return parts[0];
+    }
+
+    let username = false as any;
+    if (!!loggedInCookie) {
+        username = extractUsername(loggedInCookie.value);
+    }
+
     // If the user is not logged in, return false
     if (!loggedInCookie) {
         return false;
     }
 
-    // if the env is not production, use the dev auth
-    authData = cookieStore.get('mkr_user') as any;
-    if (!authData) {
-        return false;
-    }
-    authData = JSON.parse(authData.value);
-
-    const id = authData.id;
-    const auth = authData.auth;
-
-    // If the user is not logged in, return false
-    if (!id || !auth) {
-        return false;
-    }
-
-    const reqUrl = `https://makerdigital.io/wp-json/makerdigital/v1/get-user-data/${id}`;
+    const reqUrl = `https://makerdigital.io/wp-json/makerdigital/v1/get-user-data/${username}`;
 
     try {
         const authorizedUser = await fetch(reqUrl, {
             method: 'GET',
             headers: {
-                'Authorization': `Basic ${auth}`,
+                'Authorization': process.env.WP_API_AUTH as string,
             },
             cache: 'no-store',
         })

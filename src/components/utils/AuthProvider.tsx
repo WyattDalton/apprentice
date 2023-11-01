@@ -13,6 +13,7 @@ export const AuthProvider = async ({ children }: any) => {
     const auth = await getAuth() as any;
     const cookieStore = cookies();
 
+
     // get a cookie that contains the substring "wordpress_logged_in"
     const allCookies = cookieStore.getAll()
     const loggedInCookie = allCookies.find((cookie) => {
@@ -24,16 +25,16 @@ export const AuthProvider = async ({ children }: any) => {
     });
 
     // // Extract the username from the cookie value
-    // function extractUsername(cookieValue: string) {
-    //     // Split the string by the pipe character
-    //     let parts = cookieValue.split('|');
-    //     return parts[0];
-    // }
+    function extractUsername(cookieValue: string) {
+        // Split the string by the pipe character
+        let parts = cookieValue.split('|');
+        return parts[0];
+    }
 
-    // let username = '';
-    // if (!!loggedInCookie) {
-    //     username = extractUsername(loggedInCookie.value);
-    // }
+    let username = 'unset';
+    if (!!loggedInCookie) {
+        username = extractUsername(loggedInCookie.value);
+    }
 
     // const makr_cookie = cookieStore.get('mkr_user');
     // const makr_user = makr_cookie ? makr_cookie.value : null;
@@ -44,7 +45,7 @@ export const AuthProvider = async ({ children }: any) => {
         return (
             <>
                 <pre>
-                    {loggedInCookie?.value.toString()}
+                    {username}
                 </pre>
                 <div className="flex flex-col w-full min-h-screen justify-center items-center">
                     <h1 className="text-4xl font-bold">You are not authorized to view this page.</h1>

@@ -9,6 +9,7 @@ import { cookies } from 'next/headers';
 
 
 export const AuthProvider = async ({ children }: any) => {
+
     const auth = await getAuth() as any;
     const cookieStore = cookies();
 
@@ -22,28 +23,28 @@ export const AuthProvider = async ({ children }: any) => {
         }
     });
 
-    // Extract the username from the cookie value
-    function extractUsername(cookieValue: string) {
-        // Split the string by the pipe character
-        let parts = cookieValue.split('|');
-        return parts[0];
-    }
+    // // Extract the username from the cookie value
+    // function extractUsername(cookieValue: string) {
+    //     // Split the string by the pipe character
+    //     let parts = cookieValue.split('|');
+    //     return parts[0];
+    // }
 
-    let username = '';
-    if (!!loggedInCookie) {
-        username = extractUsername(loggedInCookie.value);
-    }
+    // let username = '';
+    // if (!!loggedInCookie) {
+    //     username = extractUsername(loggedInCookie.value);
+    // }
 
-    const makr_cookie = cookieStore.get('mkr_user');
-    const makr_user = makr_cookie ? makr_cookie.value : null;
+    // const makr_cookie = cookieStore.get('mkr_user');
+    // const makr_user = makr_cookie ? makr_cookie.value : null;
+
     if (!!auth && !!auth.active) {
         return children;
     } else {
         return (
             <>
                 <pre>
-                    {username}
-                    {makr_user}
+                    {loggedInCookie?.value.toString()}
                 </pre>
                 <div className="flex flex-col w-full min-h-screen justify-center items-center">
                     <h1 className="text-4xl font-bold">You are not authorized to view this page.</h1>

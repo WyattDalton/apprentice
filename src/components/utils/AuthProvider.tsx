@@ -1,14 +1,12 @@
 'use server';
 
 import { getAuth } from '@/app/_actions';
-import { LoginButton } from '@/components/UI/LoginButton';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
+import { redirect } from 'next/navigation'
 
 export const AuthProvider = async ({ children }: any) => {
 
-    const auth = await getAuth() as any;
     const cookieStore = cookies();
-
 
     // get a cookie that contains the substring "wordpress_logged_in"
     const allCookies = cookieStore.getAll()
@@ -20,7 +18,7 @@ export const AuthProvider = async ({ children }: any) => {
         }
     });
 
-    // // Extract the username from the cookie value
+    // Extract the username from the cookie value
     function extractUsername(cookieValue: string) {
         // Split the string by the pipe character
         let parts = cookieValue.split('|');
@@ -32,16 +30,18 @@ export const AuthProvider = async ({ children }: any) => {
         username = extractUsername(loggedInCookie.value);
     }
 
-    if (!!username) {
+    //  If the username does not exist, reditrect the user to this URL: `https://makerdigital.io/wp-login.php?redirect_to=app.makerdigital.io`
+    const host = headers().get('host')
+    const path = headers().get('x-invoke-path')
+    const currentUrl = `${host}${path}`;
+
+    if (!!username || process.env.NODE_ENV === 'development') {
+        const auth = await getAuth() as any;
+        console.log(auth)
         return children;
-    } else {
-        return (
-            <>
-                <div className="flex flex-col w-full min-h-screen justify-center items-center">
-                    <h1 className="text-4xl font-bold">You are not authorized to view this page.</h1>
-                    <LoginButton />
-                </div>
-            </>
-        )
+    }
+    if (!username) {
+        redirect(`https://makerdigital.io/wp-login.php?redirect_to=${currentUrl}`);
+        return;
     }
 }

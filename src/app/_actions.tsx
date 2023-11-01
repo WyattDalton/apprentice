@@ -23,12 +23,15 @@ export const getAuth = async () => {
         username = extractUsername(loggedInCookie.value);
     }
 
+    let reqUrl = `https://makerdigital.io/wp-json/makerdigital/v1/get-user-data/${username}`;
+
     // If the user is not logged in, return false
-    if (!loggedInCookie) {
+    if (process.env.NODE_ENV === 'development') {
+        reqUrl = `https://makerdigital.io/wp-json/makerdigital/v1/get-user-data/wy-att`;
+    } else if (!username) {
         return false;
     }
 
-    const reqUrl = `https://makerdigital.io/wp-json/makerdigital/v1/get-user-data/${username}`;
 
     try {
         const authorizedUser = await fetch(reqUrl, {
@@ -46,7 +49,6 @@ export const getAuth = async () => {
 
         // If the response is 200, return the user data
         const userData = await authorizedUser.json();
-
         return userData;
     } catch (err) {
         console.log('ERROR: ', err);

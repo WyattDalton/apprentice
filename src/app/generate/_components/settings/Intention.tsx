@@ -9,17 +9,18 @@ type Props = {
     setIntention: any;
     settingFocus: boolean;
     setSettingFocus: any;
+    className?: string | '';
 }
 
-function Intention({ intention, setIntention, settingFocus, setSettingFocus }: Props) {
+function Intention({ intention, setIntention, settingFocus, setSettingFocus, className }: Props) {
 
     const [active, setActive] = useState<boolean>(false);
 
     return (
         <>
 
-            <Card className={`!mb-0 grow relative overflow-visible duration-300 transition`}>
-                <div className={`flex gap-2 mb-2 items-center`}>
+            <Card className={`!mb-0 relative overflow-visible duration-300 transition ${className}`}>
+                <div className={`flex flex-col gap-2 mb-2 items-center`}>
                     <TrophyIcon className="w-6 h-6 text-theme_primary-700" />
                     <span className="block font-semibold">Intention</span>
                     {!intention && (

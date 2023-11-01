@@ -6,9 +6,10 @@ import rehypeRaw from "rehype-raw";
 
 type GeneratorContentProps = {
     conversation: any;
+    className?: string | '';
 };
 
-const GeneratorContent = ({ conversation }: GeneratorContentProps) => {
+const GeneratorContent = ({ conversation, className }: GeneratorContentProps) => {
 
     useEffect(() => {
         const handleScroll = () => {
@@ -63,7 +64,7 @@ const GeneratorContent = ({ conversation }: GeneratorContentProps) => {
     }, []);
 
     return (
-        <div >
+        <div className={`${className}`}>
             {conversation.map((item: { id: React.Key | null | undefined; role: string; content: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.PromiseLikeOfReactNode | null | undefined; }, index: any) => (
                 <React.Fragment key={item.id}>
                     {item.role === 'user' && (

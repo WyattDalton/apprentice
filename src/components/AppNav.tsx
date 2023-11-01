@@ -1,59 +1,45 @@
-import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image'
+import logo from './makerdigital-logo-dark.png';
 
 
 const AppNavigation = () => {
 
     return (
-        <nav className='sticky top-4 left-4 !text-white bg-theme_gray-300 rounded-md'>
-            <h1 className="text-2xl font-bold py-4 px-4 mb-4 border-b border-gray-200">
+        <nav className='text-dark flex justify-between items-center py-2 px-4 flex-none'>
+            <h1>
+                <span className="hidden">Maker Digital</span>
                 <Link
                     href="/"
-                    className="font-bold"
                 >
-                    Apprentice
+                    <Image
+                        className="cursor-pointer w-12 h-12 block"
+                        src={logo}
+                        alt="Next.js Logo"
+                        width={180}
+                        height={180}
+                        priority
+                    />
                 </Link>
             </h1>
-            <ul className="flex flex-col gap-2 p-2 pb-4 mb-4 border-b border-gray-200">
-                <li>
-                    <Link
-                        href="/generate"
-                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}>
-                        Generator
-                    </Link>
-                </li>
-                {/* <li>
-                    <Link
-                        href="/campaigns"
-                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}>Campaigns</Link>
-                </li> */}
-                <li>
-                    <Link
-                        href="/formula-library"
-                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}>Formulas</Link>
-                </li>
-                <li>
-                    <Link
-                        href="/tone-library"
-                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}>Tones</Link>
-                </li>
-                <li>
-                    <Link
-                        href="/source-library"
-                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}>Sources</Link>
-                </li>
-                {/* <li>
-                    <Link
-                        href="/layout-Library"
-                        className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}>Layouts</Link>
-                </li> */}
-            </ul>
-            <div className='flex flex-col gap-2 p-2'>
+            <div className="flex gap-2 ml-auto">
+                <Link
+                    href="/"
+                    className={`py-1 px-2 hover:text-primary`}
+                >
+                    Dashboard
+                </Link>
                 <Link
                     href="/settings"
-                    className={`w-full flex gap-2 font-bold py-2 px-4 rounded-md hover:text-highlight`}
+                    className={`py-1 px-2 hover:text-primary`}
                 >
                     Settings
+                </Link>
+                <Link
+                    href="https://makerdigital.io/my-account/"
+                    className={`py-1 px-2 hover:text-primary`}
+                >
+                    Account
                 </Link>
             </div>
         </nav>

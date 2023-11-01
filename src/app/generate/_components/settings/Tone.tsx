@@ -20,9 +20,9 @@ function Tone({ tone, setTone, settingFocus, setSettingFocus, toneLibrary }: Pro
     return (
         <>
             <Card className="!mb-0 grow relative overflow-visible">
-                <div className="flex gap-2 w-full flex-wrap">
-                    <div className='w-full flex items-center gap-2'>
-                        <MegaphoneIcon className="w-6 h-6 text-theme_primary-700" />
+                <div className="!mb-0 flex flex-col justify-center items-center gap-2 flex-grow">
+                    <div className='!mb-0 flex flex-col justify-center items-center gap-2 flex-grow'>
+                        <MegaphoneIcon className="w-6 h-6 text-secondary" />
                         <span className="block font-semibold">Tone of Voice</span>
                         {!toneSetting && (
                             <button
@@ -30,14 +30,14 @@ function Tone({ tone, setTone, settingFocus, setSettingFocus, toneLibrary }: Pro
                                     setSettingFocus(true);
                                     setActive(true);
                                 }}
-                                className="ml-auto flex justify-center items-center gap-2 text-sm text-theme_primary-700 hover:text-theme_primary-600 bg-transparent rounded-full border border-theme_primary-700 px-2 py-1"
+                                className="flex justify-center items-center gap-2 text-sm text-secondary hover:text-secondary bg-transparent rounded-full border border-secondary px-2 py-1"
                             >
-                                Add <IoAddCircleOutline className="w-6 h-6 text-theme_primary-700" />
+                                Add <IoAddCircleOutline className="w-6 h-6 text-secondary" />
                             </button>
                         )}
                         {!!toneSetting && (
                             <span
-                                className="ml-auto inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-theme_primary-700 text-white"
+                                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary text-white"
                             >
                                 {toneSetting}
                             </span>
@@ -48,9 +48,9 @@ function Tone({ tone, setTone, settingFocus, setSettingFocus, toneLibrary }: Pro
                                     setToneSetting('');
                                     setTone('');
                                 }}
-                                className="text-sm text-theme_primary-700 hover:text-theme_primary-600 bg-transparent"
+                                className="text-sm text-secondary hover:text-secondary bg-transparent"
                             >
-                                <IoCloseOutline className="w-6 h-6 text-theme_gray-700" />
+                                <IoCloseOutline className="w-6 h-6 text-dark" />
                             </button>
                         )}
 
@@ -75,13 +75,13 @@ function Tone({ tone, setTone, settingFocus, setSettingFocus, toneLibrary }: Pro
                                 <label
                                     key={toneOption._id}
                                     className={`mr-2 mb-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${tone === toneOption._id
-                                        ? 'bg-theme_primary-700 text-white'
+                                        ? 'bg-secondary text-white'
                                         : 'bg-gray-200 text-gray-700'
                                         }`}
                                 >
                                     <input
                                         type="radio"
-                                        className="form-radio h-4 w-4 text-theme_primary-600 transition duration-150 ease-in-out"
+                                        className="form-radio h-4 w-4 text-secondary transition duration-150 ease-in-out"
                                         name="tone"
                                         value={toneOption._id}
                                         checked={tone === toneOption._id}

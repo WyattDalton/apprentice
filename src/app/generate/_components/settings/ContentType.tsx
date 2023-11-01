@@ -19,8 +19,8 @@ function ContentType({ contentType, setContentType, settingFocus, setSettingFocu
     return (
         <>
             <Card className="!mb-0 grow relative overflow-visible">
-                <div className="flex gap-2 mb-2 items-center">
-                    <HashtagIcon className="w-6 h-6 text-theme_primary-700" />
+                <div className="!mb-0 flex flex-col justify-center items-center gap-2 flex-grow">
+                    <HashtagIcon className="w-6 h-6 text-decoration" />
                     <span className="block font-semibold">Type</span>
 
                     {!contentType && (
@@ -30,14 +30,14 @@ function ContentType({ contentType, setContentType, settingFocus, setSettingFocu
                                 setActive(true);
                                 console.log('fire')
                             }}
-                            className="ml-auto flex justify-center items-center gap-2 text-sm text-theme_primary-700 hover:text-theme_primary-600 bg-transparent rounded-full border border-theme_primary-700 px-2 py-1"
+                            className="flex justify-center items-center gap-2 text-sm text-decoration hover:text-theme_primary-600 bg-transparent rounded-full border border-decoration px-2 py-1"
                         >
-                            Add <IoAddCircleOutline className="w-6 h-6 text-theme_primary-700" />
+                            Add <IoAddCircleOutline className="w-6 h-6 text-decoration" />
                         </button>
                     )}
                     {!!contentType && (
                         <span
-                            className="ml-auto inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-theme_primary-700 text-white"
+                            className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-decoration text-white"
                         >
                             {contentType}
                         </span>
@@ -47,9 +47,9 @@ function ContentType({ contentType, setContentType, settingFocus, setSettingFocu
                             onClick={() => {
                                 setContentType('');
                             }}
-                            className="text-sm text-theme_primary-700 hover:text-theme_primary-600 bg-transparent"
+                            className="text-sm text-decoration hover:text-theme_primary-600 bg-transparent"
                         >
-                            <IoCloseOutline className="w-6 h-6 text-theme_gray-700" />
+                            <IoCloseOutline className="w-6 h-6 text-dark" />
                         </button>
                     )}
                 </div>
@@ -76,7 +76,7 @@ function ContentType({ contentType, setContentType, settingFocus, setSettingFocu
                         <label
                             key={type}
                             className={`mr-2 mb-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${contentType === type.toLowerCase()
-                                ? 'bg-theme_primary-700 text-white'
+                                ? 'bg-decoration text-white'
                                 : 'bg-gray-200 text-gray-700'
                                 }`}
                         >

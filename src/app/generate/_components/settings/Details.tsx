@@ -14,7 +14,7 @@ type Props = {
 function Details({ details, setDetails, settingFocus, setSettingFocus }: Props) {
     const [active, setActive] = useState<boolean>(false);
     return (
-        <Card className="!mb-0">
+        <Card className="!mb-0 col-span-2">
             <div className="flex gap-2 mb-2">
                 <PencilSquareIcon className="w-6 h-6 text-theme_primary-700" />
                 <span className="block font-semibold">Details</span>

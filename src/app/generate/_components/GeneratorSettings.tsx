@@ -68,24 +68,28 @@ function GeneratorSettings({
 		enabled,
 	]);
 
-
 	return (
 		<Transition
 			className={`${className}`}
 			show={activateSettings}
 			enter="transition-all duration-300"
-			enterFrom="translate-x-10 opacity-0"
-			enterTo="translate-x-0 opacity-100"
+			enterFrom="translate-y-10 opacity-0"
+			enterTo="translate-y-0 opacity-100"
 			leave="transition-all duration-300"
-			leaveFrom="translate-x-0 opacity-100"
-			leaveTo="translate-x-10 opacity-0"
+			leaveFrom="translate-y-0 opacity-100"
+			leaveTo="translate-y-10 opacity-0"
 			unmount={true}
 		>
-			<div className="w-full transition-all ease-in-out duration-300 flex flex-col gap-4 sticky top-4 max-h-100vh">
-				<div className="settings-controls flex flex-col gap-4 relative h-full overflow-y-auto">
+			<div className="w-full pt-8 transition-all ease-in-out duration-300 grid gap-4 grid-cols-2 grid-flow-dense">
+				<button
+					className='absolute top-2 right-2 p-2 text-dark'
+					onClick={() => setActivateSettings(!activateSettings)}
+				>
+					close
+				</button>
 
-					<Card className="!mb-0 flex justify-between gap-2">
-						<div className="flex gap-2 mb-2">
+				<Card className="!mb-0 flex flex-col justify-center items-center gap-2 flex-grow">
+					<div className="flex flex-col items-center justify-center gap-2 mb-2">
 							<IoSchool className="w-6 h-6 text-theme_primary-700" />
 							<span className="block font-semibold">Use Sources</span>
 						</div>
@@ -110,6 +114,7 @@ function GeneratorSettings({
 					</Card>
 
 					<Intention
+					className="!mb-0 flex flex-col justify-center items-center gap-2 flex-grow"
 						intention={intention}
 						setIntention={setIntention}
 						settingFocus={settingFocus}
@@ -151,8 +156,7 @@ function GeneratorSettings({
 						setDetails={setDetails}
 						settingFocus={settingFocus}
 						setSettingFocus={setSettingFocus}
-					/>
-				</div>
+				/>
 			</div>
 		</Transition>
 	);

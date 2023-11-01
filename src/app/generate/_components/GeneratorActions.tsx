@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useMemo } from "react";
 import { useChat } from 'ai/react'
 import Card from "@/components/UI/Card";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingText from "@/components/LoadingText";
 import { getUserData } from "@/components/utils/getUserData";
 
 type GeneratorActionsProps = {
@@ -155,9 +156,7 @@ const GeneratorActions = ({
     /* * * * * * * * * * * * * * * * * * * */
     const saveThread = async () => {
         try {
-
             setSaved(!saved)
-
             const firstUserMessage = messages.find((message) => message.role === 'user');
             const payload = {
                 "_id": generation,
@@ -170,7 +169,6 @@ const GeneratorActions = ({
                 },
                 body: JSON.stringify(payload)
             });
-
         } catch (error) {
             console.log(error);
         }
@@ -262,7 +260,7 @@ const GeneratorActions = ({
             <Card className={`!shadow-md !mb-0 !p-0 w-full overflow-hidden flex justify-between items-center gap-2 !bg-gray-100`}>
                 <textarea
                     className="w-full outline-none break-words p-4 resize-none bg-transparent"
-                    placeholder="What should we create today?"
+                    placeholder="Enter your prompt..."
                     name="prompt"
                     rows={1}
                     value={input}
@@ -271,36 +269,31 @@ const GeneratorActions = ({
                         handleInputChange
                     }
                 ></textarea>
+            </Card>
+
+            <div className="flex gap-2 items-center justify-between w-full">
                 <button
-                    className="px-2 text-theme_primary mt-auto"
+                    className="px-2 py-2 text-dark bg-secondary rounded-md mt-auto"
+                    title="Generator settings"
+                    onClick={() => handleActivateSettings()}
+                >
+                    S
+                </button>
+                {available_words_count !== null ? (
+                    <span className="text-gray-500 py-2 px-4 rounded-3xl border-gray-500">{available_words_count} Words Available</span>
+                ) : ('')}
+
+
+                <button
+                    className="px-6 py-2 ml-auto text-dark bg-secondary rounded-md mt-auto"
                     type="submit"
                 >
                     {isLoading ? (
-                        <LoadingSpinner
-                            className="h-10 w-10"
-                        />
+                        <LoadingText text="Loading" className={""} iconClassName={""} />
                     ) : (
-                            'Submit'
+                        'Generate'
                     )}
                 </button>
-            </Card>
-
-            <div className="flex flex-row justify-end items-center gap-2">
-                <div className="flex gap-2">
-                    {available_words_count !== null ? (
-                        <span className="text-gray-500 py-2 px-4 rounded-3xl border-gray-500">{available_words_count} Words Available</span>
-                    ) : ('')}
-                    {!launcher && (
-                        <button className={`rounded-md text-theme_primary-700 p-2 ${saved ? 'bg-theme_primary-700 text-white' : ''}`}
-                            onClick={saveThread}>
-                            Save
-                        </button>
-                    )}
-                    <button className="rounded-md text-theme_primary-700 p-2" onClick={handleActivateSettings}>
-                        Generator Settings
-                    </button>
-
-                </div>
             </div>
         </form >
     )

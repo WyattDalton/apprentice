@@ -84,45 +84,31 @@ export default function Generator({ initConversation, className, launcher }: Gen
     // ###
     // ### Render Generator
     return (
-        <section className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-5">
-            <div className={`transition-all duration-300 flex-col flex flex-col h-full grow-1 w-full min-h-screen max-w-[90%] mx-auto bg-gray-200/50 rounded-t-3xl p-4 ${!!activateSettings ? 'lg:col-span-3' : 'lg:col-span-full'} ${className}`}>
-                <Transition
-                    show={active}
-                    enter="transition-opacity duration-500"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="transition-opacity duration-500"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                    unmount={true}
-                    appear={true}
-                >
-                    <GeneratorContent
-                        conversation={conversation}
-                    />
-                </Transition>
+        <section className={`transition-all duration-300 flex-col flex flex-grow gap-2`}>
+            <GeneratorContent
+                conversation={conversation}
+                className="flex-grow block w-full max-w-[90%] mx-auto bg-gray-200/30 rounded-3xl p-4 ${className}"
+            />
 
-                {/* Generator actions */}
-                <GeneratorActions
-                    className={`flex-col mt-auto`}
-                    settings={settings}
-                    conversation={conversation}
-                    handleConversationChange={setConversation}
-                    currentResponse={currentResponse}
-                    handleCurrentResponseChange={setcurrentResponse}
-                    saved={saved}
-                    setSaved={setSaved}
-                    setActive={setActive}
-                    active={active}
-                    activateSettings={activateSettings}
-                    setActivateSettings={setActivateSettings}
-                    launcher={launcher}
-                />
-            </div>
+            {/* Generator actions */}
+            <GeneratorActions
+                className={`flex flex-wrap sticky bottom-2 mt-auto mx-auto max-w-[90%] w-full bg-white rounded-3xl shadow-lg p-4 gap-4 transition-all duration-300 z-40`}
+                settings={settings}
+                conversation={conversation}
+                handleConversationChange={setConversation}
+                currentResponse={currentResponse}
+                handleCurrentResponseChange={setcurrentResponse}
+                saved={saved}
+                setSaved={setSaved}
+                setActive={setActive}
+                active={active}
+                activateSettings={activateSettings}
+                setActivateSettings={setActivateSettings}
+                launcher={launcher}
+            />
 
-            {/* Generator settings and help panel */}
             <GeneratorSettings
-                className={`transition-all duration-300 ${!!activateSettings ? 'lg:col-span-2' : 'lg:col-span-full'}`}
+                className={`transition-all duration-300 p-4 bg-white rounded-t-3xl shadow-lg h-[80vh] overflow-y-scroll fixed bottom-0 w-full max-w-[90%] mx-auto z-50 -translate-x-1/2 left-1/2`}
                 handleSetGeneratorSettings={setSettings}
                 generatorSettings={settings}
                 toneLibrary={toneLibrary}

@@ -32,8 +32,8 @@ export const AuthProvider = async ({ children }: any) => {
     }
 
     //  ### Get the current URL
-    const host = headers().get('host')
-    const path = headers().get('x-invoke-path')
+    const host = headers().get('host') ? headers().get('host') : 'app.makerdigital.io';
+    const path = headers().get('x-invoke-path') ? headers().get('x-invoke-path') : '';
     const currentUrl = `${host}${path}`;
 
     const auth = await getAuth() as any;

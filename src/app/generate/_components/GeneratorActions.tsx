@@ -86,9 +86,6 @@ const GeneratorActions = ({
                 setLastUserMessageIndex(messages.length);
             }
         },
-        onFinish: async (res) => {
-            await getAvailableWordsCount();
-        },
         body: { settings, sources, toneLibrary, formulaLibrary },
         initialMessages: conversation,
     })
@@ -184,28 +181,7 @@ const GeneratorActions = ({
     /* * * * * * * * * * * * * * * * * * * */
     /* Handle fetch data on load
     /* * * * * * * * * * * * * * * * * * * */
-    // ### 
-    // ### Get available words count
-    const getAvailableWordsCount = async () => {
-        try {
-            const userdata = await getUserData();
-            const userId = userdata.id;
 
-            const res = await fetch('/api/users', {
-                method: 'POST',
-                body: JSON.stringify({ dataType: 'get', data: { userId: userId } })
-            })
-            if (!res.ok) {
-                throw new Error(res.statusText);
-            }
-            const userRes = await res.json();
-            setAvailableWordsCount(userRes.user.available_words);
-            console.log(available_words_count)
-
-        } catch (error) {
-            console.log("ERROR OF ERRORS: ", error);
-        }
-    }
 
     // ###
     // ### Get all generator data
@@ -219,7 +195,6 @@ const GeneratorActions = ({
 
             if (data.status === 200) {
                 const res = await data.json();
-                console.log('initial data: ', res)
                 setSources(res.data.sources);
                 setToneLibrary(res.data.tones);
                 setFormulaLibrary(res.data.formulas);
@@ -274,16 +249,24 @@ const GeneratorActions = ({
             <div className="flex gap-2 items-center justify-between w-full">
                 <button
                     className="px-2 py-2 text-dark bg-secondary rounded-md mt-auto"
+                    title="Generator Information"
+                >
+                    In
+                </button>
+                <button
+                    className="px-2 py-2 text-dark bg-secondary rounded-md mt-auto"
                     title="Generator settings"
                     onClick={() => handleActivateSettings()}
                 >
-                    S
+                    Se
                 </button>
-                {available_words_count !== null ? (
-                    <span className="text-gray-500 py-2 px-4 rounded-3xl border-gray-500">{available_words_count} Words Available</span>
-                ) : ('')}
-
-
+                <button
+                    className="px-2 py-2 text-dark bg-secondary rounded-md mt-auto"
+                    title="Save generation"
+                    onClick={() => saveThread()}
+                >
+                    Sa
+                </button>
                 <button
                     className="px-6 py-2 ml-auto text-dark bg-secondary rounded-md mt-auto"
                     type="submit"

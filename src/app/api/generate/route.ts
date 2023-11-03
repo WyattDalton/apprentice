@@ -4,7 +4,6 @@ import { OpenAIStream, StreamingTextResponse } from 'ai'
 import { getResponseSources } from './utils/getResponseSources'
 import { getTone } from './utils/getTone'
 import { templatize } from './utils/getFormula'
-import { words } from 'lodash'
 import { NextRequest, NextResponse } from 'next/server'
 import { closeMongoDB, getMongoDB } from '@/components/utils/getMongo'
 import { getUserData } from '@/components/utils/getUserData'
@@ -32,11 +31,6 @@ export async function POST(req: NextRequest) {
 			const collection = db.collection('users');
 
 			const user = await collection.findOne({ userId: userData.id });
-			const available_words = user?.available_words;
-
-			if (available_words <= 0) {
-				throw new Error('You have no available words. Please upgrade your plan to get more words.')
-			}
 
 		} catch (error: any) {
 			NextResponse.json({ error: error.message }, { status: 400 })
@@ -183,19 +177,6 @@ export async function POST(req: NextRequest) {
 			messages[messages.length - 1].content = formattedSettings + messages[messages.length - 1].content;
 		}
 
-		// ###
-		// ### Init token count
-		let prompt_words_count = 0;
-		let completion_words_count = 0;
-
-		// ###
-		// ### Encode the prompt into tokens
-		await Promise.all(messages.map(async (message: any) => {
-			const content = message.content;
-			const role = message.role;
-			prompt_words_count += words(content).length + words(role).length;
-		}))
-
 		// Request the OpenAI API for the response based on the prompt
 		const response = await openai.createChatCompletion({
 			model: 'gpt-4',
@@ -205,31 +186,7 @@ export async function POST(req: NextRequest) {
 
 		// ###
 		// ### Convert the response into a friendly text-stream
-		const stream = OpenAIStream(response, {
-			onCompletion: async (completion: string) => {
-				try {
-					completion_words_count = words(completion).length;
-					const adjusted_prompt_words_count = prompt_words_count / 2;
-					const total_words_count = adjusted_prompt_words_count + completion_words_count;
-
-					// ###
-					// ### Update available words
-					const userData = await getUserData();
-					const db = await getMongoDB() as any;
-					const collection = db.collection('users');
-					const user = await collection.findOne({ userId: userData.id });
-					const adjusted_words = Math.floor(user?.available_words - total_words_count);
-
-					console.log('adjusted_words', adjusted_words)
-
-					await collection.updateOne({ userId: userData.id }, { $set: { available_words: adjusted_words } });
-
-				} catch (error: any) {
-					console.log(error.message)
-				}
-			}
-
-		})
+		const stream = OpenAIStream(response)
 
 		// ###
 		// ### Respond with the stream

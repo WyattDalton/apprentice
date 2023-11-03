@@ -84,7 +84,7 @@ export default function Generator({ initConversation, className, launcher }: Gen
     // ###
     // ### Render Generator
     return (
-        <section className={`transition-all duration-300 flex-col flex flex-grow gap-2`}>
+        <section className={`transition-all duration-300 flex-col flex flex-grow gap-2 relative`}>
             <GeneratorContent
                 conversation={conversation}
                 className="flex-grow block w-full max-w-[90%] mx-auto bg-gray-200/30 rounded-3xl p-4 ${className}"
@@ -108,7 +108,7 @@ export default function Generator({ initConversation, className, launcher }: Gen
             />
 
             <GeneratorSettings
-                className={`transition-all duration-300 p-4 bg-white rounded-t-3xl shadow-lg h-[80vh] overflow-y-scroll fixed bottom-0 w-full max-w-[90%] mx-auto z-50 -translate-x-1/2 left-1/2`}
+                className={`transition-all duration-300 p-4 bg-white rounded-t-3xl shadow-lg overflow-y-scroll w-full max-w-[90%] mx-auto`}
                 handleSetGeneratorSettings={setSettings}
                 generatorSettings={settings}
                 toneLibrary={toneLibrary}

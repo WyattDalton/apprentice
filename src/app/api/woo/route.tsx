@@ -10,13 +10,9 @@ import { getMongoDB } from '@/components/utils/getMongo';
 export async function POST(req: NextRequest) {
     try {
 
-        console.log('### connected to route\n\n')
-
         //### Get data from request body
         const body = await req.json();
-        const { userId, organization, words, datetime, username } = body;
-
-        console.log("### Data destructured from body: ", userId, organization, words, datetime, username, "\n\n")
+        const { userId, organization, username } = body;
 
         //### Init db
         let db;
@@ -27,45 +23,15 @@ export async function POST(req: NextRequest) {
         //### Access the users collection
         const collection = db.collection("users");
 
-        //### find user in collection by finding userId. If no user exists, create one with userId, organization, and words as "available_words"
-        const user = await collection.findOne({ userId: userId });
-        if (!user) {
-            const res = await collection.insertOne({
-                userId: userId,
-                organization: organization,
-                available_words: parseInt(words),
-                history: [{ words: words, datetime: datetime }]
-            }
-            );
+        // ### Upsert the user to the collection with information from request body
+        const res = await collection.updateOne({ userId: userId }, { $set: { userId: userId, organization: organization, username: username } }, { upsert: true });
 
-            return NextResponse.json({
-                'success': true,
-                'user': res,
-            });
-        }
-
-        //### Get the words from the user
-        const currentWords = user.available_words ? user.available_words : 0;
-        const newWords = parseInt(currentWords) + parseInt(words);
-
-        //### Get the history array from the user
-        const currentHistory = user.history ? user.history : [];
-        const newHistory = currentHistory.push({ words: words, datetime: datetime });
-
-        //### Build Payload
-        const payload = {
-            words: newWords,
-            history: newHistory,
-        };
-
-        //### Update the user
-        const res = await collection.updateOne({ userId: userId }, { $set: payload }, { upsert: true });
-
-        //### Return the user
+        // ### Return a JSON response with a success flag and updated user data
         return NextResponse.json({
             'success': true,
             'user': res,
         });
+
 
     } catch (error) {
         console.log(error)

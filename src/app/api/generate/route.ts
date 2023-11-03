@@ -1,4 +1,5 @@
 'use server'
+
 import { Configuration, OpenAIApi } from 'openai-edge'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 import { getResponseSources } from './utils/getResponseSources'
@@ -11,7 +12,7 @@ import { getUserData } from '@/components/utils/getUserData'
 
 // Optional, but recommended: run on the edge runtime.
 // See https://vercel.com/docs/concepts/functions/edge-functions
-// export const runtime = 'edge'
+export const runtime = 'edge'
 
 const apiConfig = new Configuration({
 	apiKey: process.env.OPENAI_API_KEY!

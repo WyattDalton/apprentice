@@ -6,6 +6,8 @@ import Card from "@/components/UI/Card";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import LoadingText from "@/components/LoadingText";
 import { getUserData } from "@/components/utils/getUserData";
+import { Transition } from "@headlessui/react";
+import GeneratorInformation from "./GeneratorInformation";
 
 type GeneratorActionsProps = {
     className?: string | '';
@@ -50,6 +52,11 @@ const GeneratorActions = ({
     const [formulaLibrary, setFormulaLibrary] = useState([]);
     const [available_words_count, setAvailableWordsCount] = useState(null);
 
+    const [focused, setFocused] = useState<boolean>(false);
+    const [inputHeight, setInputHeight] = useState<string>('px');
+    const [inputWidth, setInputWidth] = useState<string>('px');
+
+    const [informationActive, setInformationActive] = useState<boolean>(false);
 
     /* * * * * * * * * * * * * * * * * * */
     /* Preserve thread as it is generated
@@ -91,7 +98,7 @@ const GeneratorActions = ({
     })
 
     /* * * * * * * * * * * * * * * * * * * */
-    /* Adjust textarea height as user types
+    /* Adjust textarea height and width as user types
     /* * * * * * * * * * * * * * * * * * * */
     useEffect(() => {
         if (searchBarRef.current) {
@@ -220,7 +227,7 @@ const GeneratorActions = ({
     return (
 
         <form
-            className={className}
+            className={`${className} ${!focused ? `!p-0 !bg-transparent !shadow-none` : ``}`}
             onSubmit={(e) => handleSubmit(e)}
             onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -232,26 +239,49 @@ const GeneratorActions = ({
             }}
         >
 
-            <Card className={`!shadow-md !mb-0 !p-0 w-full overflow-hidden flex justify-between items-center gap-2 !bg-gray-100`}>
+            <Card className={`!shadow-md !mb-0 !p-0 w-full overflow-hidden flex justify-between items-center gap-2 !bg-gray-100 ${!focused ? 'm-4' : 'm-0'}`}>
                 <textarea
-                    className="w-full outline-none break-words p-4 resize-none bg-transparent"
+                    className={`block w-full outline-none break-words p-4 resize-none bg-transparent transition-all transition-300 ${!focused ? `line-clamp-1 truncate !h-auto bg-white` : ``}`}
                     placeholder="Enter your prompt..."
                     name="prompt"
                     rows={1}
                     value={input}
                     ref={searchBarRef}
+                    onFocus={(e) => {
+                        setFocused(true);
+                        setTimeout(() => {
+                            const length = e.target.value.length;
+                            e.target.setSelectionRange(length, length);
+                        }, 0);
+                    }}
+                    onBlur={() => setFocused(false)}
                     onChange={
                         handleInputChange
                     }
                 ></textarea>
             </Card>
 
-            <div className="flex gap-2 items-center justify-between w-full">
+            <Transition
+                className="flex gap-2 items-center justify-between w-full"
+                show={focused}
+                enter="transition-all duration-300"
+                enterFrom="translate-y-10 opacity-0"
+                enterTo="translate-y-0 opacity-100"
+                leave="transition-all duration-300"
+                leaveFrom="translate-y-0 opacity-100"
+                leaveTo="translate-y-10 opacity-0"
+                unmount={true}
+                appear={true}
+
+            >
+
                 <button
                     className="px-2 py-2 text-dark bg-secondary rounded-md mt-auto"
                     title="Generator Information"
+                    onClick={() => setInformationActive(true)}
                 >
                     In
+                    ({informationActive ? 'true' : 'false'})
                 </button>
                 <button
                     className="px-2 py-2 text-dark bg-secondary rounded-md mt-auto"
@@ -277,7 +307,10 @@ const GeneratorActions = ({
                         'Generate'
                     )}
                 </button>
-            </div>
+            </Transition>
+
+            <GeneratorInformation active={informationActive} setActive={setInformationActive} placeholder="..." />
+
         </form >
     )
 }

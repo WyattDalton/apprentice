@@ -71,7 +71,7 @@ const GeneratorContent = ({ conversation, className }: GeneratorContentProps) =>
                         <>
                             <div className="w-full p-2 sticky sticky-message top-0 z-10 rounded-b-3xl transition-all duration-300">
                                 <div className="sticky-content flex justify-end items-center gap-5 p-2 px-6 rounded-tl-3xl rounded-b-3xl roundedtr-sm prose bg-gray-100 ml-auto p-2 max-w-max transition-opacity duration-300">
-                                    <h2 className="text-sm m-0 flex items-center overflow-hidden whitespace-nowrap text-overflow-ellipsis">{item.content}</h2>
+                                    <h2 className="text-sm m-0 flex items-center truncate">{item.content}</h2>
                                 </div>
                             </div>
                         </>

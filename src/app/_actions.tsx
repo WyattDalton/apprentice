@@ -23,7 +23,6 @@ export const getAuth = async () => {
         username = extractUsername(loggedInCookie.value);
     }
 
-    console.log('username from AUTH: ', username)
 
     let reqUrl = `https://makerdigital.io/wp-json/makerdigital/v1/get-user-data/${username}`;
 
@@ -51,6 +50,7 @@ export const getAuth = async () => {
 
         // If the response is 200, return the user data
         const userData = await authorizedUser.json();
+        console.log('userData from AUTH: ', userData)
 
         return userData;
     } catch (err) {

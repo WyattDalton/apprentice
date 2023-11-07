@@ -29,7 +29,6 @@ export const getAuth = async () => {
     if (process.env.NODE_ENV === 'development') {
         reqUrl = `https://makerdigital.io/wp-json/makerdigital/v1/get-user-data/wy-att`;
     } else if (!username) {
-        console.log('no username')
         return false;
     }
 

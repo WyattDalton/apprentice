@@ -19,7 +19,9 @@ export default function ToneOfVoiceLibrary() {
     /* * * * * * * * ** * * * * * * */
     const fetchTones = async () => {
         try {
-            const res = await fetch('/api/tonesGetAll');
+            const res = await fetch('/api/tonesGetAll', {
+                cache: 'no-store',
+            });
             if (!res.ok) throw new Error('Error fetching tones');
             const data = await res.json();
             setTones(data.tones);
@@ -96,7 +98,7 @@ export default function ToneOfVoiceLibrary() {
 
             <AddTone handleAddTone={handleAddNewTone} />
 
-            {!!tones.length && (
+            {!!tones && (
                 <div className="flex flex-col gap-4">
                     {/* Map through all tones and display */}
                     {tones.map((tone: any, index: number) => (

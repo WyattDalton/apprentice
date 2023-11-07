@@ -109,40 +109,7 @@ export default function FormulaLibrary() {
     /* * * * * * * * ** * * * * * * */
     return (
         <section>
-            <div className="flex justify-between items-center gap-4">
-                <h1 className="text-2xl font-bold text-gray-700 mb-4">Formula Library</h1>
-                <button onClick={() => { setShowForm(!showForm) }} className={`flex gap-1 transition-all ${!!showForm ? 'text-gray' : 'text-theme_primary'}`}>
-                    {!!showForm ? 'Close' : 'Add Formula'}
-                </button>
-            </div>
-
-            <Transition
-                show={showForm}
-                enter="transition ease-out duration-100 transform"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="transition ease-in duration-75 transform"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-                appear={true}
-                unmount={true}
-            >
-                <AddFormula handleAddFormula={handleAddNewFormula} type="add" />
-            </Transition>
-
-            <Transition
-                show={noFormulas}
-                enter="transition ease-out duration-100 transform"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="transition ease-in duration-75 transform"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-                appear={true}
-                unmount={true}
-            >
-                <AddFormula handleAddFormula={handleAddNewFormula} type="create" />
-            </Transition>
+            <AddFormula handleAddFormula={handleAddNewFormula} type="create" />
 
             {!!formulas.length && (
                 <div className="flex flex-col gap-4">
@@ -151,7 +118,7 @@ export default function FormulaLibrary() {
                             <div className='flex items-center gap-4 max-w-[300px]'>
                                 <h2 className="text-xl font-semibold text-gray-700 w-full">{formula.title || 'Default Title'}</h2>
                                 <button
-                                    className="group w-max font-semibold flex items-center rounded-md bg-theme_primary hover:bg-theme_primary-600 py-0 px-4 text-white !mt-0"
+                                    className="group w-max font-semibold flex items-center rounded-md bg-decoration hover:bg-primary py-0 px-4 dark !mt-0"
                                     onClick={() => handleEditFormula(formula._id)}
                                 >
                                     Edit

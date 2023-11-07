@@ -125,8 +125,8 @@ function AddSource() {
                 <div className="flex items-center justify-between mb-2">
                     <h2>Add a Source</h2>
                     <Tab.List className="flex bg-gray-100 px-4 py-2 rounded-full gap-2">
-                        <Tab className="ui-selected:bg-theme_primary">Files</Tab>
-                        <Tab>Urls</Tab>
+                        <Tab className="ui-selected:bg-secondary px-4 py-2 rounded-full text-dark">Files</Tab>
+                        <Tab className="ui-selected:bg-secondary px-4 py-2 rounded-full text-dark">Urls</Tab>
                     </Tab.List>
                 </div>
                 <Tab.Panels>
@@ -140,7 +140,7 @@ function AddSource() {
                                 <p className="text-gray-500">Drag and drop a file here</p>
                                 <p className="text-gray-500">or</p>
                                 <button
-                                    className="px-4 py-2 text-white bg-theme_primary-500 rounded-md"
+                                    className="px-4 py-2 text-dark bg-secondary rounded-md"
                                     onClick={() => fileInputRef.current!.click()}
                                 >
                                     Select a file
@@ -161,7 +161,7 @@ function AddSource() {
                         >
                             <input type="text" className="w-full rounded-md bg-gray-100 px-4 py-2" value={url} onChange={(e) => setUrl(e.target.value)} />
 
-                            <button onClick={() => onSubmitUrl(url)} className="ml-auto px-4 py-2 text-white bg-theme_primary-500 rounded-md">{!!loading ? <LoadingText text="Getting URL Content" className={""} iconClassName={""} /> : "Add URL to Sources"}</button>
+                            <button onClick={() => onSubmitUrl(url)} className="px-4 py-2 text-dark bg-secondary rounded-md">{!!loading ? <LoadingText text="Getting URL Content" className={""} iconClassName={""} /> : "Add URL to Sources"}</button>
                         </div>
                     </Tab.Panel>
                 </Tab.Panels>

@@ -11,17 +11,16 @@ type Props = {
 function AddFormula({ handleAddFormula, type }: Props) {
 
     return (
-        <Card className="w-full">
+        <Card className="w-full max-w-[90%] mx-auto">
 
             <div className="flex flex-col prose justify-center items-center gap-2 m-auto">
                 <h2>Add a Formula</h2>
                 <div className="flex flex-col items-center justify-center w-full h-full">
                     <button
-                        className="px-4 py-2 text-white bg-theme_primary-500 rounded-md"
+                        className="px-4 py-2 text-dark bg-secondary rounded-md"
                         onClick={handleAddFormula}
                     >
-                        {type === "create" ? "create a formula" : ""}
-                        {type === "add" ? "Add a formula" : ""}
+                        Add a formula
                     </button>
                 </div>
 

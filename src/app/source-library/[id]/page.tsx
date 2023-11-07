@@ -1,7 +1,6 @@
 import { closeMongoDB, getMongoDB } from '@/components/utils/getMongo';
 import { ObjectId } from 'mongodb';
 import Source from './_components/Source';
-import { revalidatePath } from 'next/cache'
 
 
 async function fetchData(idString: string) {
@@ -23,18 +22,14 @@ async function handleUpdate(updatedData: any) {
             'data': [updatedData]
         }
 
-        const { signal } = new AbortController()
         const api = process.env.API_URL;
         const source = await fetch(`${api}/sourcesUpdate`, {
             method: "POST",
             body: JSON.stringify(payload),
-            next: { revalidate: 1 }
+            cache: 'no-store',
         });
 
         if (!source.ok) throw new Error('Error updating source');
-
-        revalidatePath(`/source-library/${updatedData._id}`);
-        revalidatePath(`/source-library/`);
 
 
     } catch (error) {

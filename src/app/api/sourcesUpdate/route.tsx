@@ -164,8 +164,6 @@ export async function POST(req: NextRequest) {
                     { upsert: true }             // Options: if no match is found, create a new document
                 );
 
-                console.log("\n\n\n", newSource)
-
                 return newSource;
             }));
 

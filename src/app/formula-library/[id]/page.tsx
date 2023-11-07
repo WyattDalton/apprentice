@@ -238,7 +238,7 @@ export default function FormulaLibrary({ params }: { params: { id: string } }) {
                                 key={index}
                                 className="w-full p-4 relative rounded-lg overflow-hidden bg-white shadow-lg mb-4"
                             >
-                                <span className="absolute top-1 right-1 w-6 h-6 flex justify-center items-center text-xs font-semibold text-white bg-theme_primary-700 rounded-lg">
+                                <span className="absolute top-1 right-1 w-6 h-6 flex justify-center items-center text-xs font-semibold text-dark bg-secondary rounded-lg">
                                     {index + 1}
                                 </span>
 
@@ -315,7 +315,7 @@ export default function FormulaLibrary({ params }: { params: { id: string } }) {
                                     <button
                                         type="button"
                                         id={`instruction-${index}-add-example`}
-                                        className="font-semibold text-theme_primary-700 focus:outline-none w-max p-1 mb-2 rounded-lg bg-transparent border border-theme_primary-700 hover:border-theme_primary-600 hover:text-theme_primary-600 shadow-sm flex justify-center items-center"
+                                        className="font-semibold text-secondary focus:outline-none w-max p-1 mb-2 rounded-lg bg-transparent border border-decoration hover:border-primary hover:text-dadrk shadow-sm flex justify-center items-center"
                                         data-action="add-example"
                                         onClick={(e) => handleUpdateInstructions(e, index)}
                                     >
@@ -347,7 +347,7 @@ export default function FormulaLibrary({ params }: { params: { id: string } }) {
                                     instructions.length ? instructions.length : 0
                                 )
                             }
-                            className="font-semibold text-theme_primary-700 focus:outline-none w-full p-4 mb-2 rounded-lg bg-transparent border border-theme_primary-700 hover:border-theme_primary-600 hover:text-theme_primary-600 shadow-sm"
+                            className="font-semibold text-secondary focus:outline-none w-full p-4 mb-2 rounded-lg bg-transparent border border-decoration hover:border-primary hover:text-dark shadow-sm"
                         >
                             <PlusIcon className="inline-block w-5 h-5 mr-2 pointer-events-none" />
                             Add Instruction
@@ -372,12 +372,12 @@ export default function FormulaLibrary({ params }: { params: { id: string } }) {
                 {/* Submit button */}
                 <button
                     onClick={handleSubmit}
-                    className="p-4 mt-4 text-white bg-theme_primary-500 rounded-md focus:outline-none shadow-sm hover:bg-theme_primary-400"
+                    className="p-4 mt-4 text-dark bg-secondary rounded-md focus:outline-none shadow-sm"
                 >
                     {!uploading ? 'Save Formula' : <LoadingText
                         text="Saving Formula"
-                        className="!text-white gap-2"
-                        iconClassName="!text-white order-last !mr-0"
+                        className="!text-dark gap-2"
+                        iconClassName="!text-dark order-last !mr-0"
                     />}
                 </button>
                 <button className="text-red-500">Delete</button>

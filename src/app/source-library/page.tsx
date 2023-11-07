@@ -10,7 +10,9 @@ async function getData() {
         if (!api) {
             throw new Error('API_URL not found')
         }
-        const res = await fetch(`${api}/sourcesGetAll`)
+        const res = await fetch(`${api}/sourcesGetAll`, {
+            cache: 'no-store'
+        })
 
         if (!res.ok) {
             console.log(api)
@@ -26,8 +28,7 @@ async function getData() {
 export default async function Page() {
     const sources = await getData()
     return (
-        <section className='w-[90%] marginx-auto'>
-            <SourcesHeader />
+        <section className='w-[90%] mx-auto'>
             <AddSource />
             {!!sources ? <SourcesGrid data={!!sources.sources ? sources.sources : []} /> : 'Loading...'}
         </section>

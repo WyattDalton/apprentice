@@ -165,7 +165,7 @@ export async function POST(req: NextRequest) {
 
 		// Request the OpenAI API for the response based on the prompt
 		const response = await openai.createChatCompletion({
-			model: 'gpt-4',
+			model: 'gpt-4-1106-preview',
 			stream: true,
 			messages: messages
 		})

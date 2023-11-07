@@ -17,7 +17,7 @@ function AddTone({ handleAddTone }: Props) {
 
                 <div className="flex flex-col items-center justify-center w-full h-full">
                     <button
-                        className="px-4 py-2 text-white bg-theme_primary-500 rounded-md"
+                        className="px-4 py-2 text-dark bg-secondary rounded-md"
                         onClick={handleAddTone}
                     >
                         Add a tone of voice

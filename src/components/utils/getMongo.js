@@ -3,12 +3,11 @@ import clientPromise from './getMongoClient';
 
 export const getMongoDB = async (id, org, username) => {
 	try {
-		const client = await clientPromise;
-		let rawUserData;
 
-		if (!id && !org) {
-			rawUserData = await getUserData();
-		} else {
+		const client = await clientPromise;
+		let rawUserData = await getUserData();
+
+		if (!!id && !!org && !!username) {
 			rawUserData = {
 				id: id,
 				organization: org,
@@ -30,7 +29,7 @@ export const getMongoDB = async (id, org, username) => {
 
 		return db;
 	} catch (error) {
-		console.log(error);
+		console.log('Error getting mongo: ', error);
 	}
 };
 

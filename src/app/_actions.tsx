@@ -23,6 +23,8 @@ export const getAuth = async () => {
         username = extractUsername(loggedInCookie.value);
     }
 
+    console.log('username from AUTH: ', username)
+
     let reqUrl = `https://makerdigital.io/wp-json/makerdigital/v1/get-user-data/${username}`;
 
     // If the user is not logged in, return false

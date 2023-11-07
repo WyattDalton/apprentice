@@ -23,11 +23,8 @@ export const getAuth = async () => {
         username = extractUsername(loggedInCookie.value);
     }
 
-    console.log('username: ', username)
-
     let reqUrl = `https://makerdigital.io/wp-json/makerdigital/v1/get-user-data/${username}`;
 
-    console.log('reqUrl: ', reqUrl)
     // If the user is not logged in, return false
     if (process.env.NODE_ENV === 'development') {
         reqUrl = `https://makerdigital.io/wp-json/makerdigital/v1/get-user-data/wy-att`;
@@ -35,8 +32,6 @@ export const getAuth = async () => {
         console.log('no username')
         return false;
     }
-
-    console.log('reqUrl: ', reqUrl)
 
     try {
 
@@ -55,7 +50,6 @@ export const getAuth = async () => {
 
         // If the response is 200, return the user data
         const userData = await authorizedUser.json();
-        console.log('userData from AUTH: ', userData)
 
         return userData;
     } catch (err) {

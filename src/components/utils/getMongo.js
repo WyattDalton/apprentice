@@ -7,8 +7,6 @@ export const getMongoDB = async (id, org, username) => {
 		const client = await clientPromise;
 		let rawUserData = await getUserData();
 
-		console.log('rawUserData from GET_MONGO: ', rawUserData);
-
 		if (!!id && !!org && !!username) {
 			rawUserData = {
 				id: id,

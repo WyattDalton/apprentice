@@ -1,40 +1,40 @@
 import Card from '@/components/UI/Card'
 import Link from 'next/link'
 
-async function getData() {
+// async function getData() {
 
-  try {
-    const api = process.env.API_URL ? process.env.API_URL : false;
-    if (!api) {
-      throw new Error('API_URL not found')
-    }
-    const res = await fetch(`${api}/threads`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        dataType: 'get',
-        data: { _id: false }
-      }),
-      cache: 'no-store'
-    })
+//   try {
+//     const api = process.env.API_URL ? process.env.API_URL : false;
+//     if (!api) {
+//       throw new Error('API_URL not found')
+//     }
+//     const res = await fetch(`${api}/threads`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json'
+//       },
+//       body: JSON.stringify({
+//         dataType: 'get',
+//         data: { _id: false }
+//       }),
+//       cache: 'no-store'
+//     })
 
-    if (!res.ok) {
-      console.log(api)
-      throw new Error('Failed to fetch sources')
-    }
+//     if (!res.ok) {
+//       console.log(api)
+//       throw new Error('Failed to fetch sources')
+//     }
 
-    return await res.json()
-  } catch (error) {
-    return false;
-  }
-}
+//     return await res.json()
+//   } catch (error) {
+//     return false;
+//   }
+// }
 
 
 export default async function Home() {
 
-  const threads = await getData();
+  // const threads = await getData();
 
   return (
     <main className="flex gap-4 min-h-screen flex-col items-start max-w-[90%] mx-auto">
@@ -93,7 +93,7 @@ export default async function Home() {
         <h2 className='text-2xl font-bold text-gray-700 w-full'>Your recent generations</h2>
         <Card className=''>
 
-          {!!threads && threads.threads.map((thread: any, index: any) => {
+          {/* {!!threads && threads.threads.map((thread: any, index: any) => {
             const created = new Date(thread.created).toLocaleString('en-US', {
               month: '2-digit',
               day: '2-digit',
@@ -109,7 +109,7 @@ export default async function Home() {
                 <Link href={`/generate/${thread._id}`}><button className='bg-secondary py-2 px-4 rounded-lg'>Go to generation</button></Link>
               </div>
             )
-          })}
+          })} */}
           <button className="flex items-center gap-2 bg-secondary text-dark px-4 py-2">See all generations</button>
         </Card>
       </div>

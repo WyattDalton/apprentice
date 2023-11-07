@@ -7,6 +7,8 @@ export async function GET(req: Request) {
         const db = await getMongoDB() as any;
         const sources = await db.collection("sources").find({}).toArray();
 
+        console.log(await sources)
+
         return NextResponse.json({ 'sources': sources, 'success': true });
 
     } catch (error) {

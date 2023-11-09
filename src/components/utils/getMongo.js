@@ -26,8 +26,6 @@ export const getMongoDB = async (id, org, username) => {
 
 		const _mongoUserId = `${userId}-${userUsername}-${userOrganization}`;
 
-		console.log('MONGO_ID: ', _mongoUserId, '\n\n###\n\n');
-
 		const db = client.db(_mongoUserId);
 
 		return db;

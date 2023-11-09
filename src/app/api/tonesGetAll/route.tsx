@@ -5,11 +5,14 @@ export async function GET(req: Request) {
     try {
 
         const db = await getMongoDB() as any;
+
         const tones = await db.collection("tones").find({}).toArray();
-        console.log(tones)
+
         return NextResponse.json({ 'tones': tones, 'success': true });
 
-    } catch (error) {
-        return NextResponse.json({ 'message': error, 'success': false });
+    } catch (error: any) {
+        console.error('Error in GET:', error.message);
+        console.error(error.stack);
+        return NextResponse.json({ 'message': 'An error occurred', 'success': false });
     }
 };

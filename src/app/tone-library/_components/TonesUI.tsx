@@ -51,6 +51,7 @@ export default function TonesUi({ tonesSource }: TonesUiProps) {
             const res = await fetch('/api/tonesUpdate', {
                 method: 'POST',
                 body: JSON.stringify(payload),
+                cache: 'no-store',
             });
             if (!res.ok) throw new Error('Error creating tone of voice');
             const data = await res.json();

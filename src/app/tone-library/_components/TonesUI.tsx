@@ -24,11 +24,11 @@ export default function TonesUi({ tonesSource }: TonesUiProps) {
     const fetchTones = async () => {
         try {
             const res = await fetch('/api/tonesGetAll', {
-                cache: 'no-store',
-                next: { revalidate: 0 }
+                cache: 'no-store'
             });
             if (!res.ok) throw new Error('Error fetching tones');
             const data = await res.json();
+            console.log(data);
             setTones(data.tones);
         }
         catch (error) {

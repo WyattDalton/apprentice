@@ -34,8 +34,4 @@ export const getMongoDB = async (id, org, username) => {
 	}
 };
 
-export const closeMongoDB = async () => {
-	await client.close();
-};
-
 

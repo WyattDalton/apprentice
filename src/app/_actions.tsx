@@ -1,39 +1,23 @@
 'use server';
-import { cookies } from 'next/headers';
+
+import { getAuthUsername } from "@/components/utils/getUsernameAuthByCookie";
 
 export const getAuth = async () => {
 
     let authData: any;
-    const cookieStore = cookies();
 
-    // get a cookie that contains the substring "wordpress_logged_in"
-    const allCookies = cookieStore.getAll()
-    const loggedInCookie = allCookies.find((cookie) => {
-        return cookie.name.includes('wordpress_logged_in');
-    });
+    //  ### Get the username from the cookie
+    const username = getAuthUsername();
+    authData = username;
 
-    function extractUsername(cookieValue: string) {
-        // Split the string by the pipe character
-        let parts = cookieValue.split('|');
-        return parts[0];
-    }
+    //  ### If there is no username, return false
+    if (!username) return false;
 
-    let username = false as any;
-    if (!!loggedInCookie) {
-        username = extractUsername(loggedInCookie.value);
-    }
-
+    // ### Create the url to get the user data
     let reqUrl = `https://makerdigital.io/wp-json/makerdigital/v1/get-user-data/${username}`;
 
-    // If the user is not logged in, return false
-    if (process.env.NODE_ENV === 'development') {
-        reqUrl = `https://makerdigital.io/wp-json/makerdigital/v1/get-user-data/wy-att`;
-    } else if (!username) {
-        return false;
-    }
-
+    // ### Get the user data from WP_API
     try {
-
         const authorizedUser = await fetch(reqUrl, {
             method: 'GET',
             headers: {
@@ -51,6 +35,7 @@ export const getAuth = async () => {
         const userData = await authorizedUser.json();
 
         return userData;
+
     } catch (err) {
         console.log('ERROR: ', err);
         return {

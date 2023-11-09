@@ -17,6 +17,7 @@ export const getMongoDB = async (id, org, username) => {
 
 		const userId = rawUserData.id.toString().toLowerCase().replace(/ /g, '_');
 
+		
 		const userOrganization = rawUserData.organization
 			.toLowerCase()
 			.replace(/ /g, '_');
@@ -24,6 +25,8 @@ export const getMongoDB = async (id, org, username) => {
 		const userUsername = rawUserData.username.toLowerCase().replace(/ /g, '_');
 
 		const _mongoUserId = `${userId}-${userUsername}-${userOrganization}`;
+
+		console.log('MONGO_ID: ', _mongoUserId, '\n\n###\n\n');
 
 		const db = client.db(_mongoUserId);
 

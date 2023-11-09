@@ -5,6 +5,9 @@ export async function GET(req: Request) {
     try {
 
         const db = await getMongoDB() as any;
+        if (!db) {
+            return NextResponse.json({ 'message': 'Error connecting to database', 'success': false });
+        }
 
         const tones = await db.collection("tones").find({}).toArray();
 
@@ -13,6 +16,6 @@ export async function GET(req: Request) {
     } catch (error: any) {
         console.error('Error in GET:', error.message);
         console.error(error.stack);
-        return NextResponse.json({ 'message': 'An error occurred', 'success': false });
+        return NextResponse.json({ 'message': error.message, 'success': false });
     }
 };

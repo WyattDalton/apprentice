@@ -1,5 +1,6 @@
 'use server'
 
+import { getUserData } from "@/components/utils/getUserData";
 import TonesUi from "./_components/TonesUI";
 
 export default async function ToneOfVoiceLibrary() {
@@ -8,7 +9,11 @@ export default async function ToneOfVoiceLibrary() {
     /* * * * * * * * ** * * * * * * */
     const fetchTones = async () => {
         try {
+            const dataAvailable = await getUserData();
+            if (!dataAvailable) return false;
+
             const api = process.env.API_URL ? process.env.API_URL : false;
+
             if (!!api) {
 
                 const res = await fetch(`${process.env.API_URL}/tonesGetAll`, {

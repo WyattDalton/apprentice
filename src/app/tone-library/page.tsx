@@ -9,19 +9,18 @@ export default async function ToneOfVoiceLibrary() {
     /* * * * * * * * ** * * * * * * */
     const fetchTones = async () => {
         try {
-            const dataAvailable = await getUserData();
-            if (!dataAvailable) return false;
 
-            const api = process.env.API_URL ? process.env.API_URL : false;
+            const api = process.env.API_URL;
 
-            if (!!api) {
+            const res = await fetch(`${api}/tonesGetAll`, {
+                cache: 'no-store',
+                next: { revalidate: 0 }
+            });
 
-                const res = await fetch(`${process.env.API_URL}/tonesGetAll`, {
-                    cache: 'no-store',
-                });
-                if (!res.ok) throw new Error('Error fetching tones');
-                return await res.json();
-            }
+            if (!res.ok) throw new Error('Error fetching tones');
+
+            return await res.json();
+
         } catch (error) {
             console.log(error);
         }

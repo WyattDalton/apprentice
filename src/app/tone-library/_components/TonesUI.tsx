@@ -25,6 +25,7 @@ export default function TonesUi({ tonesSource }: TonesUiProps) {
         try {
             const res = await fetch('/api/tonesGetAll', {
                 cache: 'no-store',
+                next: { revalidate: 0 }
             });
             if (!res.ok) throw new Error('Error fetching tones');
             const data = await res.json();

@@ -1,7 +1,7 @@
 'use client'
 
 import Card from '@/components/UI/Card';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import AddTone from './AddTone';
 import { useRouter } from 'next/navigation';
 
@@ -17,28 +17,6 @@ export default function TonesUi({ tonesSource }: TonesUiProps) {
         examples: [],
         summary: '',
     });
-
-    /* * * * * * * * ** * * * * * * *
-    /* Get all tones on load
-    /* * * * * * * * ** * * * * * * */
-    const fetchTones = async () => {
-        try {
-            const res = await fetch('/api/tonesGetAll', {
-                cache: 'no-store'
-            });
-            if (!res.ok) throw new Error('Error fetching tones');
-            const data = await res.json();
-            console.log(data);
-            setTones(data.tones);
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }
-
-    useEffect(() => {
-        fetchTones();
-    }, []);
 
     /* * * * * * * * ** * * * * * * *
     /* Add a new tone

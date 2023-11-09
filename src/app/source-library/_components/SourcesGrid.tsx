@@ -28,8 +28,6 @@ function SourcesGrid({ data }: Props) {
     }
 
     const handleDelete = async (id: string) => {
-
-        const api = process.env.API_URL;
         const res = await fetch(`/api/sourcesDelete`, {
             method: 'POST',
             headers: {

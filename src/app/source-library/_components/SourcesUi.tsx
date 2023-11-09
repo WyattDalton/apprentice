@@ -11,25 +11,12 @@ type SourcesUiProps = {
 
 export default async function SourcesUi({ sources }: SourcesUiProps) {
 
-    const [sourcesData, setSourcesData] = useState(sources || {})
-
-    const fetchSources = async () => {
-        const res = await fetch(`/api/sourcesGetAll`, {
-            cache: 'no-store'
-        })
-        if (!res.ok) {
-            throw new Error('Failed to fetch sources')
-        }
-        setSourcesData(await res.json())
-    }
-    useEffect(() => {
-        fetchSources()
-    });
+    const [sourcesData, setSourcesData] = useState(sources || [])
 
     return (
         <section className='w-[90%] mx-auto'>
             <AddSource />
-            {!!sourcesData ? <SourcesGrid data={!!sourcesData.sources ? sourcesData.sources : []} /> : 'Loading...'}
+            {!!sourcesData ? <SourcesGrid data={!!sourcesData ? sourcesData : []} /> : 'Loading...'}
         </section>
     )
 }

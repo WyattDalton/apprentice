@@ -1,4 +1,4 @@
-import { closeMongoDB, getMongoDB } from '@/components/utils/getMongo';
+import { getMongoDB } from '@/components/utils/getMongo';
 import { ObjectId } from 'mongodb';
 import Source from './_components/Source';
 

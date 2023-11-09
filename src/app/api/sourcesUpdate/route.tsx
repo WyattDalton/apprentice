@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { closeMongoDB, getMongoDB } from '@/components/utils/getMongo';
+import { getMongoDB } from '@/components/utils/getMongo';
 import { Configuration, OpenAIApi } from "openai";
 import { ObjectId } from 'mongodb';
 const configuration = new Configuration({

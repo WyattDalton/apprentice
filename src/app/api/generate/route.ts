@@ -6,7 +6,7 @@ import { getResponseSources } from './utils/getResponseSources'
 import { getTone } from './utils/getTone'
 import { templatize } from './utils/getFormula'
 import { NextRequest, NextResponse } from 'next/server'
-import { closeMongoDB, getMongoDB } from '@/components/utils/getMongo'
+import { getMongoDB } from '@/components/utils/getMongo'
 import { getUserData } from '@/components/utils/getUserData'
 
 

@@ -3,8 +3,8 @@ import { getMongoDB } from '@/components/utils/getMongo';
 
 export async function GET(req: Request) {
     try {
-
-        const tones = await getAllTones();
+        const db = await getMongoDB() as any;
+        const tones = await db.collection("tones").find({}).toArray();
         return NextResponse.json({ 'tones': tones, 'success': true });
 
     } catch (error: any) {
@@ -13,3 +13,4 @@ export async function GET(req: Request) {
         return NextResponse.json({ 'message': error.message, 'success': false });
     }
 };
+

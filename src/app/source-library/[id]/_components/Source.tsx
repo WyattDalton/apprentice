@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Content from './Content';
 import { IoFileTrayFullOutline } from 'react-icons/io5';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 type Props = {
     _id: string;
@@ -11,25 +12,26 @@ type Props = {
     type: string;
     text: string;
     handleUpdate: any;
+    updating: boolean;
 };
 
-function Source({ _id, name, title, type, text, handleUpdate }: Props) {
+function Source({ _id, name, title, type, text, handleUpdate, updating }: Props) {
 
     const [source, setSource] = useState({
-        _id: "",
-        name: "",
-        title: "",
-        type: "",
-        text: "",
+        _id: _id || "",
+        name: name || "",
+        title: title || "",
+        type: type || "",
+        text: text || "",
     });
-    const [updating, setUpdating] = useState(false);
 
     useEffect(() => {
         setSource({ name, title, type, text, _id });
     }, [name, title, type, text, _id]);
 
-
-
+    useEffect(() => {
+        console.log(updating);
+    }, [updating]);
 
     return (
         <section className="relative flex-grow h-full flex">
@@ -39,7 +41,7 @@ function Source({ _id, name, title, type, text, handleUpdate }: Props) {
                 <div className="sticky col-span-5 bottom-0 right-0 w-full max-w-[88%] max-h-max mx-auto mt-auto bg-white rounded-t-3xl flex gap-4 p-4 shadow-[0_-5px_15px_-15px_rgba(0,0,0,0.6)]">
                     {type === 'file' ? <IoFileTrayFullOutline className="h-6 w-6" /> : ''}
                     <h3 className="mt-0 mb-0 mr-auto ">{name}</h3>
-                    <button className="  bg-secondary text-dark py-1 px-2 rounded-md max-w-max" onClick={(e) => { handleUpdate(source) }}>Update</button>
+                    <button className="  bg-secondary text-dark py-1 px-2 rounded-md max-w-max" onClick={(e) => { handleUpdate(source) }}>Update{!!updating ? <LoadingSpinner /> : ''}</button>
                     <button className="  text-red-500">Delete</button>
                 </div>
             </div>

@@ -115,13 +115,17 @@ export async function POST(req: NextRequest) {
                 /* * * * * * * * * * * * * */
                 /* Add to MongoDB
                 /* * * * * * * * * * * * * */
-                newSource = await sourcesCollection.updateOne(
+                const newSourceawait = await sourcesCollection.updateOne(
                     { name: name, type: 'file' }, // Filter
                     { $set: sourcePayload },     // Update
                     { upsert: true }             // Options: if no match is found, create a new document
                 );
 
-                return newSource;
+                /* * * * * * * * * * * * * */
+                /* Return new source
+                /* * * * * * * * * * * * * */
+                const returnSource = await sourcesCollection.findOne({ name: name, type: 'file' });
+                return returnSource;
             }));
         } else if (dataType === 'url') {
             const processedSources = await Promise.all(sources.map(async (source: any) => {
@@ -164,7 +168,11 @@ export async function POST(req: NextRequest) {
                     { upsert: true }             // Options: if no match is found, create a new document
                 );
 
-                return newSource;
+                /* * * * * * * * * * * * * */
+                /* Return new source
+                /* * * * * * * * * * * * * */
+                const returnSource = await sourcesCollection.findOne({ name: name, type: 'url' });
+                return returnSource;
             }));
 
         } else if (dataType === 'update') {
@@ -210,7 +218,11 @@ export async function POST(req: NextRequest) {
                     { upsert: true }
                 );
 
-                return newSource;
+                /* * * * * * * * * * * * * */
+                /* Return new source
+                /* * * * * * * * * * * * * */
+                const returnSource = await sourcesCollection.findOne({ _id: docId });
+                return returnSource;
 
             }));
         }

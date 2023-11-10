@@ -2,28 +2,44 @@
 
 import { useState, useRef } from "react";
 import Card from "@/components/UI/Card";
-import { Tab } from "@headlessui/react";
+import { Tab, Transition } from "@headlessui/react";
 import LoadingText from "@/components/LoadingText";
 
+type AddSourceProps = {
+    setUpdating: any,
+    setSourcesData: any,
+    sourcesData: any,
+}
 
+function AddSource({ setUpdating, setSourcesData, sourcesData }: AddSourceProps) {
 
-function AddSource() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [files, setFiles] = useState([]);
     const [url, setUrl] = useState("");
     const fileInputRef = useRef(null) as any;
 
+    /**
+     * Handles the change event for the file input element.
+     * @param event - The change event object.
+     */
     const handleFileChange = (event: any) => {
         setFiles(event.target.files);
-        // Submit the form once files are selected
         onSubmitFiles(event.target.files);
     };
 
+    /**
+     * Handles the drag over event for the component.
+     * @param event - The drag event.
+     */
     const handleDragOver = (event: any) => {
         event.preventDefault();
     };
 
+    /**
+     * Handles the drop event when files are dropped onto the component.
+     * @param event - The drop event.
+     */
     const handleDrop = (event: any) => {
         event.preventDefault();
         setFiles(event.dataTransfer.files);
@@ -31,6 +47,11 @@ function AddSource() {
         onSubmitFiles(event.dataTransfer.files);
     };
 
+    /**
+     * Reads a file as a base64-encoded string.
+     * @param file - The file to read.
+     * @returns A Promise that resolves with the base64-encoded string.
+     */
     const readFileAsBase64 = (file: Blob) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -44,34 +65,54 @@ function AddSource() {
         });
     };
 
+    /**
+     * Handles the submission of files to be processed and uploaded to the server.
+     * @param files - The list of files to be processed and uploaded.
+     */
     const onSubmitFiles = async (files: FileList) => {
-        const processedFiles = [];
+        try {
+            const processedFiles = [];
 
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const base64 = await readFileAsBase64(file);
-            processedFiles.push({
-                buffer: base64,
-                type: file.type,
-                name: file.name,
-                size: file.size,
+            // ### Process files
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const base64 = await readFileAsBase64(file);
+                processedFiles.push({
+                    buffer: base64,
+                    type: file.type,
+                    name: file.name,
+                    size: file.size,
+                });
+            }
+
+            // ### Send new source to API
+            const data = await fetch("/api/sourcesUpdate", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ "dataType": "file", "data": processedFiles })
             });
-        }
 
-        const data = await fetch("/api/sourcesUpdate", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ "dataType": "file", "data": processedFiles })
-        });
+            if (!data.ok) {
+                setError('Failed to return data');
+                throw new Error('Failed to return data')
+            }
 
-        if (!data.ok) {
-            setError('Failed to fetch data');
-            throw new Error('Failed to fetch data')
+            // ###
+            // ### Update sources with new source
+            const newSource = await data.json();
+            const newSourcesData = [newSource, ...sourcesData];
+            setSourcesData(newSourcesData);
+        } catch (error) {
+            console.error(error);
         }
     }
 
+    /**
+     * Handles the submission of a URL to be added as a source.
+     * @param url - The URL to be added as a source.
+     */
     const onSubmitUrl = async (url: string) => {
         try {
 
@@ -109,14 +150,19 @@ function AddSource() {
             setLoading(false);
             setUrl("");
 
+            // ###
+            // ### Update sources with new source
+            const newSource = await data.json();
+            const newSourcesData = [newSource, ...sourcesData];
+            setSourcesData(newSourcesData);
+
+
         } catch (error) {
             console.error(error);
             setError("Failed to add url to sources");
             setLoading(false);
         }
     }
-
-
 
 
     return (
@@ -153,6 +199,18 @@ function AddSource() {
                                     multiple
                                 />
                             </div>
+
+                            <Transition
+                                show={loading}
+                                enter="transition-opacity duration-300"
+                                enterFrom="opacity-0"
+                                enterTo="opacity-100"
+                                leave="transition-opacity duration-300"
+                                leaveFrom="opacity-100"
+                                leaveTo="opacity-0"
+                            >
+                                <LoadingText text="Adding content to sources" className={""} iconClassName={""} />
+                            </Transition>
                         </div>
                     </Tab.Panel>
                     <Tab.Panel>
@@ -161,7 +219,18 @@ function AddSource() {
                         >
                             <input type="text" className="w-full rounded-md bg-gray-100 px-4 py-2" value={url} onChange={(e) => setUrl(e.target.value)} />
 
-                            <button onClick={() => onSubmitUrl(url)} className="px-4 py-2 text-dark bg-secondary rounded-md">{!!loading ? <LoadingText text="Getting URL Content" className={""} iconClassName={""} /> : "Add URL to Sources"}</button>
+                            <button onClick={() => onSubmitUrl(url)} className="px-4 py-2 text-dark bg-secondary rounded-md">Add URL to Sources</button>
+                            <Transition
+                                show={loading}
+                                enter="transition-opacity duration-300"
+                                enterFrom="opacity-0"
+                                enterTo="opacity-100"
+                                leave="transition-opacity duration-300"
+                                leaveFrom="opacity-100"
+                                leaveTo="opacity-0"
+                            >
+                                <LoadingText text="Adding content to sources" className={""} iconClassName={""} />
+                            </Transition>
                         </div>
                     </Tab.Panel>
                 </Tab.Panels>

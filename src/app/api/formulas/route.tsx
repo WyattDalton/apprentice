@@ -21,7 +21,6 @@ export async function POST(req: NextRequest) {
         } else if (dataType === 'update') {
 
             const { _id, update } = data;
-            console.log(_id, update);
             const res = await db.collection("formulas").updateOne({ _id: new ObjectId(_id) }, { $set: update }, { upsert: true });
             return NextResponse.json({
                 'success': true,

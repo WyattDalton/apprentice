@@ -156,7 +156,6 @@ function AddSource({ setUpdating, setSourcesData, sourcesData }: AddSourceProps)
             const newSourcesData = [newSource, ...sourcesData];
             setSourcesData(newSourcesData);
 
-
         } catch (error) {
             console.error(error);
             setError("Failed to add url to sources");

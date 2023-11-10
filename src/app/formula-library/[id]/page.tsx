@@ -32,12 +32,12 @@ const getFormulaData = async (idString: any) => {
 export default async function FormulaLibrary({ params }: { params: { id: string } }) {
 
     const formulaData = await getFormulaData(params.id);
-    const { title, instructions, formula } = formulaData;
+    const { _id, title, instructions, formula } = formulaData;
 
     /* * * * * * * * * * */
     // Render
     /* * * * * * * * * * */
     return (
-        <FormulaSingleUi titleData={title} instructionsData={instructions} formulaData={formula} />
+        <FormulaSingleUi titleData={title} instructionsData={instructions} formulaData={formula} _id={_id} />
     );
 };

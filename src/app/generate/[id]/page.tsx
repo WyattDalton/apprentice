@@ -1,36 +1,22 @@
-'use client';
+'use server';
 
-import Generator from '../_components/Generator';
-import { useParams } from 'next/navigation'
-import { useEffect, useState } from "react";
+import { getMongoDB } from "@/components/utils/getMongo";
+import { ObjectId } from 'mongodb';
+import GeneratorSingleUi from "./_components/GeneratorSingleUi";
 
-export default function Page() {
-    const [messages, setMessages] = useState([]);
-    const params = useParams()
-    const id = params.id;
+const getMessages = async (idString: any) => {
+    try {
+        const db = await getMongoDB() as any;
+        const id = new ObjectId(idString);
+        const thread = await db.collection("threads").findOne({ _id: id });
+        return thread.messages;
+    } catch (error) {
+        console.log(error);
+    }
+}
 
-    useEffect(() => {
-        async function fetchData() {
-            const res = await fetch(`/api/getSingleThread`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ "id": id }),
-            });
-
-            if (!res.ok) {
-                // This will activate the closest `error.js` Error Boundary
-                throw new Error('Failed to fetch data')
-            }
-
-            const data = await res.json();
-            setMessages(data.data.messages);
-        }
-
-        fetchData();
-    }, [id]);
-
-    return <Generator initConversation={messages} />;
+export default async function Page({ params }: { params: { id: string } }) {
+    const messages = await getMessages(params.id);
+    return <GeneratorSingleUi messagesData={messages} />;
 }
 

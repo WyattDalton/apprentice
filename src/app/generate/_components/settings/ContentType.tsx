@@ -20,7 +20,7 @@ function ContentType({ contentType, setContentType, settingFocus, setSettingFocu
         <>
             <Card className="!mb-0 grow relative overflow-visible">
                 <div className="!mb-0 flex flex-col justify-center items-center gap-2 flex-grow">
-                    <HashtagIcon className="w-6 h-6 text-decoration" />
+                    <HashtagIcon className="w-6 h-6 text-gray-700" />
                     <span className="block font-semibold">Type</span>
 
                     {!contentType && (
@@ -30,14 +30,14 @@ function ContentType({ contentType, setContentType, settingFocus, setSettingFocu
                                 setActive(true);
                                 console.log('fire')
                             }}
-                            className="flex justify-center items-center gap-2 text-sm text-decoration hover:text-theme_primary-600 bg-transparent rounded-full border border-decoration px-2 py-1"
+                            className="flex justify-center items-center gap-2 text-sm text-gray-500 hover:text-gray-700 bg-transparent rounded-full border border-gray-700 px-2 py-1"
                         >
-                            Add <IoAddCircleOutline className="w-6 h-6 text-decoration" />
+                            Add <IoAddCircleOutline className="w-6 h-6 text-gray-700" />
                         </button>
                     )}
                     {!!contentType && (
                         <span
-                            className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-decoration text-white"
+                            className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white"
                         >
                             {contentType}
                         </span>
@@ -47,7 +47,7 @@ function ContentType({ contentType, setContentType, settingFocus, setSettingFocu
                             onClick={() => {
                                 setContentType('');
                             }}
-                            className="text-sm text-decoration hover:text-theme_primary-600 bg-transparent"
+                            className="text-sm text-gray-500 hover:text-gray-700 bg-transparent"
                         >
                             <IoCloseOutline className="w-6 h-6 text-dark" />
                         </button>
@@ -76,13 +76,13 @@ function ContentType({ contentType, setContentType, settingFocus, setSettingFocu
                         <label
                             key={type}
                             className={`mr-2 mb-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${contentType === type.toLowerCase()
-                                ? 'bg-decoration text-white'
+                                ? 'bg-gray text-white'
                                 : 'bg-gray-200 text-gray-700'
                                 }`}
                         >
                             <input
                                 type="radio"
-                                className="form-radio h-4 w-4 text-theme_primary-600 transition duration-150 ease-in-out"
+                                className="form-radio h-4 w-4 text--700 transition duration-150 ease-in-out"
                                 name="contentType"
                                 value={type.toLowerCase()}
                                 checked={contentType === type.toLowerCase()}

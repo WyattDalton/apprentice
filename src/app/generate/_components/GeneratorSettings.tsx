@@ -17,8 +17,6 @@ type GeneratorSettingsProps = {
 	generatorSettings: any;
 	toneLibrary: any[];
 	formulaLibrary: any[];
-	activateSettings: boolean;
-	setActivateSettings: any;
 	className?: string | '';
 };
 
@@ -27,8 +25,6 @@ function GeneratorSettings({
 	generatorSettings,
 	toneLibrary,
 	formulaLibrary,
-	activateSettings,
-	setActivateSettings,
 	className
 }: GeneratorSettingsProps) {
 
@@ -69,28 +65,12 @@ function GeneratorSettings({
 	]);
 
 	return (
-		<Transition
-			className={`${className}`}
-			show={activateSettings}
-			enter="transition-all duration-300"
-			enterFrom="translate-y-10 opacity-0"
-			enterTo="translate-y-0 opacity-100"
-			leave="transition-all duration-300"
-			leaveFrom="translate-y-0 opacity-100"
-			leaveTo="translate-y-10 opacity-0"
-			unmount={true}
-		>
-			<div className="w-full pt-8 transition-all ease-in-out duration-300 grid gap-4 grid-cols-2 grid-flow-dense">
-				<button
-					className='absolute top-2 right-2 p-2 text-dark'
-					onClick={() => setActivateSettings(!activateSettings)}
-				>
-					close
-				</button>
+
+		<div className={`w-full pt-8 transition-all ease-in-out duration-300 grid gap-4 grid-cols-2 grid-flow-dense${!!className ? ` ${className}` : ''}`}>
 
 				<Card className="!mb-0 flex flex-col justify-center items-center gap-2 flex-grow">
 					<div className="flex flex-col items-center justify-center gap-2 mb-2">
-							<IoSchool className="w-6 h-6 text-theme_primary-700" />
+					<IoSchool className="w-6 h-6 text-gray" />
 							<span className="block font-semibold">Use Sources</span>
 						</div>
 						<div className="relative inline-block w-10 mt-0 align-middle select-none transition duration-200 ease-in">
@@ -100,14 +80,14 @@ function GeneratorSettings({
 								id="useSources"
 								checked={useSources}
 								onChange={() => setUseSources(!useSources)}
-								className={`toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 border-gray-300 appearance-none cursor-pointer ${useSources
-									? 'left-full -translate-x-full border-theme_primary-700'
-									: 'left-0'
+						className={`toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2  appearance-none cursor-pointer ${useSources
+							? 'left-full -translate-x-full border-gray-700'
+							: 'left-0 border-gray-500'
 									}`}
 							/>
 							<label
 								htmlFor="useSources"
-								className={`toggle-label block overflow-hidden h-6 rounded-full cursor-pointer border-2 border-gray-300 ${useSources ? 'bg-theme_primary-700 border-theme_primary-700' : 'bg-gray-300'
+						className={`toggle-label block overflow-hidden h-6 rounded-full cursor-pointer border-2  ${useSources ? 'bg-gray-700 border-gray-700' : 'bg-gray-500 border-gray-500'
 									}`}
 							></label>
 						</div>
@@ -131,9 +111,9 @@ function GeneratorSettings({
 					<Tone
 						tone={tone}
 						setTone={setTone}
+				toneLibrary={toneLibrary}
 						settingFocus={settingFocus}
-						setSettingFocus={setSettingFocus}
-						toneLibrary={toneLibrary}
+				setSettingFocus={setSettingFocus}
 					/>
 
 					<Formula
@@ -157,8 +137,7 @@ function GeneratorSettings({
 						settingFocus={settingFocus}
 						setSettingFocus={setSettingFocus}
 				/>
-			</div>
-		</Transition>
+		</div>
 	);
 }
 export default memo(GeneratorSettings);

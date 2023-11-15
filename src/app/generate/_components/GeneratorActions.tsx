@@ -1,13 +1,8 @@
 'use client';
 
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo, memo } from "react";
 import { useChat } from 'ai/react'
-import Card from "@/components/UI/Card";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import LoadingText from "@/components/LoadingText";
-import { getUserData } from "@/components/utils/getUserData";
-import { Transition } from "@headlessui/react";
-import GeneratorInformation from "./GeneratorInformation";
 
 type GeneratorActionsProps = {
     className?: string | '';
@@ -18,11 +13,6 @@ type GeneratorActionsProps = {
     handleCurrentResponseChange: any;
     saved: boolean | false;
     setSaved: any;
-    active: boolean | false;
-    setActive: any;
-    activateSettings: boolean | false;
-    setActivateSettings: any;
-    launcher?: any;
 };
 
 const GeneratorActions = ({
@@ -32,13 +22,6 @@ const GeneratorActions = ({
     settings,
     conversation,
     handleConversationChange,
-    currentResponse,
-    handleCurrentResponseChange,
-    active,
-    setActive,
-    activateSettings,
-    setActivateSettings,
-    launcher,
 }: GeneratorActionsProps) => {
 
     /* * * * * * * * * * * * * * * * * * * */
@@ -50,13 +33,7 @@ const GeneratorActions = ({
     const [sources, setSources] = useState<any[]>([]);
     const [toneLibrary, setToneLibrary] = useState([]);
     const [formulaLibrary, setFormulaLibrary] = useState([]);
-    const [available_words_count, setAvailableWordsCount] = useState(null);
-
-    const [focused, setFocused] = useState<boolean>(false);
-    const [inputHeight, setInputHeight] = useState<string>('px');
-    const [inputWidth, setInputWidth] = useState<string>('px');
-
-    const [informationActive, setInformationActive] = useState<boolean>(false);
+    const [userMessages, setUserMessages] = useState<any[]>([]);
 
     /* * * * * * * * * * * * * * * * * * */
     /* Preserve thread as it is generated
@@ -73,9 +50,10 @@ const GeneratorActions = ({
 
             const response = await data.json();
 
+            console.log('response: ', response);
+
             if (generation != response.item._id && window.location.pathname !== `/generate/${generation}`) {
-                setGeneration(await response.item._id)
-                setActive(true);
+                setGeneration(await response.item._id);
                 window.history.pushState({ page: 1 }, response.item.initial_prompt, `/generate/${response.item._id}`);
             }
         } catch (error) {
@@ -96,6 +74,19 @@ const GeneratorActions = ({
         body: { settings, sources, toneLibrary, formulaLibrary },
         initialMessages: conversation,
     })
+
+    const handleUserMessages = (input: any) => {
+        const userMessage = {
+            "content": input,
+            "role": "user",
+            "createdAt": new Date(),
+            "settings": settings,
+        }
+        const messages = [...userMessages];
+        messages.push(userMessage);
+        setUserMessages(messages);
+    }
+
 
     /* * * * * * * * * * * * * * * * * * * */
     /* Adjust textarea height and width as user types
@@ -179,13 +170,6 @@ const GeneratorActions = ({
     }
 
     /* * * * * * * * * * * * * * * * * * * */
-    /* Activate settings panel on click
-    /* * * * * * * * * * * * * * * * * * * */
-    const handleActivateSettings = () => {
-        setActivateSettings(!activateSettings);
-    }
-
-    /* * * * * * * * * * * * * * * * * * * */
     /* Handle fetch data on load
     /* * * * * * * * * * * * * * * * * * * */
 
@@ -205,7 +189,6 @@ const GeneratorActions = ({
                 setSources(res.data.sources);
                 setToneLibrary(res.data.tones);
                 setFormulaLibrary(res.data.formulas);
-                setAvailableWordsCount(res.data.user.available_words);
 
             }
         } catch (error) {
@@ -226,79 +209,53 @@ const GeneratorActions = ({
     /* * * * * * * * * * * * * * * * * * * */
     return (
 
-        <form
-            className={`${className} ${!focused ? `!p-0 !bg-transparent !shadow-none` : ``}`}
-            onSubmit={(e) => handleSubmit(e)}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    // trigger submit
-                    e.preventDefault();
-                    handleSubmit(e);
+        <>
+            {userMessages.length > 0 && (
+                <div className="flex flex-col items-start w-full mb-2">
+                    <div className="flex flex-row items-center">
+                        <span className="text-sm font-semibold text-gray-600 ml-2">{userMessages[userMessages.length - 1].content}</span>
+                        {/* display all of the settings used to generate the message */}
+                        {userMessages[userMessages.length - 1].settings.enabled && (
+                            <div className="flex flex-row items-center ml-2">
+                                <span className="text-sm font-semibold text-gray-600">|</span>
+                                <span className="text-sm font-semibold text-gray-600 ml-2">Tone: {userMessages[userMessages.length - 1].settings.tone}</span>
+                                <span className="text-sm font-semibold text-gray-600 ml-2">|</span>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
 
+            <form
+                className={`${className}`}
+                onSubmit={(e) => {
+                    handleSubmit(e)
+                    handleUserMessages(input);
                 }
-            }}
-        >
-
-            <Card className={`!shadow-md !mb-0 !p-0 w-full overflow-hidden flex justify-between items-center gap-2 !bg-gray-100 ${!focused ? 'm-4' : 'm-0'}`}>
+                }
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        // trigger submit
+                        e.preventDefault();
+                        handleSubmit(e);
+                        handleUserMessages(input);
+                    }
+                }}
+            >
                 <textarea
-                    className={`block w-full outline-none break-words p-4 resize-none bg-transparent transition-all transition-300 ${!focused ? `line-clamp-1 truncate !h-auto bg-white` : ``}`}
+                    className={`block w-full outline-none break-words p-4 resize-none bg-gray-100 rounded-md transition-all transition-300}`}
                     placeholder="Enter your prompt..."
                     name="prompt"
                     rows={1}
                     value={input}
                     ref={searchBarRef}
-                    onFocus={(e) => {
-                        setFocused(true);
-                        setTimeout(() => {
-                            const length = e.target.value.length;
-                            e.target.setSelectionRange(length, length);
-                        }, 0);
-                    }}
-                    onBlur={() => setFocused(false)}
                     onChange={
                         handleInputChange
                     }
                 ></textarea>
-            </Card>
-
-            <Transition
-                className="flex gap-2 items-center justify-between w-full"
-                show={focused}
-                enter="transition-all duration-300"
-                enterFrom="translate-y-10 opacity-0"
-                enterTo="translate-y-0 opacity-100"
-                leave="transition-all duration-300"
-                leaveFrom="translate-y-0 opacity-100"
-                leaveTo="translate-y-10 opacity-0"
-                unmount={true}
-                appear={true}
-
-            >
 
                 <button
-                    className="px-2 py-2 text-dark bg-secondary rounded-md mt-auto"
-                    title="Generator Information"
-                    onClick={() => setInformationActive(true)}
-                >
-                    In
-                    ({informationActive ? 'true' : 'false'})
-                </button>
-                <button
-                    className="px-2 py-2 text-dark bg-secondary rounded-md mt-auto"
-                    title="Generator settings"
-                    onClick={() => handleActivateSettings()}
-                >
-                    Se
-                </button>
-                <button
-                    className="px-2 py-2 text-dark bg-secondary rounded-md mt-auto"
-                    title="Save generation"
-                    onClick={() => saveThread()}
-                >
-                    Sa
-                </button>
-                <button
-                    className="px-6 py-2 ml-auto text-dark bg-secondary rounded-md mt-auto"
+                    className="px-6 py-2 w-full text-dark bg-secondary rounded-md mt-auto"
                     type="submit"
                 >
                     {isLoading ? (
@@ -307,11 +264,9 @@ const GeneratorActions = ({
                         'Generate'
                     )}
                 </button>
-            </Transition>
 
-            <GeneratorInformation active={informationActive} setActive={setInformationActive} placeholder="..." />
-
-        </form >
+            </form >
+        </>
     )
 }
-export default GeneratorActions;
+export default memo(GeneratorActions);

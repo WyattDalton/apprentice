@@ -17,7 +17,7 @@ function Length({ length, setLength, settingFocus, setSettingFocus }: Props) {
             <div className="flex items-center justify-between mb-2">
                 <label htmlFor="length" className="block font-semibold mb-2">
                     <div className="flex gap-2">
-                        <ArrowsRightLeftIcon className="w-6 h-6 text-secondary" />
+                        <ArrowsRightLeftIcon className="w-6 h-6 text-gray-700" />
                         Max Length
                     </div>
                 </label>
@@ -28,14 +28,14 @@ function Length({ length, setLength, settingFocus, setSettingFocus }: Props) {
                             setSettingFocus(true);
                             setActive(true);
                         }}
-                        className="ml-auto flex justify-center items-center gap-2 text-sm text-secondary hover:text-theme_primary-600 bg-transparent rounded-full border border-secondary px-2 py-1"
+                        className="ml-auto flex justify-center items-center gap-2 text-sm text-gray-700 hover:text-theme_primary-600 bg-transparent rounded-full border border-gray-700 px-2 py-1"
                     >
-                        Add <IoAddCircleOutline className="w-6 h-6 text-secondary" />
+                        Add <IoAddCircleOutline className="w-6 h-6 text-gray-700" />
                     </button>
                 )}
                 {active == true && (
                     <span
-                        className="ml-auto inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary text-white"
+                        className="ml-auto inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white"
                     >
                         {length ? `${length} words` : 'No Limit'}
 
@@ -47,7 +47,7 @@ function Length({ length, setLength, settingFocus, setSettingFocus }: Props) {
                             setLength(0);
                             setActive(false);
                         }}
-                        className="text-sm text-secondary hover:text-theme_primary-600 bg-transparent"
+                        className="text-sm text-gray-700 hover:text-theme_primary-600 bg-transparent"
                     >
                         <IoCloseOutline className="w-6 h-6 text-theme_gray-700" />
                     </button>
@@ -73,7 +73,7 @@ function Length({ length, setLength, settingFocus, setSettingFocus }: Props) {
                                 ? { width: `${((length - 10) / (1000 - 10)) * 100}%` }
                                 : { width: 0 }
                         }
-                        className="absolute top-0 left-0 h-full bg-secondary"
+                        className="absolute top-0 left-0 h-full bg-gray-700"
                     ></div>
                     <input
                         type="range"

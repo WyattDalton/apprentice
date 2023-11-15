@@ -16,7 +16,7 @@ function Details({ details, setDetails, settingFocus, setSettingFocus }: Props) 
     return (
         <Card className="!mb-0 col-span-2">
             <div className="flex gap-2 mb-2">
-                <PencilSquareIcon className="w-6 h-6 text-theme_primary-700" />
+                <PencilSquareIcon className="w-6 h-6 text-gray" />
                 <span className="block font-semibold">Details</span>
 
                 {!details && (
@@ -25,14 +25,14 @@ function Details({ details, setDetails, settingFocus, setSettingFocus }: Props) 
                             setSettingFocus(true);
                             setActive(true);
                         }}
-                        className="ml-auto flex justify-center items-center gap-2 text-sm text-theme_primary-700 hover:text-theme_primary-600 bg-transparent rounded-full border border-theme_primary-700 px-2 py-1"
+                        className="ml-auto flex justify-center items-center gap-2 text-sm text-gray hover:text-gray bg-transparent rounded-full border border-gray px-2 py-1"
                     >
-                        Add <IoAddCircleOutline className="w-6 h-6 text-theme_primary-700" />
+                        Add <IoAddCircleOutline className="w-6 h-6 text-gray" />
                     </button>
                 )}
                 {!!details && (
                     <span
-                        className="ml-auto inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-theme_primary-700 text-white"
+                        className="ml-auto inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray text-white"
                     >
                         Include Details
                     </span>
@@ -43,7 +43,7 @@ function Details({ details, setDetails, settingFocus, setSettingFocus }: Props) 
                             setDetails('');
                             setActive(false);
                         }}
-                        className="text-sm text-theme_primary-700 hover:text-theme_primary-600 bg-transparent"
+                        className="text-sm text-gray hover:text-gray bg-transparent"
                     >
                         <IoCloseOutline className="w-6 h-6 text-theme_gray-700" />
                     </button>

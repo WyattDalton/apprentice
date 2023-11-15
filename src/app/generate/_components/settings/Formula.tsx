@@ -20,7 +20,7 @@ function Formula({ formula, setFormula, formulaLibrary, settingFocus, setSetting
         <Card className="!mb-0 col-span-2" >
 
             <div className="flex gap-2 mb-2">
-                <SparklesIcon className="w-6 h-6 text-theme_primary-700" />
+                <SparklesIcon className="w-6 h-6 text-gray-700" />
                 <span className="block font-semibold">Formula</span>
 
                 {!formula && (
@@ -29,15 +29,15 @@ function Formula({ formula, setFormula, formulaLibrary, settingFocus, setSetting
                             setSettingFocus(true);
                             setActive(true);
                         }}
-                        className="ml-auto flex justify-center items-center gap-2 text-sm text-theme_primary-700 hover:text-theme_primary-600 bg-transparent rounded-full border border-theme_primary-700 px-2 py-1"
+                        className="ml-auto flex justify-center items-center gap-2 text-sm text-gray-500 hover:text-gray-700 bg-transparent rounded-full border border-gray-700 px-2 py-1"
                     >
-                        Add <IoAddCircleOutline className="w-6 h-6 text-theme_primary-700" />
+                        Add <IoAddCircleOutline className="w-6 h-6 text-gray-700" />
                     </button>
                 )}
 
                 {!!formula && (
                     <span
-                        className="ml-auto inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-theme_primary-700 text-white"
+                        className="ml-auto inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white"
                     >
                         {formulaSetting}
                     </span>
@@ -48,9 +48,9 @@ function Formula({ formula, setFormula, formulaLibrary, settingFocus, setSetting
                         onClick={() => {
                             setFormula('');
                         }}
-                        className="text-sm text-theme_primary-700 hover:text-theme_primary-600 bg-transparent"
+                        className="text-sm text-gray-500 hover:text-gray-700 bg-transparent"
                     >
-                        <IoCloseOutline className="w-6 h-6 text-theme_gray-700" />
+                        <IoCloseOutline className="w-6 h-6 text-gray-700" />
                     </button>
                 )}
 
@@ -77,13 +77,13 @@ function Formula({ formula, setFormula, formulaLibrary, settingFocus, setSetting
                                 <label
                                     key={_id}
                                     className={`mr-2 mb-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${formula === _id
-                                        ? 'bg-theme_primary-700 text-white'
+                                        ? 'bg-gray text-white'
                                         : 'bg-gray-200 text-gray-700'
                                         }`}
                                 >
                                     <input
                                         type="radio"
-                                        className="form-radio h-4 w-4 text-theme_primary-600 transition duration-150 ease-in-out"
+                                        className="form-radio h-4 w-4 text-gray transition duration-150 ease-in-out"
                                         name="formula"
                                         value={_id}
                                         checked={formula === _id}

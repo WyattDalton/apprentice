@@ -22,7 +22,7 @@ function Tone({ tone, setTone, settingFocus, setSettingFocus, toneLibrary }: Pro
             <Card className="!mb-0 grow relative overflow-visible">
                 <div className="!mb-0 flex flex-col justify-center items-center gap-2 flex-grow">
                     <div className='!mb-0 flex flex-col justify-center items-center gap-2 flex-grow'>
-                        <MegaphoneIcon className="w-6 h-6 text-secondary" />
+                        <MegaphoneIcon className="w-6 h-6 text-gray-700" />
                         <span className="block font-semibold">Tone of Voice</span>
                         {!toneSetting && (
                             <button
@@ -30,14 +30,14 @@ function Tone({ tone, setTone, settingFocus, setSettingFocus, toneLibrary }: Pro
                                     setSettingFocus(true);
                                     setActive(true);
                                 }}
-                                className="flex justify-center items-center gap-2 text-sm text-secondary hover:text-secondary bg-transparent rounded-full border border-secondary px-2 py-1"
+                                className="flex justify-center items-center gap-2 text-sm text-gray-500 hover:text-gray-700 bg-transparent rounded-full border border-gray-700 px-2 py-1"
                             >
-                                Add <IoAddCircleOutline className="w-6 h-6 text-secondary" />
+                                Add <IoAddCircleOutline className="w-6 h-6 text-gray-700" />
                             </button>
                         )}
                         {!!toneSetting && (
                             <span
-                                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary text-white"
+                                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white"
                             >
                                 {toneSetting}
                             </span>
@@ -48,7 +48,7 @@ function Tone({ tone, setTone, settingFocus, setSettingFocus, toneLibrary }: Pro
                                     setToneSetting('');
                                     setTone('');
                                 }}
-                                className="text-sm text-secondary hover:text-secondary bg-transparent"
+                                className="text-sm text-gray-700 hover:text-gray-700 bg-transparent"
                             >
                                 <IoCloseOutline className="w-6 h-6 text-dark" />
                             </button>
@@ -75,13 +75,13 @@ function Tone({ tone, setTone, settingFocus, setSettingFocus, toneLibrary }: Pro
                                 <label
                                     key={toneOption._id}
                                     className={`mr-2 mb-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${tone === toneOption._id
-                                        ? 'bg-secondary text-white'
+                                        ? 'bg-gray text-white'
                                         : 'bg-gray-200 text-gray-700'
                                         }`}
                                 >
                                     <input
                                         type="radio"
-                                        className="form-radio h-4 w-4 text-secondary transition duration-150 ease-in-out"
+                                        className="form-radio h-4 w-4 text-gray-700 transition duration-150 ease-in-out"
                                         name="tone"
                                         value={toneOption._id}
                                         checked={tone === toneOption._id}

@@ -16,7 +16,7 @@ function Details({ details, setDetails, settingFocus, setSettingFocus }: Props) 
     return (
         <Card className="!mb-0 col-span-2">
             <div className="flex gap-2 mb-2">
-                <PencilSquareIcon className="w-6 h-6 text-gray" />
+                <PencilSquareIcon className="w-6 h-6 text-gray-700" />
                 <span className="block font-semibold">Details</span>
 
                 {!details && (
@@ -25,14 +25,14 @@ function Details({ details, setDetails, settingFocus, setSettingFocus }: Props) 
                             setSettingFocus(true);
                             setActive(true);
                         }}
-                        className="ml-auto flex justify-center items-center gap-2 text-sm text-gray hover:text-gray bg-transparent rounded-full border border-gray px-2 py-1"
+                        className="ml-auto flex justify-center items-center gap-2 text-sm text-gray-500 hover:text-gray-700 bg-transparent rounded-full border border-gray-700 px-2 py-1"
                     >
-                        Add <IoAddCircleOutline className="w-6 h-6 text-gray" />
+                        Add <IoAddCircleOutline className="w-6 h-6 text-gray-700" />
                     </button>
                 )}
                 {!!details && (
                     <span
-                        className="ml-auto inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray text-white"
+                        className="ml-auto inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white"
                     >
                         Include Details
                     </span>
@@ -43,9 +43,9 @@ function Details({ details, setDetails, settingFocus, setSettingFocus }: Props) 
                             setDetails('');
                             setActive(false);
                         }}
-                        className="text-sm text-gray hover:text-gray bg-transparent"
+                        className="text-sm text-gray-500 hover:text-gray-700 bg-transparent"
                     >
-                        <IoCloseOutline className="w-6 h-6 text-theme_gray-700" />
+                        <IoCloseOutline className="w-6 h-6 text-gray-700" />
                     </button>
                 )}
             </div>

@@ -5,10 +5,11 @@ import { useState } from "react";
 
 type Props = {
     messagesData: any;
+    generationId: string;
 }
 
-export default function Page({ messagesData }: Props) {
+export default function Page({ messagesData, generationId }: Props) {
     const [messages, setMessages] = useState(messagesData || []);
-    return <Generator initConversation={messages} />;
+    return <Generator initConversation={messages} generationId={generationId} />;
 }
 

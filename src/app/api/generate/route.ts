@@ -1,5 +1,3 @@
-
-
 import { Configuration, OpenAIApi } from 'openai-edge'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 import { getResponseSources } from './utils/getResponseSources'

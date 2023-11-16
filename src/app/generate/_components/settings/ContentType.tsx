@@ -82,7 +82,7 @@ function ContentType({ contentType, setContentType, settingFocus, setSettingFocu
                         >
                             <input
                                 type="radio"
-                                className="form-radio h-4 w-4 text--700 transition duration-150 ease-in-out"
+                                className="form-radio h-4 w-4 text-gray-700 transition duration-150 ease-in-out"
                                 name="contentType"
                                 value={type.toLowerCase()}
                                 checked={contentType === type.toLowerCase()}

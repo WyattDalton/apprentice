@@ -1,6 +1,13 @@
+import { Configuration, OpenAIApi } from 'openai-edge'
 import { NextRequest, NextResponse } from 'next/server';
 import { getMongoDB } from '@/components/utils/getMongo';
 import { ObjectId } from 'mongodb';
+
+const apiConfig = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY!
+})
+const openai = new OpenAIApi(apiConfig)
+
 
 export async function POST(req: NextRequest) {
     try {
@@ -50,13 +57,47 @@ export async function POST(req: NextRequest) {
                     'thread': res,
                 });
             } else {
-                const res = await collection.find({}).toArray();
+                const res = await collection.find().sort({ created: -1 }).toArray();
+
                 return NextResponse.json({
                     'success': true,
                     'threads': res,
                 });
             }
 
+        } else if (dataType === 'getTitle') {
+            const { messages, _id } = data;
+
+            const cleanedMessages = messages.map(({ createdAt, id, ...rest }: any) => rest);
+
+            const instructions = 'Create a descriptive title for this thread that summarizes the previous messages. Limit the response to less than 100 characters. It should be as short as possible while also being descriptive enough to be useful. IMPORTANT: Your response should only include text. No special characters, and no numbers.';
+            const instructionMessage = {
+                'role': 'user',
+                'content': instructions,
+            }
+            // Add instructionMessage to the end of the messages array
+            cleanedMessages.push(instructionMessage);
+
+            const res = await openai.createChatCompletion({
+                model: 'gpt-4-1106-preview',
+                messages: cleanedMessages
+            })
+
+            const resData = await res.json();
+
+            const title = resData.choices[0].message.content;
+
+            // Upsert the title to this thread in mongo
+            const update = { $set: { title } };
+            const id = new ObjectId(_id);
+            await collection.updateOne({ _id: id }, update, { upsert: true });
+            const updatedThread = await collection.findOne({ _id: id });
+            console.log('updatedThread', updatedThread);
+
+            return NextResponse.json({
+                'success': true,
+                'title': title,
+            });
         }
 
     } catch (error) {

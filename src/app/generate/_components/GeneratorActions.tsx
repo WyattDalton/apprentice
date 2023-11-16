@@ -13,6 +13,10 @@ type GeneratorActionsProps = {
     handleCurrentResponseChange: any;
     saved: boolean | false;
     setSaved: any;
+    meta: any;
+    setMeta: any;
+    generation: any;
+    setGeneration: any;
 };
 
 const GeneratorActions = ({
@@ -22,13 +26,16 @@ const GeneratorActions = ({
     settings,
     conversation,
     handleConversationChange,
+    meta,
+    setMeta,
+    generation,
+    setGeneration,
 }: GeneratorActionsProps) => {
 
     /* * * * * * * * * * * * * * * * * * * */
     /* Init state for generator actions
     /* * * * * * * * * * * * * * * * * * * */
     const searchBarRef = useRef({} as any);
-    const [generation, setGeneration] = useState<any>('');
     const [lastUserMessageIndex, setLastUserMessageIndex] = useState<number>(0);
     const [sources, setSources] = useState<any[]>([]);
     const [toneLibrary, setToneLibrary] = useState([]);
@@ -36,10 +43,11 @@ const GeneratorActions = ({
     const [userMessages, setUserMessages] = useState<any[]>([]);
 
     /* * * * * * * * * * * * * * * * * * */
-    /* Preserve thread as it is generated
+    /* Preserve thread as it is generated, generate title if needed
     /* * * * * * * * * * * * * * * * * * */
     const preserveThread = async (payload: any) => {
         try {
+
             const data = await fetch("/api/saveThread", {
                 method: 'POST',
                 headers: {
@@ -50,12 +58,35 @@ const GeneratorActions = ({
 
             const response = await data.json();
 
-            console.log('response: ', response);
-
             if (generation != response.item._id && window.location.pathname !== `/generate/${generation}`) {
                 setGeneration(await response.item._id);
                 window.history.pushState({ page: 1 }, response.item.initial_prompt, `/generate/${response.item._id}`);
             }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getTitle = async (payload: any) => {
+        try {
+            console.log('start getTitle')
+            const data = await fetch("/api/threads", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const response = await data.json();
+            console.log('title got: ', response.title);
+
+            if (response.success && !!response.title) {
+                setMeta({ ...meta, title: response.title });
+            }
+
+            console.log('end getTitle: ', meta)
         } catch (error) {
             console.log(error);
         }
@@ -113,9 +144,11 @@ const GeneratorActions = ({
     /* Handle current response change
     /* * * * * * * * * * * * * * * * * * * */
     useEffect(() => {
+
         if (isLoading && !!messages.length) {
 
             try {
+
                 const firstUserMessage = messages.find((message) => message.role === 'user');
                 const payload = {
                     "initial_prompt": firstUserMessage?.content,
@@ -126,11 +159,22 @@ const GeneratorActions = ({
                 !!generation ? payload['generation'] = generation : null;
 
                 preserveThread(payload);
+
             } catch (error) {
                 console.log('Error while loading: ', error)
             }
         } else if (!isLoading && !!messages.length) {
             try {
+                if (messages.length > 5 && !meta.title) {
+                    console.log("fire title generation")
+                    getTitle({
+                        dataType: 'getTitle',
+                        data: {
+                            messages: messages,
+                            _id: generation,
+                        }
+                    });
+                }
 
                 const firstUserMessage = messages.find((message) => message.role === 'user');
                 const payload = {
@@ -138,7 +182,9 @@ const GeneratorActions = ({
                     "created": firstUserMessage?.createdAt,
                     "messages": messages,
                 }
+
                 preserveThread(payload);
+
             } catch (error) {
                 console.log('Error when finished: ', error)
             }

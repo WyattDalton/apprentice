@@ -17,6 +17,6 @@ const getMessages = async (idString: any) => {
 
 export default async function Page({ params }: { params: { id: string } }) {
     const messages = await getMessages(params.id);
-    return <GeneratorSingleUi messagesData={messages} />;
+    return <GeneratorSingleUi messagesData={messages} generationId={params.id} />;
 }
 

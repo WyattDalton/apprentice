@@ -289,8 +289,8 @@ const GeneratorActions = ({
                 }}
             >
                 <textarea
-                    className={`block w-full outline-none break-words p-4 resize-none bg-gray-100 rounded-md transition-all transition-300}`}
-                    placeholder="Enter your prompt..."
+                    className={`block w-full outline-none break-words p-4 resize-none bg-white shadow-lg rounded-md transition-all transition-300}`}
+                    placeholder="Enter your instructions..."
                     name="prompt"
                     rows={1}
                     value={input}
@@ -301,13 +301,13 @@ const GeneratorActions = ({
                 ></textarea>
 
                 <button
-                    className="px-6 py-2 w-full text-dark bg-secondary rounded-md mt-auto"
+                    className="px-6 py-2 w-full text-gray-700 bg-transparent border border-gray-700 rounded-md mt-auto"
                     type="submit"
                 >
                     {isLoading ? (
                         <LoadingText text="Loading" className={""} iconClassName={""} />
                     ) : (
-                        'Generate'
+                            'Generate content'
                     )}
                 </button>
 

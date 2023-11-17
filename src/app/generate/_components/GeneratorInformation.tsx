@@ -28,7 +28,8 @@ const GeneratorInformation = ({
     /* * * * * * * * * * * * * * * * * * * */
     return (
         <>
-            <Card className={`!shadow-md !mb-0 !p-0 w-full overflow-hidden flex justify-between items-center gap-2 !bg-gray-100 ${className}`}>
+            <div className={`text-sm text-gray-400`}>Title</div>
+            <Card className={`!shadow-md !mb-0 !p-0 w-full overflow-hidden flex justify-start items-center gap-2  ${className}`}>
                 <input type="text" className={`w-full p-2`} placeholder={placeholder} value={title} onChange={(e) => setTitle(e.target.value)} />
             </Card>
         </>

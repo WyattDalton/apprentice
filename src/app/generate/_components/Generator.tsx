@@ -266,41 +266,12 @@ export default function Generator({ initConversation, className, launcher, threa
                     </Card>
                 </div>
 
-                {/* Generator actions */}
-                <div className="col-span-6 md:col-span-2 h-full bg-neutral-50 rounded-lg p-4 flex flex-col" >
-                    <div className="grid grid-cols-4 gap-2 border-b-[1px] border-gray-100 pb-2 mb-2 sticky top-0 left-0">
-                        <button
-                            className={'group flex flex-col justify-center items-center gap-2 w-full p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
-                            onClick={(e) => changeActivePanel(e, 'generate')}
-                        >
-                            <span className="icon w-5/6 aspect-square flex justify-center items-center rounded-xl bg-gray-200 group-data-[active=true]:bg-white">
-                                Ge
-                            </span>
-                            Generate
-                        </button>
-                        <button
-                            className={'group flex flex-col justify-center items-center gap-2 w-full p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
-                            onClick={(e) => changeActivePanel(e, 'settings')}
-                        >
-                            <span className="icon w-5/6 aspect-square flex justify-center items-center rounded-xl bg-gray-200 group-data-[active=true]:bg-white">
-                                Se
-                            </span>
-                            Settings
-                        </button>
-                        <button
-                            className={'group flex flex-col justify-center items-center gap-2 w-full p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
-                            onClick={(e) => changeActivePanel(e, 'info')}
-                        >
-                            <span className="icon w-5/6 aspect-square flex justify-center items-center rounded-xl bg-gray-200 group-data-[active=true]:bg-white">
-                                In
-                            </span>
-                            Info
-                        </button>
-                    </div>
-                    <div className={'flex flex-col flex-grow'}>
 
+                <div className="col-span-6 md:col-span-2 h-full bg-neutral-50 rounded-lg p-4 flex flex-col justify-end" >
+                    <div className="flex flex-col gap-4 z-40 sticky bottom-2">
+                        {/* Extra content | This is where I can put user prompts, */}
                         <Transition
-                            className={'flex flex-col justify-end flex-grow'}
+                            className={'flex flex-col justify-end'}
                             show={activePanel === 'generate'}
                             enter="transition duration-200 ease-out"
                             enterFrom="transform translate-y-10 opacity-0"
@@ -310,8 +281,86 @@ export default function Generator({ initConversation, className, launcher, threa
                             leaveTo="transform translate-y-10 opacity-0"
                             unmount={false}
                         >
+                            Show user prompts and stuff here
+                        </Transition>
+                        <Transition
+                            className={'flex flex-col justify-end'}
+                            show={activePanel === 'settings'}
+                            enter="transition duration-200 ease-out"
+                            enterFrom="transform translate-y-10 opacity-0"
+                            enterTo="transform translate-y-0 opacity-100"
+                            leave="transition duration-200 ease-out"
+                            leaveFrom="transform translate-y-0 opacity-100"
+                            leaveTo="transform translate-y-10 opacity-0"
+                            unmount={false}
+                        >
+                            <GeneratorSettings
+                                className={`flex flex-wrap w-full gap-4 transition-all duration-300`}
+                                handleSetGeneratorSettings={setSettings}
+                                generatorSettings={settings}
+                                toneLibrary={toneLibrary}
+                                formulaLibrary={formulaLibrary}
+                            />
+                        </Transition>
+
+                        <Transition
+                            className={'flex flex-col'}
+                            show={activePanel === 'info'}
+                            enter="transition duration-200 ease-out"
+                            enterFrom="transform translate-y-10 opacity-0"
+                            enterTo="transform translate-y-0 opacity-100"
+                            leave="transition duration-200 ease-out"
+                            leaveFrom="transform translate-y-0 opacity-100"
+                            leaveTo="transform translate-y-10 opacity-0"
+                            unmount={false}
+                        >
+                            <GeneratorInformation
+                                className={`flex flex-wrap w-full gap-4 transition-all duration-300`}
+                                placeholder="New content"
+                                meta={meta}
+                                setMeta={setMeta} />
+                        </Transition>
+
+                        {/* Control switches and generator actions */}
+                        <div className="flex flex-col gap-4">
+                            <div className="grid grid-cols-4 gap-2 border-b-[1px] border-gray-100 pb-2 mb-2 ">
+
+                                <button
+                                    className={'group flex flex-col justify-center items-center gap-2 w-full p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
+                                    onClick={(e) => changeActivePanel(e, 'settings')}
+                                >
+                                    <span className="icon w-5/6 aspect-square flex justify-center items-center rounded-xl bg-gray-200 group-data-[active=true]:bg-white">
+                                        Se
+                                    </span>
+                                    Settings
+                                </button>
+
+                                <button
+                                    className={'group flex flex-col justify-center items-center gap-2 w-full p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
+                                    onClick={(e) => changeActivePanel(e, 'history')}
+                                >
+                                    <span className="icon w-5/6 aspect-square flex justify-center items-center rounded-xl bg-gray-200 group-data-[active=true]:bg-white">
+                                        Hi
+                                    </span>
+                                    History
+                                </button>
+
+                                <button
+                                    className={'group flex flex-col justify-center items-center gap-2 w-full p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
+                                    onClick={(e) => changeActivePanel(e, 'info')}
+                                >
+                                    <span className="icon w-5/6 aspect-square flex justify-center items-center rounded-xl bg-gray-200 group-data-[active=true]:bg-white">
+                                        In
+                                    </span>
+                                    Info
+                                </button>
+
+
+
+                            </div>
+
                             <GeneratorActions
-                                className={`flex flex-wrap w-full gap-4 transition-all duration-300 z-40 sticky bottom-2`}
+                                className={`flex flex-wrap w-full gap-4 transition-all duration-300`}
                                 settings={settings}
                                 conversation={conversation}
                                 handleConversationChange={setConversation}
@@ -324,100 +373,8 @@ export default function Generator({ initConversation, className, launcher, threa
                                 generation={generation}
                                 setGeneration={setGeneration}
                             />
-                        </Transition>
-
-                        <Transition
-                            className={'flex flex-col justify-end flex-grow'}
-                            show={activePanel === 'settings'}
-                            enter="transition duration-200 ease-out"
-                            enterFrom="transform translate-y-10 opacity-0"
-                            enterTo="transform translate-y-0 opacity-100"
-                            leave="transition duration-200 ease-out"
-                            leaveFrom="transform translate-y-0 opacity-100"
-                            leaveTo="transform translate-y-10 opacity-0"
-                            unmount={false}
-                        >
-                            <GeneratorSettings
-                                className={`flex flex-wrap w-full gap-4 transition-all duration-300 z-40 sticky bottom-2`}
-                                handleSetGeneratorSettings={setSettings}
-                                generatorSettings={settings}
-                                toneLibrary={toneLibrary}
-                                formulaLibrary={formulaLibrary}
-                            />
-                        </Transition>
-
-                        <Transition
-                            className={'flex flex-col justify-end flex-grow'}
-                            show={activePanel === 'info'}
-                            enter="transition duration-200 ease-out"
-                            enterFrom="transform translate-y-10 opacity-0"
-                            enterTo="transform translate-y-0 opacity-100"
-                            leave="transition duration-200 ease-out"
-                            leaveFrom="transform translate-y-0 opacity-100"
-                            leaveTo="transform translate-y-10 opacity-0"
-                            unmount={false}
-                        >
-                            <GeneratorInformation
-                                className={`flex flex-wrap w-full gap-4 transition-all duration-300 z-40 sticky bottom-2`}
-                                placeholder="New content"
-                                meta={meta}
-                                setMeta={setMeta} />
-                        </Transition>
+                        </div>
                     </div>
-
-
-
-                    {/* <Tab.Group>
-                    <Tab.List className="grid grid-cols-4 gap-2 border-b-[1px] border-gray-100 pb-2 mb-2">
-                        <Tab className={'group flex flex-col justify-center items-center gap-2 w-full p-2 rounded-xl ui-selected:bg-gray-200 text-sm font-bold text-gray-500 ui-selected:text-gray-600'}>
-                            <span className="bg-gray-200 w-5/6 aspect-square flex justify-center items-center rounded-xl ui-selected:bg-white">
-                                Ge
-                            </span>
-                            Generate
-                        </Tab>
-                        <Tab className={'group flex flex-col justify-center items-center gap-2 w-full p-2 rounded-xl ui-selected:bg-gray-200 text-sm font-bold text-gray-500 ui-selected:text-gray-600'}>
-                            <span className="bg-gray-200 w-5/6 aspect-square flex justify-center items-center rounded-xl ui-selected:bg-white">
-                                Se
-                            </span>
-                            Settings
-                        </Tab>
-                        <Tab className={'group flex flex-col justify-center items-center gap-2 w-full p-2 rounded-xl ui-selected:bg-gray-200 text-sm font-bold text-gray-500 ui-selected:text-gray-600'}>
-                            <span className="bg-gray-200 w-5/6 aspect-square flex justify-center items-center rounded-xl ui-selected:bg-white">
-                                In
-                            </span>
-                            Info
-                        </Tab>
-                    </Tab.List>
-                    <Tab.Panels className={'flex flex-col flex-grow'}>
-                        <Tab.Panel className={'flex flex-col justify-end flex-grow'}>
-                            <GeneratorActions
-                                className={`flex flex-wrap w-full gap-4 transition-all duration-300 z-40 sticky bottom-2`}
-                                settings={settings}
-                                conversation={conversation}
-                                handleConversationChange={setConversation}
-                                currentResponse={currentResponse}
-                                handleCurrentResponseChange={setcurrentResponse}
-                                saved={saved}
-                                setSaved={setSaved}
-                            />
-                        </Tab.Panel>
-                        <Tab.Panel>
-                            <GeneratorSettings
-                                className={`transition-all duration-300 p-4 bg-white rounded-t-3xl shadow-lg overflow-y-scroll w-full max-w-[90%] mx-auto`}
-                                handleSetGeneratorSettings={setSettings}
-                                generatorSettings={settings}
-                                toneLibrary={toneLibrary}
-                                formulaLibrary={formulaLibrary}
-                            />
-                        </Tab.Panel>
-                        <Tab.Panel>
-                            <GeneratorInformation placeholder="..." />
-                        </Tab.Panel>
-                    </Tab.Panels>
-                </Tab.Group> */}
-
-
-
                 </div>
             </section>
         </>

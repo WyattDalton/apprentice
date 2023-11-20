@@ -19,17 +19,18 @@ function Formula({ formula, setFormula, formulaLibrary, settingFocus, setSetting
     return (
         <Card className="!mb-0 col-span-2" >
 
-            <div className="flex gap-2 mb-2">
+            <div className="flex flex-col lg:flex-row justify-center items-center gap-2 mb-2">
                 <SparklesIcon className="w-6 h-6 text-gray-700" />
-                <span className="block font-semibold">Formula</span>
+                <span className="block font-semibold lg:mr-auto">Formula</span>
 
+                <div className='flex gap-2'>
                 {!formula && (
                     <button
                         onClick={() => {
                             setSettingFocus(true);
                             setActive(true);
                         }}
-                        className="ml-auto flex justify-center items-center gap-2 text-sm text-gray-500 hover:text-gray-700 bg-transparent rounded-full border border-gray-700 px-2 py-1"
+                            className=" flex justify-center items-center gap-2 text-sm text-gray-500 hover:text-gray-700 bg-transparent rounded-full border border-gray-700 px-2 py-1"
                     >
                         Add <IoAddCircleOutline className="w-6 h-6 text-gray-700" />
                     </button>
@@ -37,7 +38,7 @@ function Formula({ formula, setFormula, formulaLibrary, settingFocus, setSetting
 
                 {!!formula && (
                     <span
-                        className="ml-auto inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white"
+                            className=" inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white"
                     >
                         {formulaSetting}
                     </span>
@@ -52,7 +53,8 @@ function Formula({ formula, setFormula, formulaLibrary, settingFocus, setSetting
                     >
                         <IoCloseOutline className="w-6 h-6 text-gray-700" />
                     </button>
-                )}
+                    )}
+                </div>
 
             </div>
 

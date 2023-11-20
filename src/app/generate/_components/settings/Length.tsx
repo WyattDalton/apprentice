@@ -14,28 +14,29 @@ function Length({ length, setLength, settingFocus, setSettingFocus }: Props) {
     const [active, setActive] = useState<boolean>(false);
     return (
         <Card className="!mb-0 col-span-2">
-            <div className="flex items-center justify-between mb-2">
-                <label htmlFor="length" className="block font-semibold mb-2">
-                    <div className="flex gap-2">
+            <div className="flex items-center justify-center mb-2 flex-col lg:flex-row">
+                <label htmlFor="length" className="block font-semibold mb-2 lg:mr-auto">
+                    <div className="flex flex-col lg:flex-row justify-center items-center gap-2">
                         <ArrowsRightLeftIcon className="w-6 h-6 text-gray-700" />
                         Max Length
                     </div>
                 </label>
 
+                <div className="flex items-center gap-2">
                 {!length && active == false && (
                     <button
                         onClick={() => {
                             setSettingFocus(true);
                             setActive(true);
                         }}
-                        className="ml-auto flex justify-center items-center gap-2 text-sm text-gray-700 hover:text-theme_primary-600 bg-transparent rounded-full border border-gray-700 px-2 py-1"
+                            className="flex justify-center items-center gap-2 text-sm text-gray-700 hover:text-theme_primary-600 bg-transparent rounded-full border border-gray-700 px-2 py-1"
                     >
                         Add <IoAddCircleOutline className="w-6 h-6 text-gray-700" />
                     </button>
                 )}
                 {active == true && (
                     <span
-                        className="ml-auto inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white"
+                            className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white"
                     >
                         {length ? `${length} words` : 'No Limit'}
 
@@ -51,7 +52,8 @@ function Length({ length, setLength, settingFocus, setSettingFocus }: Props) {
                     >
                         <IoCloseOutline className="w-6 h-6 text-theme_gray-700" />
                     </button>
-                )}
+                    )}
+                </div>
             </div>
             <Transition
                 as="div"

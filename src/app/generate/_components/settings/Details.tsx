@@ -15,24 +15,25 @@ function Details({ details, setDetails, settingFocus, setSettingFocus }: Props) 
     const [active, setActive] = useState<boolean>(false);
     return (
         <Card className="!mb-0 col-span-2">
-            <div className="flex gap-2 mb-2">
+            <div className="flex gap-2 mb-2 flex-col lg:flex-row justify-center items-center">
                 <PencilSquareIcon className="w-6 h-6 text-gray-700" />
-                <span className="block font-semibold">Details</span>
+                <span className="block font-semibold lg:mr-auto">Details</span>
 
+                <div className="flex gap-2">
                 {!details && (
                     <button
                         onClick={() => {
                             setSettingFocus(true);
                             setActive(true);
                         }}
-                        className="ml-auto flex justify-center items-center gap-2 text-sm text-gray-500 hover:text-gray-700 bg-transparent rounded-full border border-gray-700 px-2 py-1"
+                            className="flex justify-center items-center gap-2 text-sm text-gray-500 hover:text-gray-700 bg-transparent rounded-full border border-gray-700 px-2 py-1"
                     >
                         Add <IoAddCircleOutline className="w-6 h-6 text-gray-700" />
                     </button>
                 )}
                 {!!details && (
                     <span
-                        className="ml-auto inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white"
+                            className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white"
                     >
                         Include Details
                     </span>
@@ -47,7 +48,8 @@ function Details({ details, setDetails, settingFocus, setSettingFocus }: Props) 
                     >
                         <IoCloseOutline className="w-6 h-6 text-gray-700" />
                     </button>
-                )}
+                    )}
+                </div>
             </div>
 
             <Transition

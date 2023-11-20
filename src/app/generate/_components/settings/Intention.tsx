@@ -20,23 +20,24 @@ function Intention({ intention, setIntention, settingFocus, setSettingFocus, cla
         <>
 
             <Card className={`!mb-0 relative overflow-visible duration-300 transition ${className}`}>
-                <div className={`flex flex-col gap-2 mb-2 items-center`}>
+                <div className={`flex gap-2 justify-center items-center w-full flex-col lg:flex-row`}>
                     <TrophyIcon className="w-6 h-6 text-gray-700" />
-                    <span className="block font-semibold">Intention</span>
+                    <span className="block font-semibold lg:mr-auto">Intention</span>
+                    <div className='flex gap-2'>
                     {!intention && (
                         <button
                             onClick={() => {
                                 setSettingFocus(true);
                                 setActive(true);
                             }}
-                            className="ml-auto flex justify-center items-center gap-2 text-sm text-gray-500 hover:text-gray-700 bg-transparent rounded-full border border-gray-700 px-2 py-1"
+                                className="flex justify-center items-center gap-2 text-sm text-gray-500 hover:text-gray-700 bg-transparent rounded-full border border-gray-700 px-2 py-1"
                         >
                             Add <IoAddCircleOutline className="w-6 h-6 text-gray-700" />
                         </button>
                     )}
                     {!!intention && (
                         <span
-                            className="ml-auto inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white"
+                                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white"
                         >
                             {intention}
                         </span>
@@ -50,7 +51,8 @@ function Intention({ intention, setIntention, settingFocus, setSettingFocus, cla
                         >
                             <IoCloseOutline className="w-6 h-6 text-gray-700" />
                         </button>
-                    )}
+                        )}
+                    </div>
                 </div>
                 <Transition
                     as="div"

@@ -17,6 +17,8 @@ type GeneratorActionsProps = {
     setMeta: any;
     generation: any;
     setGeneration: any;
+    userMessages: any[];
+    setUserMessages: any;
 };
 
 const GeneratorActions = ({
@@ -30,6 +32,8 @@ const GeneratorActions = ({
     setMeta,
     generation,
     setGeneration,
+    userMessages,
+    setUserMessages,
 }: GeneratorActionsProps) => {
 
     /* * * * * * * * * * * * * * * * * * * */
@@ -40,7 +44,6 @@ const GeneratorActions = ({
     const [sources, setSources] = useState<any[]>([]);
     const [toneLibrary, setToneLibrary] = useState([]);
     const [formulaLibrary, setFormulaLibrary] = useState([]);
-    const [userMessages, setUserMessages] = useState<any[]>([]);
 
     /* * * * * * * * * * * * * * * * * * */
     /* Preserve thread as it is generated, generate title if needed
@@ -70,7 +73,6 @@ const GeneratorActions = ({
 
     const getTitle = async (payload: any) => {
         try {
-            console.log('start getTitle')
             const data = await fetch("/api/threads", {
                 method: 'POST',
                 headers: {
@@ -80,13 +82,10 @@ const GeneratorActions = ({
             });
 
             const response = await data.json();
-            console.log('title got: ', response.title);
 
             if (response.success && !!response.title) {
                 setMeta({ ...meta, title: response.title });
             }
-
-            console.log('end getTitle: ', meta)
         } catch (error) {
             console.log(error);
         }
@@ -153,12 +152,14 @@ const GeneratorActions = ({
                 const payload = {
                     "initial_prompt": firstUserMessage?.content,
                     "created": firstUserMessage?.createdAt,
+                    "userMessages": userMessages,
                     "messages": messages,
                 } as any;
 
                 !!generation ? payload['generation'] = generation : null;
 
                 preserveThread(payload);
+                console.log(payload)
 
             } catch (error) {
                 console.log('Error while loading: ', error)
@@ -166,7 +167,6 @@ const GeneratorActions = ({
         } else if (!isLoading && !!messages.length) {
             try {
                 if (messages.length > 5 && !meta.title) {
-                    console.log("fire title generation")
                     getTitle({
                         dataType: 'getTitle',
                         data: {
@@ -180,10 +180,12 @@ const GeneratorActions = ({
                 const payload = {
                     "initial_prompt": firstUserMessage?.content,
                     "created": firstUserMessage?.createdAt,
+                    "userMessages": userMessages,
                     "messages": messages,
                 }
 
                 preserveThread(payload);
+                console.log(payload)
 
             } catch (error) {
                 console.log('Error when finished: ', error)
@@ -256,22 +258,6 @@ const GeneratorActions = ({
     return (
 
         <>
-            {userMessages.length > 0 && (
-                <div className="flex flex-col items-start w-full mb-2">
-                    <div className="flex flex-row items-center">
-                        <span className="text-sm font-semibold text-gray-600 ml-2">{userMessages[userMessages.length - 1].content}</span>
-                        {/* display all of the settings used to generate the message */}
-                        {userMessages[userMessages.length - 1].settings.enabled && (
-                            <div className="flex flex-row items-center ml-2">
-                                <span className="text-sm font-semibold text-gray-600">|</span>
-                                <span className="text-sm font-semibold text-gray-600 ml-2">Tone: {userMessages[userMessages.length - 1].settings.tone}</span>
-                                <span className="text-sm font-semibold text-gray-600 ml-2">|</span>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
-
             <form
                 className={`${className}`}
                 onSubmit={(e) => {

@@ -66,19 +66,9 @@ const GeneratorContent = ({ conversation, className }: GeneratorContentProps) =>
     return (
         <div className={`${className}`}>
             {conversation.map((item: { id: React.Key | null | undefined; role: string; content: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.PromiseLikeOfReactNode | null | undefined; }, index: any) => (
-                <React.Fragment key={item.id}>
-                    {item.role === 'user' && (
-                        <>
-                            <div className="w-full p-2 sticky sticky-message top-0 z-10 rounded-b-3xl transition-all duration-300">
-                                <div className="sticky-content flex justify-end items-center gap-5 p-2 px-6 rounded-tl-3xl rounded-b-3xl roundedtr-sm prose bg-gray-100 ml-auto p-2 max-w-max transition-opacity duration-300">
-                                    <h2 className="text-sm m-0 flex items-center truncate">{item.content}</h2>
-                                </div>
-                            </div>
-                        </>
-                    )}
-
+                <>
                     {item.role === 'assistant' && (
-                        <div key={item.id} className="relative mt-4 m-y-8 mr-auto mb-4 p-2 px-6 prose anchor-message bg-gray-50 rounded-3xl rounded-tl-sm">
+                        <div key={item.id} className="relative ">
                             <div className="flex flex-col prose mx-auto relative group/actions">
                                 <ReactMarkdown
                                     className="mt-0"
@@ -92,7 +82,7 @@ const GeneratorContent = ({ conversation, className }: GeneratorContentProps) =>
                             </div>
                         </div>
                     )}
-                </React.Fragment>
+                </>
             ))}
         </div>
     );

@@ -8,6 +8,7 @@ import { Disclosure, Tab, Transition } from "@headlessui/react";
 import Card from "@/components/UI/Card";
 import GeneratorInformation from "./GeneratorInformation";
 import { useRouter } from "next/navigation";
+import { InfoIcon, ListIcon, SettingsIcon } from "@/components/icons";
 
 type GeneratorProps = {
     initConversation?: any | null;
@@ -17,17 +18,21 @@ type GeneratorProps = {
     tonesData?: any;
     formulasData?: any;
     generationId?: string;
+    userMessageData?: any;
+    savedData?: any;
 }
 
 
-export default function Generator({ initConversation, className, launcher, threadsData, tonesData, formulasData, generationId }: GeneratorProps) {
+export default function Generator({ initConversation, userMessageData, savedData, className, launcher, threadsData, tonesData, formulasData, generationId }: GeneratorProps) {
     const router = useRouter();
-    const [saved, setSaved] = useState(false);
+    const [saved, setSaved] = useState(savedData || false);
 
     const [generation, setGeneration] = useState<any>(generationId || '');
     const [meta, setMeta] = useState<any>({});
     const [conversation, setConversation] = useState<any[]>([]);
     const [currentResponse, setcurrentResponse] = useState({});
+    const [userMessages, setUserMessages] = useState<any[]>(userMessageData || []);
+
 
     const [threads, setThreads] = useState(threadsData || []);
     const [toneLibrary, setToneLibrary] = useState(tonesData || []);
@@ -44,7 +49,7 @@ export default function Generator({ initConversation, className, launcher, threa
         useSources: false,
     });
 
-    const [activePanel, setActivePanel] = useState<any>('generate');
+    const [activePanel, setActivePanel] = useState<any>('userMessages');
 
     // ###
     // ### CHANGE ACTIVE PANEL
@@ -127,7 +132,6 @@ export default function Generator({ initConversation, className, launcher, threa
     // ###
     // ### Get the meta data for the current thread
     const getMeta = async (threadId: string) => {
-        console.log('fire');
         if (!threadId) return;
         const res = await fetch('/api/threads', {
             method: 'POST',
@@ -173,6 +177,12 @@ export default function Generator({ initConversation, className, launcher, threa
         router.push(`/generate`)
     }
 
+
+    useEffect(() => {
+        console.log(userMessages);
+    }, [userMessages]);
+
+
     // ###
     // ### Build recent threads component
     const ThreadList = ({ threads, handleOpenThread }: any) => {
@@ -215,11 +225,8 @@ export default function Generator({ initConversation, className, launcher, threa
     return (
         <>
             <section className={`transition-all duration-300 relative grid flex-grow grid-cols-6 auto-rows-auto gap-4 p-4`}>
-
                 <div className="col-span-6 md:col-span-4 inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:16px_16px] flex flex-col">
-
                     <div className="w-full max-w-[800px] mx-auto py-4 relative">
-
                         <Disclosure>
                             {({ open }) => (
                                 <>
@@ -261,18 +268,44 @@ export default function Generator({ initConversation, className, launcher, threa
                             )}
                         </Disclosure>
                     </div>
-                    <Card className="flex-grow w-full max-w-[800px] p-4 mx-auto !mb-0 bg-neutral-50">
-                        <GeneratorContent conversation={conversation} />
+                    <Card className="flex-grow w-full max-w-[800px] p-4 mx-auto !mb-0 !bg-neutral-50">
+                        <GeneratorContent conversation={conversation} className="divide-y" />
                     </Card>
                 </div>
 
-
                 <div className="col-span-6 md:col-span-2 h-full bg-neutral-50 rounded-lg p-4 flex flex-col justify-end" >
-                    <div className="flex flex-col gap-4 z-40 sticky bottom-2">
-                        {/* Extra content | This is where I can put user prompts, */}
+
+                    <div className="w-full max-w-[800px] mx-auto relative mb-auto">
+                        <Disclosure>
+                            {({ open }) => (
+                                <>
+                                    <Disclosure.Button className={'bg-transparent text-gray-700 py-2 px-6 rounded-xl border border-gray-700 flex gap-4 truncate w-full'}>
+                                        make all commands sticky to the responses in the side column. Can do this by making command containers the same height as the corrisponding response container.
+                                    </Disclosure.Button>
+                                    <Transition
+                                        className={'bg-gray-700 text-white p-6 rounded-xl absolute left-0 top-full w-full shadow-lg max-h-[70vh] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 z-50'}
+                                        show={open}
+                                        enter="transition duration-100 ease-out"
+                                        enterFrom="transform -translate-y-6 opacity-0"
+                                        enterTo="transform translate-y-0 opacity-100"
+                                        leave="transition duration-75 ease-out"
+                                        leaveFrom="transform translate-y-0 opacity-100"
+                                        leaveTo="transform -translate-y-6 opacity-0"
+                                    >
+                                        <Disclosure.Panel static>
+
+                                        </Disclosure.Panel>
+                                    </Transition>
+                                </>
+                            )}
+                        </Disclosure>
+                    </div>
+
+                    <div className="flex flex-col gap-4">
+
                         <Transition
-                            className={'flex flex-col justify-end'}
-                            show={activePanel === 'generate'}
+                            className={'flex flex-col divide-y justify-end gap-4'}
+                            show={activePanel === 'userMessages'}
                             enter="transition duration-200 ease-out"
                             enterFrom="transform translate-y-10 opacity-0"
                             enterTo="transform translate-y-0 opacity-100"
@@ -281,8 +314,76 @@ export default function Generator({ initConversation, className, launcher, threa
                             leaveTo="transform translate-y-10 opacity-0"
                             unmount={false}
                         >
-                            Show user prompts and stuff here
+                            {userMessages.map((message: any, i: number) => {
+                                return (
+                                    <button key={i} className="flex flex-col gap-2 items-start rounded-md p-2 transition duration-300 group hover:bg-white hover:shadow-lg">
+                                        <div className="text-sm text-left flex justify-start font-semibold text-gray-600 w-full p-2 rounded-md transition duration-300 group-hover:bg-gray-700 group-hover:text-white"> {'>'} {message.content}</div>
+
+
+                                        {message.settings.enabled && (
+                                            <div className="flex flex-row flex-wrap items-center justify-start gap-2">
+                                                {!!message.settings.sources && (
+                                                    <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
+                                                        <span>Sources used</span>
+                                                    </span>
+                                                )}
+                                                {!!message.settings.contentType && (
+                                                    <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
+                                                        <span>Type</span>
+                                                        <span>|</span>
+                                                        <span className="truncate">{message.settings.contentType}</span>
+                                                    </span>
+                                                )}
+                                                {!!message.settings.tone && (
+                                                    <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
+                                                        <span>Tone</span>
+                                                        <span>|</span>
+                                                        <span className="truncate">{message.settings.tone}</span>
+                                                    </span>
+                                                )}
+                                                {!!message.settings.intention && (
+                                                    <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
+                                                        <span>Intention</span>
+                                                        <span>|</span>
+                                                        <span className="truncate">{message.settings.intention}</span>
+                                                    </span>
+                                                )}
+                                                {!!message.settings.length && (
+                                                    <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
+                                                        <span>Length</span>
+                                                        <span>|</span>
+                                                        <span className="truncate">{message.settings.length}</span>
+                                                    </span>
+                                                )}
+                                                {!!message.settings.details && (
+                                                    <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
+                                                        <span>Details</span>
+                                                        <span>|</span>
+                                                        <span className="truncate">{message.settings.details}</span>
+                                                    </span>
+                                                )}
+                                                {!!message.settings.formula && (
+                                                    <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
+                                                        <span>Formula</span>
+                                                        <span>|</span>
+                                                        <span className="truncate">{message.settings.formula}</span>
+                                                    </span>
+                                                )}
+
+
+                                                {/* <span className="text-xs font-semibold text-gray-400 ml-2">{message.settings.tone}</span>
+                                                <span className="text-xs font-semibold text-gray-400 ml-2">{message.settings.intention}</span>
+                                                <span className="text-xs font-semibold text-gray-400 ml-2">{message.settings.length}</span>
+                                                <span className="text-xs font-semibold text-gray-400 ml-2">{message.settings.details}</span>
+                                                <span className="text-xs font-semibold text-gray-400 ml-2">{message.settings.formula}</span>
+                                                <span className="text-xs font-semibold text-gray-400 ml-2">{message.settings.useSources}</span> */}
+                                            </div>
+                                        )}
+                                    </button>
+                                )
+                            })}
                         </Transition>
+
                         <Transition
                             className={'flex flex-col justify-end'}
                             show={activePanel === 'settings'}
@@ -321,42 +422,38 @@ export default function Generator({ initConversation, className, launcher, threa
                                 setMeta={setMeta} />
                         </Transition>
 
+
                         {/* Control switches and generator actions */}
                         <div className="flex flex-col gap-4">
-                            <div className="grid grid-cols-4 gap-2 border-b-[1px] border-gray-100 pb-2 mb-2 ">
+                            <div className="flex gap-2 border-t border-gray-200 pt-4 mt-4">
+                                <button
+                                    className={'group flex flex-col justify-center items-center gap-2 p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
+                                    onClick={(e) => changeActivePanel(e, 'userMessages')}
+                                    data-active="true"
+                                >
+                                    <span className="icon w-6 aspect-square flex justify-center items-center rounded-xl">
+                                        <ListIcon className="h-6 w-6" />
+                                    </span>
+
+                                </button>
 
                                 <button
-                                    className={'group flex flex-col justify-center items-center gap-2 w-full p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
+                                    className={'group flex flex-col justify-center items-center gap-2 p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
                                     onClick={(e) => changeActivePanel(e, 'settings')}
                                 >
-                                    <span className="icon w-5/6 aspect-square flex justify-center items-center rounded-xl bg-gray-200 group-data-[active=true]:bg-white">
-                                        Se
+                                    <span className="icon w-6 aspect-square flex justify-center items-center rounded-xl">
+                                        <SettingsIcon className={'h-6 w-6'} />
                                     </span>
-                                    Settings
                                 </button>
 
                                 <button
-                                    className={'group flex flex-col justify-center items-center gap-2 w-full p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
-                                    onClick={(e) => changeActivePanel(e, 'history')}
-                                >
-                                    <span className="icon w-5/6 aspect-square flex justify-center items-center rounded-xl bg-gray-200 group-data-[active=true]:bg-white">
-                                        Hi
-                                    </span>
-                                    History
-                                </button>
-
-                                <button
-                                    className={'group flex flex-col justify-center items-center gap-2 w-full p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
+                                    className={'group flex flex-col justify-center items-center gap-2 p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
                                     onClick={(e) => changeActivePanel(e, 'info')}
                                 >
-                                    <span className="icon w-5/6 aspect-square flex justify-center items-center rounded-xl bg-gray-200 group-data-[active=true]:bg-white">
-                                        In
+                                    <span className="icon w-6 aspect-square flex justify-center items-center rounded-xl">
+                                        <InfoIcon className="h-6 w-6" />
                                     </span>
-                                    Info
                                 </button>
-
-
-
                             </div>
 
                             <GeneratorActions
@@ -372,7 +469,10 @@ export default function Generator({ initConversation, className, launcher, threa
                                 meta={meta}
                                 generation={generation}
                                 setGeneration={setGeneration}
+                                userMessages={userMessages}
+                                setUserMessages={setUserMessages}
                             />
+
                         </div>
                     </div>
                 </div>

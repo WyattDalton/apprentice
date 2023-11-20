@@ -18,40 +18,42 @@ function ContentType({ contentType, setContentType, settingFocus, setSettingFocu
 
     return (
         <>
-            <Card className="!mb-0 grow relative overflow-visible">
-                <div className="!mb-0 flex flex-col justify-center items-center gap-2 flex-grow">
+            <Card className="!mb-0 relative overflow-visible">
+                <div className="!mb-0 flex flex-col lg:flex-row justify-center items-center gap-2 w-full">
                     <HashtagIcon className="w-6 h-6 text-gray-700" />
-                    <span className="block font-semibold">Type</span>
+                    <span className="block font-semibold lg:mr-auto">Type</span>
 
-                    {!contentType && (
-                        <button
-                            onClick={() => {
-                                setSettingFocus(true);
-                                setActive(true);
-                                console.log('fire')
-                            }}
-                            className="flex justify-center items-center gap-2 text-sm text-gray-500 hover:text-gray-700 bg-transparent rounded-full border border-gray-700 px-2 py-1"
-                        >
-                            Add <IoAddCircleOutline className="w-6 h-6 text-gray-700" />
-                        </button>
-                    )}
-                    {!!contentType && (
-                        <span
-                            className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white"
-                        >
-                            {contentType}
-                        </span>
-                    )}
-                    {!!contentType && (
-                        <button
-                            onClick={() => {
-                                setContentType('');
-                            }}
-                            className="text-sm text-gray-500 hover:text-gray-700 bg-transparent"
-                        >
-                            <IoCloseOutline className="w-6 h-6 text-dark" />
-                        </button>
-                    )}
+                    <div className="flex gap-2">
+                        {!contentType && (
+                            <button
+                                onClick={() => {
+                                    setSettingFocus(true);
+                                    setActive(true);
+                                    console.log('fire')
+                                }}
+                                className="flex justify-center items-center gap-2 text-sm text-gray-500 hover:text-gray-700 bg-transparent rounded-full border border-gray-700 px-2 py-1"
+                            >
+                                Add <IoAddCircleOutline className="w-6 h-6 text-gray-700" />
+                            </button>
+                        )}
+                        {!!contentType && (
+                            <span
+                                className="truncate inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white"
+                            >
+                                {contentType}
+                            </span>
+                        )}
+                        {!!contentType && (
+                            <button
+                                onClick={() => {
+                                    setContentType('');
+                                }}
+                                className="text-sm text-gray-500 hover:text-gray-700 bg-transparent"
+                            >
+                                <IoCloseOutline className="w-6 h-6 text-dark" />
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 <Transition

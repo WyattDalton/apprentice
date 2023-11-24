@@ -8,7 +8,7 @@ import { Disclosure, Tab, Transition } from "@headlessui/react";
 import Card from "@/components/UI/Card";
 import GeneratorInformation from "./GeneratorInformation";
 import { useRouter } from "next/navigation";
-import { InfoIcon, ListIcon, SettingsIcon } from "@/components/icons";
+import { set } from "lodash";
 
 type GeneratorProps = {
     initConversation?: any | null;
@@ -49,14 +49,21 @@ export default function Generator({ initConversation, userMessageData, savedData
         useSources: false,
     });
 
-    const [activePanel, setActivePanel] = useState<any>('userMessages');
+    const [activePanel, setActivePanel] = useState<any>(false);
 
     // ###
     // ### CHANGE ACTIVE PANEL
-    const changeActivePanel = (e: any, panel: string) => {
-        e.preventDefault();
-        if (panel === activePanel) return;
+    const changeActivePanel = (e: any, panel: any) => {
 
+        if (e == 'manual' && !panel) {
+            document.querySelectorAll('.panel-switch').forEach((el: any) => {
+                el.dataset.active = false;
+            });
+            setActivePanel(false);
+            return
+        }
+
+        e.preventDefault();
         const $this = e.target.closest('button');
 
         const siblings = $this.closest('div').querySelectorAll('button');
@@ -69,10 +76,39 @@ export default function Generator({ initConversation, userMessageData, savedData
 
         $this.dataset.active = true;
 
+        if (panel === activePanel) {
+            setActivePanel(false);
+            return
+        }
+
         setActivePanel(false);
         setTimeout(() => {
             setActivePanel(panel);
+            scrollToBottom('action');
+            return;
         }, 200);
+    }
+
+    // ###
+    // ### Scroll on generate / activate panel
+    const scrollToBottom = (type: any) => {
+        setTimeout(() => {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const scrollPosition = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+
+            if (documentHeight - scrollPosition - windowHeight <= 50 && type === 'content') {
+                window.scrollTo({
+                    top: documentHeight,
+                    behavior: 'smooth'
+                });
+            } else if (type === 'action') {
+                window.scrollTo({
+                    top: documentHeight,
+                    behavior: 'smooth'
+                });
+            }
+        }, 10);
     }
 
     // ###
@@ -178,11 +214,6 @@ export default function Generator({ initConversation, userMessageData, savedData
     }
 
 
-    useEffect(() => {
-        console.log(userMessages);
-    }, [userMessages]);
-
-
     // ###
     // ### Build recent threads component
     const ThreadList = ({ threads, handleOpenThread }: any) => {
@@ -224,8 +255,8 @@ export default function Generator({ initConversation, userMessageData, savedData
     // ### Render Generator
     return (
         <>
-            <section className={`transition-all duration-300 relative grid flex-grow grid-cols-6 auto-rows-auto gap-4 p-4`}>
-                <div className="col-span-6 md:col-span-4 inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:16px_16px] flex flex-col">
+            <section className={`transition-all duration-300 relative flex-grow flex flex-col lg:grid lg:grid-cols-6 lg:auto-rows-auto gap-4 p-4`}>
+                <div className="col-span-6 lg:col-span-4 inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:16px_16px] flex flex-col flex-grow">
                     <div className="w-full max-w-[800px] mx-auto py-4 relative">
                         <Disclosure>
                             {({ open }) => (
@@ -273,38 +304,11 @@ export default function Generator({ initConversation, userMessageData, savedData
                     </Card>
                 </div>
 
-                <div className="col-span-6 md:col-span-2 h-full bg-neutral-50 rounded-lg p-4 flex flex-col justify-end" >
-
-                    <div className="w-full max-w-[800px] mx-auto relative mb-auto">
-                        <Disclosure>
-                            {({ open }) => (
-                                <>
-                                    <Disclosure.Button className={'bg-transparent text-gray-700 py-2 px-6 rounded-xl border border-gray-700 flex gap-4 truncate w-full'}>
-                                        make all commands sticky to the responses in the side column. Can do this by making command containers the same height as the corrisponding response container.
-                                    </Disclosure.Button>
-                                    <Transition
-                                        className={'bg-gray-700 text-white p-6 rounded-xl absolute left-0 top-full w-full shadow-lg max-h-[70vh] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 z-50'}
-                                        show={open}
-                                        enter="transition duration-100 ease-out"
-                                        enterFrom="transform -translate-y-6 opacity-0"
-                                        enterTo="transform translate-y-0 opacity-100"
-                                        leave="transition duration-75 ease-out"
-                                        leaveFrom="transform translate-y-0 opacity-100"
-                                        leaveTo="transform -translate-y-6 opacity-0"
-                                    >
-                                        <Disclosure.Panel static>
-
-                                        </Disclosure.Panel>
-                                    </Transition>
-                                </>
-                            )}
-                        </Disclosure>
-                    </div>
-
-                    <div className="flex flex-col gap-4">
+                <div className="col-span-6 lg:col-span-2 lg:h-full flex flex-col gap-4 justify-end relative lg:bg-neutral-50 rounded-lg">
+                    <div>
 
                         <Transition
-                            className={'flex flex-col divide-y justify-end gap-4'}
+                            className={'flex flex-col divide-y justify-end gap-4 p-4 bg-gray-700 rounded-lg'}
                             show={activePanel === 'userMessages'}
                             enter="transition duration-200 ease-out"
                             enterFrom="transform translate-y-10 opacity-0"
@@ -316,8 +320,11 @@ export default function Generator({ initConversation, userMessageData, savedData
                         >
                             {userMessages.map((message: any, i: number) => {
                                 return (
-                                    <button key={i} className="flex flex-col gap-2 items-start rounded-md p-2 transition duration-300 group hover:bg-white hover:shadow-lg">
-                                        <div className="text-sm text-left flex justify-start font-semibold text-gray-600 w-full p-2 rounded-md transition duration-300 group-hover:bg-gray-700 group-hover:text-white"> {'>'} {message.content}</div>
+                                    <button key={i} className="group">
+                                        <div className="hover:bg-gray-800/20 p-2 mt-4 flex flex-col gap-2 items-start p-2 transition duration-300">
+
+
+                                            <div className="text-sm text-left flex justify-start font-semibold text-white w-full p-2"> {'>'} {message.content}</div>
 
 
                                         {message.settings.enabled && (
@@ -377,15 +384,17 @@ export default function Generator({ initConversation, userMessageData, savedData
                                                 <span className="text-xs font-semibold text-gray-400 ml-2">{message.settings.details}</span>
                                                 <span className="text-xs font-semibold text-gray-400 ml-2">{message.settings.formula}</span>
                                                 <span className="text-xs font-semibold text-gray-400 ml-2">{message.settings.useSources}</span> */}
-                                            </div>
-                                        )}
+                                                </div>
+
+                                            )}
+                                        </div>
                                     </button>
                                 )
                             })}
                         </Transition>
 
                         <Transition
-                            className={'flex flex-col justify-end'}
+                            className={'flex flex-col p-4 bg-gray-700 rounded-lg'}
                             show={activePanel === 'settings'}
                             enter="transition duration-200 ease-out"
                             enterFrom="transform translate-y-10 opacity-0"
@@ -405,7 +414,7 @@ export default function Generator({ initConversation, userMessageData, savedData
                         </Transition>
 
                         <Transition
-                            className={'flex flex-col'}
+                            className={'flex flex-col p-4 bg-gray-700 rounded-lg'}
                             show={activePanel === 'info'}
                             enter="transition duration-200 ease-out"
                             enterFrom="transform translate-y-10 opacity-0"
@@ -421,60 +430,50 @@ export default function Generator({ initConversation, userMessageData, savedData
                                 meta={meta}
                                 setMeta={setMeta} />
                         </Transition>
+                    </div>
 
 
                         {/* Control switches and generator actions */}
-                        <div className="flex flex-col gap-4">
-                            <div className="flex gap-2 border-t border-gray-200 pt-4 mt-4">
-                                <button
-                                    className={'group flex flex-col justify-center items-center gap-2 p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
-                                    onClick={(e) => changeActivePanel(e, 'userMessages')}
-                                    data-active="true"
-                                >
-                                    <span className="icon w-6 aspect-square flex justify-center items-center rounded-xl">
-                                        <ListIcon className="h-6 w-6" />
-                                    </span>
-
-                                </button>
-
-                                <button
-                                    className={'group flex flex-col justify-center items-center gap-2 p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
-                                    onClick={(e) => changeActivePanel(e, 'settings')}
-                                >
-                                    <span className="icon w-6 aspect-square flex justify-center items-center rounded-xl">
-                                        <SettingsIcon className={'h-6 w-6'} />
-                                    </span>
-                                </button>
-
-                                <button
-                                    className={'group flex flex-col justify-center items-center gap-2 p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
-                                    onClick={(e) => changeActivePanel(e, 'info')}
-                                >
-                                    <span className="icon w-6 aspect-square flex justify-center items-center rounded-xl">
-                                        <InfoIcon className="h-6 w-6" />
-                                    </span>
-                                </button>
-                            </div>
-
-                            <GeneratorActions
-                                className={`flex flex-wrap w-full gap-4 transition-all duration-300`}
-                                settings={settings}
-                                conversation={conversation}
-                                handleConversationChange={setConversation}
-                                currentResponse={currentResponse}
-                                handleCurrentResponseChange={setcurrentResponse}
-                                saved={saved}
-                                setSaved={setSaved}
-                                setMeta={setMeta}
-                                meta={meta}
-                                generation={generation}
-                                setGeneration={setGeneration}
-                                userMessages={userMessages}
-                                setUserMessages={setUserMessages}
-                            />
-
-                        </div>
+                    <div className="hidden lg:flex flex-col gap-4 sticky bottom-2 bg-white rounded-lg p-4 shadow-lg">
+                        <GeneratorActions
+                            className={`flex flex-wrap w-full gap-4 transition-all duration-300`}
+                            settings={settings}
+                            conversation={conversation}
+                            handleConversationChange={setConversation}
+                            currentResponse={currentResponse}
+                            handleCurrentResponseChange={setcurrentResponse}
+                            saved={saved}
+                            setSaved={setSaved}
+                            setMeta={setMeta}
+                            meta={meta}
+                            generation={generation}
+                            setGeneration={setGeneration}
+                            userMessages={userMessages}
+                            setUserMessages={setUserMessages}
+                            changeActivePanel={changeActivePanel}
+                            scrollToBottom={scrollToBottom}
+                        />
                     </div>
+                </div>
+                <div className="lg:hidden flex flex-col gap-4 sticky bottom-0 bg-white rounded-t-lg p-4 shadow-lg">
+                    <GeneratorActions
+                        className={`flex flex-wrap w-full gap-4 transition-all duration-300`}
+                        settings={settings}
+                        conversation={conversation}
+                        handleConversationChange={setConversation}
+                        currentResponse={currentResponse}
+                        handleCurrentResponseChange={setcurrentResponse}
+                        saved={saved}
+                        setSaved={setSaved}
+                        setMeta={setMeta}
+                        meta={meta}
+                        generation={generation}
+                        setGeneration={setGeneration}
+                        userMessages={userMessages}
+                        setUserMessages={setUserMessages}
+                        changeActivePanel={changeActivePanel}
+                        scrollToBottom={scrollToBottom}
+                    />
                 </div>
             </section>
         </>

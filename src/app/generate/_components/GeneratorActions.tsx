@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useMemo, memo } from "react";
 import { useChat } from 'ai/react'
 import LoadingText from "@/components/LoadingText";
+import { GeneratorArrowIcon, InfoIcon, ListIcon, SettingsIcon } from "@/components/icons";
 
 type GeneratorActionsProps = {
     className?: string | '';
@@ -19,6 +20,8 @@ type GeneratorActionsProps = {
     setGeneration: any;
     userMessages: any[];
     setUserMessages: any;
+    changeActivePanel: any;
+    scrollToBottom: any;
 };
 
 const GeneratorActions = ({
@@ -34,6 +37,8 @@ const GeneratorActions = ({
     setGeneration,
     userMessages,
     setUserMessages,
+    changeActivePanel,
+    scrollToBottom,
 }: GeneratorActionsProps) => {
 
     /* * * * * * * * * * * * * * * * * * * */
@@ -100,6 +105,8 @@ const GeneratorActions = ({
             if (!!settings.enabled) {
                 setLastUserMessageIndex(messages.length);
             }
+            changeActivePanel('manual', false);
+            scrollToBottom('action');
         },
         body: { settings, sources, toneLibrary, formulaLibrary },
         initialMessages: conversation,
@@ -137,6 +144,7 @@ const GeneratorActions = ({
         if (JSON.stringify(messages) !== JSON.stringify(conversation)) {
             handleConversationChange(messages)
         }
+        scrollToBottom('content');
     }, [messages])
 
     /* * * * * * * * * * * * * * * * * * * */
@@ -159,7 +167,6 @@ const GeneratorActions = ({
                 !!generation ? payload['generation'] = generation : null;
 
                 preserveThread(payload);
-                console.log(payload)
 
             } catch (error) {
                 console.log('Error while loading: ', error)
@@ -275,7 +282,7 @@ const GeneratorActions = ({
                 }}
             >
                 <textarea
-                    className={`block w-full outline-none break-words p-4 resize-none bg-white shadow-lg rounded-md transition-all transition-300}`}
+                    className={`block w-full outline-none break-words p-4 resize-none bg-gray-200 rounded-md transition-all transition-300}`}
                     placeholder="Enter your instructions..."
                     name="prompt"
                     rows={1}
@@ -286,14 +293,50 @@ const GeneratorActions = ({
                     }
                 ></textarea>
 
+                <div className="flex gap-2">
+                    <button
+                        className={'gpanel-switch roup flex flex-col justify-center items-center gap-2 p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
+                        onClick={(e) => changeActivePanel(e, 'userMessages')}
+                        data-active="false"
+                    >
+                        <span className="icon w-6 aspect-square flex justify-center items-center rounded-xl">
+                            <ListIcon className="h-6 w-6" />
+                        </span>
+
+                    </button>
+
+                    <button
+                        className={'panel-switch group flex flex-col justify-center items-center gap-2 p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
+                        onClick={(e) => changeActivePanel(e, 'settings')}
+                        data-active="false"
+                    >
+                        <span className="icon w-6 aspect-square flex justify-center items-center rounded-xl">
+                            <SettingsIcon className={'h-6 w-6'} />
+                        </span>
+                    </button>
+
+                    <button
+                        className={'panel-switch group flex flex-col justify-center items-center gap-2 p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
+                        onClick={(e) => changeActivePanel(e, 'info')}
+                        data-active="false"
+                    >
+                        <span className="icon w-6 aspect-square flex justify-center items-center rounded-xl">
+                            <InfoIcon className="h-6 w-6" />
+                        </span>
+                    </button>
+                </div>
+
                 <button
-                    className="px-6 py-2 w-full text-gray-700 bg-transparent border border-gray-700 rounded-md mt-auto"
+                    className="ml-auto"
                     type="submit"
                 >
                     {isLoading ? (
                         <LoadingText text="Loading" className={""} iconClassName={""} />
                     ) : (
-                            'Generate content'
+                            <span className="flex gap-2 items-center border border-gray-700 rounded-md bg-gray-700 text-white p-2 ml-auto lg:px-6 lg:py-2 lg:mt-auto">
+                                <span className="hidden lg:inline-block">Generate</span>
+                                <GeneratorArrowIcon className="h-4 w-4 inline-block" />
+                            </span>
                     )}
                 </button>
 

@@ -5,6 +5,7 @@ import {
 	faHeart,
 	faGauge,
 	faInfoCircle,
+	faAngleDoubleRight,
 } from '@fortawesome/free-solid-svg-icons';
 
 export const SettingsIcon = ({ className }) => {
@@ -37,5 +38,14 @@ export const InfoIcon = ({ className }) => {
 export const DashboardIcon = ({ className }) => {
 	return (
 		<FontAwesomeIcon className={!!className ? className : ''} icon={faGauge} />
+	);
+};
+
+export const GeneratorArrowIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon
+			className={!!className ? className : ''}
+			icon={faAngleDoubleRight}
+		/>
 	);
 };

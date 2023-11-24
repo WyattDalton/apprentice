@@ -5,6 +5,7 @@ import Card from "@/components/UI/Card";
 import { Tab, Transition } from "@headlessui/react";
 import LoadingText from "@/components/LoadingText";
 
+
 type AddSourceProps = {
     setUpdating: any,
     setSourcesData: any,
@@ -167,17 +168,17 @@ function AddSource({ setUpdating, setSourcesData, sourcesData }: AddSourceProps)
     return (
         <Card className="w-full">
             <Tab.Group>
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex flex-col md:flex-row gap-2 items-center justify-between mb-2">
                     <h2>Add a Source</h2>
                     <Tab.List className="flex bg-gray-100 px-4 py-2 rounded-full gap-2">
-                        <Tab className="ui-selected:bg-secondary px-4 py-2 rounded-full text-dark">Files</Tab>
-                        <Tab className="ui-selected:bg-secondary px-4 py-2 rounded-full text-dark">Urls</Tab>
+                        <Tab className="ui-selected:bg-gray-700 px-4 py-2 rounded-full text-gray-500 ui-selected:text-white">Files</Tab>
+                        <Tab className="ui-selected:bg-gray-700 px-4 py-2 rounded-full text-gray-500 ui-selected:text-white">Urls</Tab>
                     </Tab.List>
                 </div>
                 <Tab.Panels>
                     <Tab.Panel>
                         <div
-                            className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-md"
+                            className="flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-md"
                             onDragOver={handleDragOver}
                             onDrop={handleDrop}
                         >
@@ -185,7 +186,7 @@ function AddSource({ setUpdating, setSourcesData, sourcesData }: AddSourceProps)
                                 <p className="text-gray-500">Drag and drop a file here</p>
                                 <p className="text-gray-500">or</p>
                                 <button
-                                    className="px-4 py-2 text-dark bg-secondary rounded-md"
+                                    className="px-4 py-2 text-white bg-gray-700 rounded-md"
                                     onClick={() => fileInputRef.current!.click()}
                                 >
                                     Select a file
@@ -218,7 +219,7 @@ function AddSource({ setUpdating, setSourcesData, sourcesData }: AddSourceProps)
                         >
                             <input type="text" className="w-full rounded-md bg-gray-100 px-4 py-2" value={url} onChange={(e) => setUrl(e.target.value)} />
 
-                            <button onClick={() => onSubmitUrl(url)} className="px-4 py-2 text-dark bg-secondary rounded-md">Add URL to Sources</button>
+                            <button onClick={() => onSubmitUrl(url)} className="px-4 py-2 text-white bg-gray-700 rounded-md">Add URL to Sources</button>
                             <Transition
                                 show={loading}
                                 enter="transition-opacity duration-300"

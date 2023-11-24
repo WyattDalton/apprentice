@@ -8,6 +8,8 @@ import {
 	faAngleDoubleRight,
 	faChevronDown,
 	faChevronUp,
+	faFile,
+	faLink,
 } from '@fortawesome/free-solid-svg-icons';
 
 export const SettingsIcon = ({ className }) => {
@@ -67,5 +69,17 @@ export const ArrowUpIcon = ({ className }) => {
 			className={!!className ? className : ''}
 			icon={faChevronUp}
 		/>
+	);
+};
+
+export const FileIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon className={!!className ? className : ''} icon={faFile} />
+	);
+};
+
+export const LinkIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon className={!!className ? className : ''} icon={faLink} />
 	);
 };

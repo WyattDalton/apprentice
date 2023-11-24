@@ -18,16 +18,8 @@ export default async function SourcesUi({ sources }: SourcesUiProps) {
         setSourcesData(sources)
     }, [sources])
 
-    useEffect(() => {
-        console.log(sourcesData)
-    }, [sourcesData])
-
-    useEffect(() => {
-        console.log(updating);
-    }, [updating]);
-
     return (
-        <section className='w-[90%] mx-auto'>
+        <section className='w-[90%] mx-auto flex flex-col gap-4 h-full flex-grow'>
             <AddSource setUpdating={setUpdating} sourcesData={sourcesData} setSourcesData={setSourcesData} />
             <SourcesGrid data={sourcesData} />
         </section>

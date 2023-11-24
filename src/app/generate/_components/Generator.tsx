@@ -300,7 +300,7 @@ export default function Generator({ initConversation, userMessageData, savedData
                         </Disclosure>
                     </div>
                     <Card className="flex-grow w-full max-w-[800px] p-4 mx-auto !mb-0 !bg-neutral-50">
-                        <GeneratorContent conversation={conversation} className="divide-y" />
+                        <GeneratorContent conversation={conversation} className="" />
                     </Card>
                 </div>
 

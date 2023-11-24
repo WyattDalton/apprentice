@@ -1,3 +1,4 @@
+import { GeneratorArrowIcon } from "@/components/icons";
 import React from "react";
 import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
@@ -65,8 +66,14 @@ const GeneratorContent = ({ conversation, className }: GeneratorContentProps) =>
 
     return (
         <div className={`${className}`}>
-            {conversation.map((item: { id: React.Key | null | undefined; role: string; content: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.PromiseLikeOfReactNode | null | undefined; }, index: any) => (
+            {conversation.map((item: any, index: any) => (
+
                 <>
+                    {item.role === 'user' && (
+                        <span key={item.id} className="bg-gray-200 rounded-full text-gray-700 py-1 px-4 mt-4 inline-block" data-scrollToAnchor={item.id}>
+                            <GeneratorArrowIcon className={'h-4 w-4 inline-block'} /> {item.content}
+                        </span>
+                    )}
                     {item.role === 'assistant' && (
                         <div key={item.id} className="relative ">
                             <div className="flex flex-col prose mx-auto relative group/actions">

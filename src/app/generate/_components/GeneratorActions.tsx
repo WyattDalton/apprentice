@@ -113,6 +113,8 @@ const GeneratorActions = ({
     })
 
     const handleUserMessages = (input: any) => {
+        if (!input) return;
+
         const userMessage = {
             "content": input,
             "role": "user",
@@ -157,6 +159,7 @@ const GeneratorActions = ({
             try {
 
                 const firstUserMessage = messages.find((message) => message.role === 'user');
+
                 const payload = {
                     "initial_prompt": firstUserMessage?.content,
                     "created": firstUserMessage?.createdAt,

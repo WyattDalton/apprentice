@@ -8,7 +8,7 @@ import { Disclosure, Tab, Transition } from "@headlessui/react";
 import Card from "@/components/UI/Card";
 import GeneratorInformation from "./GeneratorInformation";
 import { useRouter } from "next/navigation";
-import { set } from "lodash";
+import { ArrowDownIcon, ArrowUpIcon } from "@/components/icons";
 
 type GeneratorProps = {
     initConversation?: any | null;
@@ -261,11 +261,9 @@ export default function Generator({ initConversation, userMessageData, savedData
                         <Disclosure>
                             {({ open }) => (
                                 <>
-                                    <Disclosure.Button className={'bg-transparent text-gray-700 py-2 px-6 rounded-xl border border-gray-700 flex gap-4'}>
-                                        {!!meta && meta.title ? meta.title : 'New content'}
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 transform -rotate-45 transition duration-150" viewBox="0 0 25 25" fill="currentColor">
-                                            <path fillRule="evenodd" d="M7.293 7.293a1 1 0 011.414 0L14 12.586l4.293-4.293a1 1 0 111.414 1.414l-5 5a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414z" clipRule="evenodd" />
-                                        </svg>
+                                    <Disclosure.Button className={'bg-transparent text-gray-700 py-2 px-6 rounded-xl border border-gray-700 flex gap-4 items-center'}>
+                                        <span className="truncate">{!!meta && meta.title ? meta.title : 'New content'}</span>
+                                        {!!open ? <ArrowUpIcon className="h-4 w-4" /> : <ArrowDownIcon className="h-4 w-4" />}
                                     </Disclosure.Button>
                                     <Transition
                                         className={'bg-gray-700 text-white p-6 rounded-xl absolute left-0 top-full w-full shadow-lg max-h-[70vh] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 z-50'}
@@ -318,6 +316,10 @@ export default function Generator({ initConversation, userMessageData, savedData
                             leaveTo="transform translate-y-10 opacity-0"
                             unmount={false}
                         >
+                            {!userMessages && (
+                                <span className="text-sm text-white">No user messages yet.</span>
+                            )}
+
                             {userMessages.map((message: any, i: number) => {
                                 return (
                                     <button key={i} className="group">

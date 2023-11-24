@@ -6,6 +6,8 @@ import {
 	faGauge,
 	faInfoCircle,
 	faAngleDoubleRight,
+	faChevronDown,
+	faChevronUp,
 } from '@fortawesome/free-solid-svg-icons';
 
 export const SettingsIcon = ({ className }) => {
@@ -46,6 +48,24 @@ export const GeneratorArrowIcon = ({ className }) => {
 		<FontAwesomeIcon
 			className={!!className ? className : ''}
 			icon={faAngleDoubleRight}
+		/>
+	);
+};
+
+export const ArrowDownIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon
+			className={!!className ? className : ''}
+			icon={faChevronDown}
+		/>
+	);
+};
+
+export const ArrowUpIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon
+			className={!!className ? className : ''}
+			icon={faChevronUp}
 		/>
 	);
 };

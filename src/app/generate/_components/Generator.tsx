@@ -9,6 +9,8 @@ import Card from "@/components/UI/Card";
 import GeneratorInformation from "./GeneratorInformation";
 import { useRouter } from "next/navigation";
 import { ArrowDownIcon, ArrowUpIcon } from "@/components/icons";
+import { getMongoDB } from "@/components/utils/getMongo";
+
 
 type GeneratorProps = {
     initConversation?: any | null;
@@ -116,52 +118,39 @@ export default function Generator({ initConversation, savedData, className, laun
     }, [initConversation])
 
     // ###
-    // ### GET TONES
-    const getTones = async () => {
-        const res = await fetch('/api/tonesGetAll');
-        if (!res.ok) {
-            throw new Error(res.statusText);
-        }
-        const tonesRes = await res.json();
-        setToneLibrary(tonesRes.tones);
-    };
+    // ### Get all generator data
+    const getGeneratorData = async () => {
+        try {
 
+            const payload = {} as any;
+            payload['dataFor'] = 'generator';
+            !!generation ? payload['thread'] = generation : payload['thread'] = false;
 
-    // ###
-    // ### GET FORMULAS
-    const getFormulas = async () => {
-        const payload = {
-            'dataType': 'get',
-            'data': { "_id": false },
-        }
-        const res = await fetch('/api/formulas', {
-            method: 'POST',
-            body: JSON.stringify(payload),
-        });
+            const data = await fetch("/api/data", {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
 
-        if (!res.ok) {
-            throw new Error(res.statusText);
+            if (data.status === 200) {
+                const res = await data.json();
+                setToneLibrary(res.data.tones);
+                setFormulaLibrary(res.data.formulas);
+                setThreads(res.data.threads);
+                setMeta(res.data.meta);
+            }
+        } catch (error) {
+            console.log(error);
         }
-        const formulaRes = await res.json();
-        setFormulaLibrary(formulaRes.formulas);
-    };
-
-    // ###
-    // ### GET THREADS
-    const getThreads = async () => {
-        const res = await fetch('/api/threads', {
-            method: 'POST',
-            body: JSON.stringify({
-                dataType: 'get',
-                data: { _id: false },
-            }),
-        });
-        if (!res.ok) {
-            throw new Error(res.statusText);
-        }
-        const threadsRes = await res.json();
-        setThreads(threadsRes.threads);
     }
+
+
+    // ###
+    // ### Get data on app load
+    useEffect(() => {
+        getGeneratorData();
+    }, [])
+
+
 
     // ###
     // ### Get the meta data for the current thread
@@ -186,18 +175,10 @@ export default function Generator({ initConversation, savedData, className, laun
 
         setMeta(threadMeta);
     }
-
-    // ###
-    // ### Trigger data fetches
-    useEffect(() => {
-        getTones();
-        getFormulas();
-        getThreads();
-    }, []);
-
     useEffect(() => {
         getMeta(generation);
     }, [generation]);
+
 
     // ###
     // ### Open a new thread in the generator

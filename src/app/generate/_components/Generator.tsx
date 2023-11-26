@@ -128,7 +128,8 @@ export default function Generator({ initConversation, savedData, className, laun
 
             const data = await fetch("/api/data", {
                 method: 'POST',
-                body: JSON.stringify(payload)
+                body: JSON.stringify(payload),
+                cache: 'no-store',
             });
 
             if (data.status === 200) {

@@ -9,7 +9,7 @@ const getMessages = async (idString: any) => {
         const db = await getMongoDB() as any;
         const id = new ObjectId(idString);
         const thread = await db.collection("threads").findOne({ _id: id });
-        return { messages: thread.messages, userMessages: thread.userMessages, saved: thread.saved };
+        return { messages: thread.messages, saved: thread.saved };
     } catch (error) {
         console.log(error);
     }
@@ -17,6 +17,6 @@ const getMessages = async (idString: any) => {
 
 export default async function Page({ params }: { params: { id: string } }) {
     const thread = await getMessages(params.id);
-    return <GeneratorSingleUi messagesData={thread?.messages} userMessageData={thread?.userMessages} savedData={thread?.saved} generationId={params.id} />;
+    return <GeneratorSingleUi messagesData={thread?.messages} savedData={thread?.saved} generationId={params.id} />;
 }
 

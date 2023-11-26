@@ -1,4 +1,5 @@
-import { GeneratorArrowIcon } from "@/components/icons";
+import { ArrowDownIcon, ArrowUpIcon, GeneratorArrowIcon } from "@/components/icons";
+import { Disclosure, Transition } from "@headlessui/react";
 import React from "react";
 import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
@@ -70,10 +71,88 @@ const GeneratorContent = ({ conversation, className }: GeneratorContentProps) =>
 
                 <>
                     {item.role === 'user' && (
-                        <span key={item.id} className="bg-gray-200 rounded-full text-gray-700 py-1 px-4 mt-4 inline-block" data-scrollToAnchor={item.id}>
-                            <GeneratorArrowIcon className={'h-4 w-4 inline-block'} /> {item.content}
-                        </span>
+                        !!item.settings ? (
+                            <Disclosure key={item.id}>
+                                {({ open }) => (
+                                    <>
+                                        <div className="relative mt-4">
+                                            <Disclosure.Button className={'bg-gray-200 text-gray-700 py-1 px-4 rounded-full flex gap-2 items-center'}>
+                                                <span className="truncate">{item.content}</span>
+                                                {!!open ? <ArrowUpIcon className="h-4 w-4" /> : <ArrowDownIcon className="h-4 w-4" />}
+                                            </Disclosure.Button>
+
+                                            <Transition
+                                                className={'bg-gray-700 text-white p-6 rounded-xl absolute left-0 top-[120%] w-full max-w-[400px] shadow-lg max-h-[70vh] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 z-50'}
+                                                show={open}
+                                                enter="transition duration-100 ease-out"
+                                                enterFrom="transform -translate-y-6 opacity-0"
+                                                enterTo="transform translate-y-0 opacity-100"
+                                                leave="transition duration-75 ease-out"
+                                                leaveFrom="transform translate-y-0 opacity-100"
+                                                leaveTo="transform -translate-y-6 opacity-0"
+                                            >
+                                                <Disclosure.Panel static>
+                                                    <div className="flex flex-row flex-wrap items-center justify-start gap-2">
+                                                        <h3 className="text-lg font-bold border-b border-white/20 w-full pb-2 mb-2">Settings used for this generation</h3>
+                                                        {!!item.settings.sources && (
+                                                            <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
+                                                                <span>Sources used</span>
+                                                            </span>
+                                                        )}
+                                                        {!!item.settings.contentType && (
+                                                            <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
+                                                                <span>Type</span>
+                                                                <span>|</span>
+                                                                <span className="truncate">{item.settings.contentType}</span>
+                                                            </span>
+                                                        )}
+                                                        {!!item.settings.tone && (
+                                                            <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
+                                                                <span>Tone</span>
+                                                                <span>|</span>
+                                                                <span className="truncate">{item.settings.tone}</span>
+                                                            </span>
+                                                        )}
+                                                        {!!item.settings.intention && (
+                                                            <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
+                                                                <span>Intention</span>
+                                                                <span>|</span>
+                                                                <span className="truncate">{item.settings.intention}</span>
+                                                            </span>
+                                                        )}
+                                                        {!!item.settings.length && (
+                                                            <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
+                                                                <span>Length</span>
+                                                                <span>|</span>
+                                                                <span className="truncate">{item.settings.length}</span>
+                                                            </span>
+                                                        )}
+                                                        {!!item.settings.details && (
+                                                            <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
+                                                                <span>Details</span>
+                                                                <span>|</span>
+                                                                <span className="truncate">{item.settings.details}</span>
+                                                            </span>
+                                                        )}
+                                                        {!!item.settings.formula && (
+                                                            <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
+                                                                <span>Formula</span>
+                                                                <span>|</span>
+                                                                <span className="truncate">{item.settings.formula}</span>
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </Disclosure.Panel>
+                                            </Transition>
+                                        </div>
+                                    </>
+                                )}
+                            </Disclosure>
+                        ) : (
+                            <div key={item.id} className="relative truncate bg-gray-200 text-gray-700 py-1 px-4 rounded-full w-min max-w-full mt-4">{item.content}</div>
+                        )
                     )}
+
                     {item.role === 'assistant' && (
                         <div key={item.id} className="relative ">
                             <div className="flex flex-col prose mx-auto relative group/actions">

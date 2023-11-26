@@ -13,14 +13,14 @@ export async function POST(req: Request) {
         const saved = data.saved
         const messages = data.messages
         const created = data.created
-        const userMessages = data.userMessages
         const _id = !!data._id ? data._id : null;
 
         const payload = {} as any;
 
         if (!!saved) saved == 'true' ? payload['saved'] = true : payload['saved'] = false;
         if (!!messages) payload['messages'] = messages;
-        if (!!userMessages) payload['userMessages'] = userMessages;
+
+        console.log(payload)
 
         if (!!_id) {
             const response = await threads.updateOne(

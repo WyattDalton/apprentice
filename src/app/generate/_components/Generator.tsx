@@ -18,12 +18,11 @@ type GeneratorProps = {
     tonesData?: any;
     formulasData?: any;
     generationId?: string;
-    userMessageData?: any;
     savedData?: any;
 }
 
 
-export default function Generator({ initConversation, userMessageData, savedData, className, launcher, threadsData, tonesData, formulasData, generationId }: GeneratorProps) {
+export default function Generator({ initConversation, savedData, className, launcher, threadsData, tonesData, formulasData, generationId }: GeneratorProps) {
     const router = useRouter();
     const [saved, setSaved] = useState(savedData || false);
 
@@ -31,7 +30,6 @@ export default function Generator({ initConversation, userMessageData, savedData
     const [meta, setMeta] = useState<any>({});
     const [conversation, setConversation] = useState<any[]>([]);
     const [currentResponse, setcurrentResponse] = useState({});
-    const [userMessages, setUserMessages] = useState<any[]>(userMessageData || []);
 
 
     const [threads, setThreads] = useState(threadsData || []);
@@ -256,8 +254,8 @@ export default function Generator({ initConversation, userMessageData, savedData
     return (
         <>
             <section className={`transition-all duration-300 relative flex-grow flex flex-col lg:grid lg:grid-cols-6 lg:auto-rows-auto gap-4 p-4`}>
-                <div className="col-span-6 lg:col-span-4 inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:16px_16px] flex flex-col flex-grow">
-                    <div className="w-full max-w-[800px] mx-auto py-4 relative">
+                <div className="col-span-6 lg:col-span-4 inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:16px_16px] flex flex-col flex-grow px-[5%]">
+                    <div className="w-full mx-auto max-w-[800px] py-4 relative">
                         <Disclosure>
                             {({ open }) => (
                                 <>
@@ -297,103 +295,13 @@ export default function Generator({ initConversation, userMessageData, savedData
                             )}
                         </Disclosure>
                     </div>
-                    <Card className="flex-grow w-full max-w-[800px] p-4 mx-auto !mb-0 !bg-neutral-50">
+                    <Card className="flex-grow w-full max-w-[800px] p-4 mx-auto !overflow-visible !mb-0 !bg-neutral-50">
                         <GeneratorContent conversation={conversation} className="" />
                     </Card>
                 </div>
 
                 <div className="col-span-6 lg:col-span-2 lg:h-full flex flex-col gap-4 justify-end relative lg:bg-neutral-50 rounded-lg">
                     <div>
-
-                        <Transition
-                            className={'flex flex-col divide-y justify-end gap-4 p-4 bg-gray-700 rounded-lg'}
-                            show={activePanel === 'userMessages'}
-                            enter="transition duration-200 ease-out"
-                            enterFrom="transform translate-y-10 opacity-0"
-                            enterTo="transform translate-y-0 opacity-100"
-                            leave="transition duration-200 ease-out"
-                            leaveFrom="transform translate-y-0 opacity-100"
-                            leaveTo="transform translate-y-10 opacity-0"
-                            unmount={false}
-                        >
-                            {!userMessages && (
-                                <span className="text-sm text-white">No user messages yet.</span>
-                            )}
-
-                            {userMessages.map((message: any, i: number) => {
-                                return (
-                                    <button key={i} className="group">
-                                        <div className="hover:bg-gray-800/20 p-2 mt-4 flex flex-col gap-2 items-start p-2 transition duration-300">
-
-
-                                            <div className="text-sm text-left flex justify-start font-semibold text-white w-full p-2"> {'>'} {message.content}</div>
-
-
-                                        {message.settings.enabled && (
-                                            <div className="flex flex-row flex-wrap items-center justify-start gap-2">
-                                                {!!message.settings.sources && (
-                                                    <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
-                                                        <span>Sources used</span>
-                                                    </span>
-                                                )}
-                                                {!!message.settings.contentType && (
-                                                    <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
-                                                        <span>Type</span>
-                                                        <span>|</span>
-                                                        <span className="truncate">{message.settings.contentType}</span>
-                                                    </span>
-                                                )}
-                                                {!!message.settings.tone && (
-                                                    <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
-                                                        <span>Tone</span>
-                                                        <span>|</span>
-                                                        <span className="truncate">{message.settings.tone}</span>
-                                                    </span>
-                                                )}
-                                                {!!message.settings.intention && (
-                                                    <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
-                                                        <span>Intention</span>
-                                                        <span>|</span>
-                                                        <span className="truncate">{message.settings.intention}</span>
-                                                    </span>
-                                                )}
-                                                {!!message.settings.length && (
-                                                    <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
-                                                        <span>Length</span>
-                                                        <span>|</span>
-                                                        <span className="truncate">{message.settings.length}</span>
-                                                    </span>
-                                                )}
-                                                {!!message.settings.details && (
-                                                    <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
-                                                        <span>Details</span>
-                                                        <span>|</span>
-                                                        <span className="truncate">{message.settings.details}</span>
-                                                    </span>
-                                                )}
-                                                {!!message.settings.formula && (
-                                                    <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1">
-                                                        <span>Formula</span>
-                                                        <span>|</span>
-                                                        <span className="truncate">{message.settings.formula}</span>
-                                                    </span>
-                                                )}
-
-
-                                                {/* <span className="text-xs font-semibold text-gray-400 ml-2">{message.settings.tone}</span>
-                                                <span className="text-xs font-semibold text-gray-400 ml-2">{message.settings.intention}</span>
-                                                <span className="text-xs font-semibold text-gray-400 ml-2">{message.settings.length}</span>
-                                                <span className="text-xs font-semibold text-gray-400 ml-2">{message.settings.details}</span>
-                                                <span className="text-xs font-semibold text-gray-400 ml-2">{message.settings.formula}</span>
-                                                <span className="text-xs font-semibold text-gray-400 ml-2">{message.settings.useSources}</span> */}
-                                                </div>
-
-                                            )}
-                                        </div>
-                                    </button>
-                                )
-                            })}
-                        </Transition>
 
                         <Transition
                             className={'flex flex-col p-4 bg-gray-700 rounded-lg'}
@@ -450,8 +358,6 @@ export default function Generator({ initConversation, userMessageData, savedData
                             meta={meta}
                             generation={generation}
                             setGeneration={setGeneration}
-                            userMessages={userMessages}
-                            setUserMessages={setUserMessages}
                             changeActivePanel={changeActivePanel}
                             scrollToBottom={scrollToBottom}
                         />
@@ -471,8 +377,6 @@ export default function Generator({ initConversation, userMessageData, savedData
                         meta={meta}
                         generation={generation}
                         setGeneration={setGeneration}
-                        userMessages={userMessages}
-                        setUserMessages={setUserMessages}
                         changeActivePanel={changeActivePanel}
                         scrollToBottom={scrollToBottom}
                     />

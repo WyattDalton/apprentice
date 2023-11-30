@@ -14,13 +14,13 @@ export async function POST(req: NextRequest) {
 
         if (dataFor === 'generator') {
 
-            const [sources, tones, formulas, threads, user] = await Promise.all([
-                db.collection("sources").find({}).toArray(),
-                db.collection("tones").find({}).toArray(),
-                db.collection("formulas").find({}).toArray(),
-                db.collection("threads").find({}).toArray(),
-                db.collection("users").findOne({ userId: userData.id }),
-            ]);
+            const payload = {} as any;
+
+            const sources = await db.collection("sources").find({}).toArray();
+            const tones = await db.collection("tones").find({}).toArray();
+            const formulas = await db.collection("formulas").find({}).toArray();
+            const threads = await db.collection("threads").find({}).toArray();
+            const user = await db.collection("users").findOne({ userId: userData.id });
 
             let threadMeta = {} as any;
             if (!!thread) {
@@ -30,14 +30,11 @@ export async function POST(req: NextRequest) {
                 threadData.title ? threadMeta['title'] = threadData.title : false;
             }
 
-            const payload = {
-                'sources': sources,
-                'tones': tones,
-                'formulas': formulas,
-                'threads': threads,
-                'user': user,
-            } as any;
-
+            !!sources ? payload['sources'] = sources : false;
+            !!tones ? payload['tones'] = tones : false;
+            !!formulas ? payload['formulas'] = formulas : false;
+            !!threads ? payload['threads'] = threads : false;
+            !!user ? payload['user'] = user : false;
             !!threadMeta ? payload['meta'] = threadMeta : false;
 
             console.log('From API route ', payload);

@@ -56,8 +56,9 @@ export async function getDataFromAPI(generation: any) {
             console.log('server action fetch success');
 
             const res = await data.json();
+            console.log('From server action:  RAW RES - ', res)
             const d = res.data;
-            console.log('From server action ', d)
+            console.log('From server action: DATA - ', d)
             const dataResponse = {} as any;
 
             !!d.sources ? dataResponse['sources'] = d.sources : dataResponse['sources'] = false;

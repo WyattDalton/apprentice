@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getMongoDB } from '@/components/utils/getMongo';
 import { ObjectId } from 'mongodb';
+import { getUserData } from '@/components/utils/getUserData';
 
 export async function POST(req: NextRequest) {
     try {
 
+        const authData = await getUserData();
         const db = await getMongoDB() as any;
         const body = await req.json();
 

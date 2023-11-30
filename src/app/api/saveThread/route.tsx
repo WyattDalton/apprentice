@@ -20,8 +20,6 @@ export async function POST(req: Request) {
         if (!!saved) saved == 'true' ? payload['saved'] = true : payload['saved'] = false;
         if (!!messages) payload['messages'] = messages;
 
-        console.log(payload)
-
         if (!!_id) {
             const response = await threads.updateOne(
                 { _id: _id }, // filter

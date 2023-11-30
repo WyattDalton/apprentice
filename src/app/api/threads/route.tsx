@@ -92,7 +92,6 @@ export async function POST(req: NextRequest) {
             const id = new ObjectId(_id);
             await collection.updateOne({ _id: id }, update, { upsert: true });
             const updatedThread = await collection.findOne({ _id: id });
-            console.log('updatedThread', updatedThread);
 
             return NextResponse.json({
                 'success': true,

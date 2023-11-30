@@ -28,10 +28,6 @@ function Source({ _id, name, title, type, text, handleUpdate, updating }: Props)
         setSource({ name, title, type, text, _id });
     }, [name, title, type, text, _id]);
 
-    useEffect(() => {
-        console.log(updating);
-    }, [updating]);
-
     return (
         <section className="
             relative 

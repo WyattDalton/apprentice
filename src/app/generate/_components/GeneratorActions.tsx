@@ -21,6 +21,9 @@ type GeneratorActionsProps = {
     setGeneration: any;
     changeActivePanel: any;
     scrollToBottom: any;
+    sources: any[];
+    toneLibrary: any[];
+    formulaLibrary: any[];
 };
 
 const GeneratorActions = ({
@@ -36,6 +39,9 @@ const GeneratorActions = ({
     setGeneration,
     changeActivePanel,
     scrollToBottom,
+    sources,
+    toneLibrary,
+    formulaLibrary,
 }: GeneratorActionsProps) => {
 
     /* * * * * * * * * * * * * * * * * * * */
@@ -43,9 +49,6 @@ const GeneratorActions = ({
     /* * * * * * * * * * * * * * * * * * * */
     const searchBarRef = useRef({} as any);
     const [lastUserMessageIndex, setLastUserMessageIndex] = useState<number>(0);
-    const [sources, setSources] = useState<any[]>([]);
-    const [toneLibrary, setToneLibrary] = useState([]);
-    const [formulaLibrary, setFormulaLibrary] = useState([]);
     const [generatorError, setGeneratorError] = useState<any>(false);
 
     /* * * * * * * * * * * * * * * * * * */
@@ -201,8 +204,6 @@ const GeneratorActions = ({
                     "messages": messages,
                 }
 
-                console.log(payload)
-
                 preserveThread(payload);
 
             } catch (error) {
@@ -234,41 +235,6 @@ const GeneratorActions = ({
             console.log(error);
         }
     }
-
-    /* * * * * * * * * * * * * * * * * * * */
-    /* Handle fetch data on load
-    /* * * * * * * * * * * * * * * * * * * */
-
-
-    // ###
-    // ### Get all generator data
-    const getGeneratorData = async () => {
-        try {
-
-            const data = await fetch("/api/data", {
-                method: 'POST',
-                body: JSON.stringify({ dataFor: 'generator' })
-            });
-
-            if (data.status === 200) {
-                const res = await data.json();
-                setSources(res.data.sources);
-                setToneLibrary(res.data.tones);
-                setFormulaLibrary(res.data.formulas);
-
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-
-    // ###
-    // ### Get data on app load
-    useEffect(() => {
-        getGeneratorData();
-    }, [])
-
 
     /* * * * * * * * * * * * * * * * * * * */
     /* Render Generator Actions

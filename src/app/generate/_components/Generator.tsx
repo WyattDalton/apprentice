@@ -9,27 +9,27 @@ import Card from "@/components/UI/Card";
 import GeneratorInformation from "./GeneratorInformation";
 import { useRouter } from "next/navigation";
 import { ArrowDownIcon, ArrowUpIcon } from "@/components/icons";
-import { getMongoDB } from "@/components/utils/getMongo";
 
 
 type GeneratorProps = {
     initConversation?: any | null;
     className?: string | '';
     launcher?: any;
+    generationId?: string;
+    savedData?: any;
+    sources?: any;
+    metaData?: any;
     threadsData?: any;
     tonesData?: any;
     formulasData?: any;
-    generationId?: string;
-    savedData?: any;
 }
 
-
-export default function Generator({ initConversation, savedData, className, launcher, threadsData, tonesData, formulasData, generationId }: GeneratorProps) {
+export default function Generator({ initConversation, savedData, className, launcher, threadsData, tonesData, formulasData, generationId, sources, metaData }: GeneratorProps) {
     const router = useRouter();
     const [saved, setSaved] = useState(savedData || false);
 
     const [generation, setGeneration] = useState<any>(generationId || '');
-    const [meta, setMeta] = useState<any>({});
+    const [meta, setMeta] = useState<any>(metaData || {});
     const [conversation, setConversation] = useState<any[]>([]);
     const [currentResponse, setcurrentResponse] = useState({});
 
@@ -116,41 +116,6 @@ export default function Generator({ initConversation, savedData, className, laun
     useEffect(() => {
         !!initConversation ? setConversation(initConversation) : setConversation([]);
     }, [initConversation])
-
-    // ###
-    // ### Get all generator data
-    const getGeneratorData = async () => {
-        try {
-
-            const payload = {} as any;
-            payload['dataFor'] = 'generator';
-            !!generation ? payload['thread'] = generation : payload['thread'] = false;
-
-            const data = await fetch("/api/data", {
-                method: 'POST',
-                body: JSON.stringify(payload),
-                cache: 'no-store',
-            });
-
-            if (data.status === 200) {
-                const res = await data.json();
-                setToneLibrary(res.data.tones);
-                setFormulaLibrary(res.data.formulas);
-                setThreads(res.data.threads);
-                setMeta(res.data.meta);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-
-    // ###
-    // ### Get data on app load
-    useEffect(() => {
-        getGeneratorData();
-    }, [])
-
 
 
     // ###
@@ -269,7 +234,9 @@ export default function Generator({ initConversation, savedData, className, laun
                                                     New content</button>
                                             </div>
 
-                                            <ThreadList threads={threads} handleOpenThread={handleOpenThread} />
+                                            {!threads ? `Loading...` : null}
+                                            {!!threads && threads.length === 0 ? <p className="text-gray-400">No recent content</p> : <ThreadList threads={threads} handleOpenThread={handleOpenThread} />}
+
 
                                         </Disclosure.Panel>
                                     </Transition>
@@ -342,6 +309,9 @@ export default function Generator({ initConversation, savedData, className, laun
                             setGeneration={setGeneration}
                             changeActivePanel={changeActivePanel}
                             scrollToBottom={scrollToBottom}
+                            sources={sources}
+                            toneLibrary={tonesData}
+                            formulaLibrary={formulasData}
                         />
                     </div>
                 </div>
@@ -361,6 +331,9 @@ export default function Generator({ initConversation, savedData, className, laun
                         setGeneration={setGeneration}
                         changeActivePanel={changeActivePanel}
                         scrollToBottom={scrollToBottom}
+                        sources={sources}
+                        toneLibrary={tonesData}
+                        formulaLibrary={formulasData}
                     />
                 </div>
             </section>

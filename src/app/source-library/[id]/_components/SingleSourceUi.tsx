@@ -19,7 +19,6 @@ async function SingleSourceUi({ _id, name, title, type, text }: SourceData) {
 
         try {
             setUpdating(true)
-            console.log('Start updating: ', updating)
             const payload = {
                 'dataType': 'update',
                 'data': [updatedData]
@@ -34,9 +33,7 @@ async function SingleSourceUi({ _id, name, title, type, text }: SourceData) {
             if (!source.ok) throw new Error('Error updating source');
 
             const sourceData = await source.json();
-            console.log(sourceData)
             setUpdating(false)
-            console.log('End updating: ', updating)
             return sourceData;
 
         } catch (error) {

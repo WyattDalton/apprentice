@@ -13,18 +13,21 @@ export async function POST(req: NextRequest) {
         const { dataFor, thread } = body;
 
         if (dataFor === 'generator') {
-            const sources = await db.collection("sources").find({}).toArray();
-            const tones = await db.collection("tones").find({}).toArray();
-            const formulas = await db.collection("formulas").find({}).toArray();
-            const threads = await db.collection("threads").find({}).toArray();
-            const user = await db.collection("users").findOne({ userId: userData.id });
+
+            const [sources, tones, formulas, threads, user] = await Promise.all([
+                db.collection("sources").find({}).toArray(),
+                db.collection("tones").find({}).toArray(),
+                db.collection("formulas").find({}).toArray(),
+                db.collection("threads").find({}).toArray(),
+                db.collection("users").findOne({ userId: userData.id }),
+            ]);
 
             let threadMeta = {} as any;
-            if (thread) {
+            if (!!thread) {
                 const _id = new ObjectId(thread) as any;
                 const threadData = await db.collection("threads").findOne({ _id: _id });
 
-                threadData.title ? threadMeta['title'] = threadData.title : null;
+                threadData.title ? threadMeta['title'] = threadData.title : false;
             }
 
             const payload = {
@@ -35,7 +38,7 @@ export async function POST(req: NextRequest) {
                 'user': user,
             } as any;
 
-            !!threadMeta ? payload['meta'] = threadMeta : null;
+            !!threadMeta ? payload['meta'] = threadMeta : false;
 
             return NextResponse.json({
                 'success': true,

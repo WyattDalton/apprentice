@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getMongoDB } from '@/components/utils/getMongo';
-import { getUserData } from '@/components/utils/getUserData';
 import { ObjectId } from 'mongodb';
 
 export async function POST(req: NextRequest) {
@@ -8,7 +7,6 @@ export async function POST(req: NextRequest) {
 
         const db = await getMongoDB() as any;
         const body = await req.json();
-        const userData = await getUserData();
 
         const { dataFor, thread } = body;
 
@@ -20,7 +18,6 @@ export async function POST(req: NextRequest) {
             const tones = await db.collection("tones").find({}).toArray();
             const formulas = await db.collection("formulas").find({}).toArray();
             const threads = await db.collection("threads").find({}).toArray();
-            const user = await db.collection("users").findOne({ userId: userData.id });
 
             console.log('From API route: ', !!sources)
 
@@ -36,7 +33,6 @@ export async function POST(req: NextRequest) {
             !!tones ? payload['tones'] = tones : false;
             !!formulas ? payload['formulas'] = formulas : false;
             !!threads ? payload['threads'] = threads : false;
-            !!user ? payload['user'] = user : false;
             !!threadMeta ? payload['meta'] = threadMeta : false;
 
             console.log('From API route: sources - ', !!sources);

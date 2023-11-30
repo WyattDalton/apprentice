@@ -51,15 +51,17 @@ export async function getDataFromAPI(generation: any) {
 
         if (data.status === 200) {
             const res = await data.json();
-            const { sources, tones, formulas, threads, user, meta } = res.data;
+            const d = res.data;
             const dataResponse = {} as any;
 
-            dataResponse['sources'] = sources;
-            dataResponse['tones'] = tones;
-            dataResponse['formulas'] = formulas;
-            dataResponse['threads'] = threads;
-            dataResponse['user'] = user;
-            !!meta ? dataResponse['meta'] = meta : null;
+            !!d.sources ? dataResponse['sources'] = d.sources : dataResponse['sources'] = false;
+            !!d.tones ? dataResponse['tones'] = d.tones : dataResponse['tones'] = false;
+            !!d.formulas ? dataResponse['formulas'] = d.formulas : dataResponse['formulas'] = false;
+            !!d.threads ? dataResponse['threads'] = d.threads : dataResponse['threads'] = false;
+            !!d.user ? dataResponse['user'] = d.user : dataResponse['user'] = false;
+            !!d.meta ? dataResponse['meta'] = d.meta : dataResponse['meta'] = false;
+
+
 
             return dataResponse
         }

@@ -29,14 +29,13 @@ export default function Generator({ initConversation, savedData, className, laun
     const [saved, setSaved] = useState(savedData || false);
 
     const [generation, setGeneration] = useState<any>(generationId || '');
-    const [meta, setMeta] = useState<any>(metaData || {});
     const [conversation, setConversation] = useState<any[]>([]);
     const [currentResponse, setcurrentResponse] = useState({});
 
-
-    const [threads, setThreads] = useState(threadsData || []);
-    const [toneLibrary, setToneLibrary] = useState(tonesData || []);
-    const [formulaLibrary, setFormulaLibrary] = useState(formulasData || []);
+    const [meta, setMeta] = useState<any>(metaData || {});
+    const [threads, setThreads] = useState<any>(threadsData || []);
+    const [toneLibrary, setToneLibrary] = useState<any>(tonesData || []);
+    const [formulaLibrary, setFormulaLibrary] = useState<any>(formulasData || []);
 
     const [settings, setSettings] = useState({
         enabled: false,

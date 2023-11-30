@@ -21,6 +21,6 @@ export default async function Page({ params }: { params: { id: string } }) {
     const data = await getDataFromAPI(params.id);
     const thread = await getMessages(params.id);
 
-    return <GeneratorSingleUi messagesData={thread?.messages} savedData={thread?.saved} generationId={params.id} threads={data.threads} tones={data.tones} formulas={data.formulas} sources={data.sources} meta={data.meta} />;
+    return <GeneratorSingleUi messagesData={thread?.messages} savedData={thread?.saved} generationId={params.id} threads={data?.threads || []} tones={data?.tones || []} formulas={data?.formulas || []} sources={data?.sources || []} meta={data?.meta || []} />;
 }
 

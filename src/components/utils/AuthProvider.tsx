@@ -18,7 +18,6 @@ export const AuthProvider = async ({ children }: any) => {
     const path = headers().get('x-invoke-path') ? headers().get('x-invoke-path') : '';
     const currentUrl = `https://${host}${path}`;
 
-
     // ### If the user is logged in and they have an active subscription, return the children
     if (!!username && !!auth.active) {
         if (process.env.NODE_ENV === 'development') console.log(`### Development mode ###\n\nAUTH: `, auth, `\n\n###\n\n`);

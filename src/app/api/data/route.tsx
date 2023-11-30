@@ -40,6 +40,8 @@ export async function POST(req: NextRequest) {
 
             !!threadMeta ? payload['meta'] = threadMeta : false;
 
+            console.log('From API route ', payload);
+
             return NextResponse.json({
                 'success': true,
                 'data': payload,

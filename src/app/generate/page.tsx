@@ -8,5 +8,7 @@ export default async function Page() {
 
     const data = await getDataFromAPI(false);
 
-    return <Generator threadsData={data.threads} tonesData={data.tones} formulasData={data.formulas} sources={data.sources} metaData={data.meta} />
+    !!data ? console.log(data.meataData) : console.log('No data');
+
+    return <Generator threadsData={data?.threads || []} tonesData={data?.tones || []} formulasData={data?.formulas || []} sources={data?.sources || []} metaData={data?.meta || []} />
 } 

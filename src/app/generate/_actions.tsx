@@ -39,19 +39,25 @@
 export async function getDataFromAPI(generation: any) {
     try {
         const api_url = process.env.API_URL;
+        const endpoint = `${api_url}/data`;
         const payload = {} as any;
         payload['dataFor'] = 'generator';
         !!generation ? payload['thread'] = generation : payload['thread'] = false;
 
-        const data = await fetch(`${api_url}/data`, {
+        console.log('Start server action fetch')
+        const data = await fetch(endpoint, {
             method: 'POST',
             body: JSON.stringify(payload),
             cache: 'no-store',
         });
 
+        console.log('End server action fetch')
         if (data.status === 200) {
+            console.log('server action fetch success');
+
             const res = await data.json();
             const d = res.data;
+            console.log('From server action ', d)
             const dataResponse = {} as any;
 
             !!d.sources ? dataResponse['sources'] = d.sources : dataResponse['sources'] = false;
@@ -61,7 +67,7 @@ export async function getDataFromAPI(generation: any) {
             !!d.user ? dataResponse['user'] = d.user : dataResponse['user'] = false;
             !!d.meta ? dataResponse['meta'] = d.meta : dataResponse['meta'] = false;
 
-
+            console.log('From server action ', dataResponse)
 
             return dataResponse
         }

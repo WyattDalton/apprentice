@@ -22,6 +22,8 @@ export async function POST(req: NextRequest) {
             const threads = await db.collection("threads").find({}).toArray();
             const user = await db.collection("users").findOne({ userId: userData.id });
 
+            console.log('From API route: ', !!sources)
+
             let threadMeta = {} as any;
             if (!!thread) {
                 const _id = new ObjectId(thread) as any;
@@ -37,7 +39,7 @@ export async function POST(req: NextRequest) {
             !!user ? payload['user'] = user : false;
             !!threadMeta ? payload['meta'] = threadMeta : false;
 
-            console.log('From API route ', payload);
+            console.log('From API route: sources - ', !!sources);
 
             return NextResponse.json({
                 'success': true,

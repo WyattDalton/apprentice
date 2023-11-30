@@ -49,16 +49,16 @@ export async function getDataFromAPI(generation: any) {
             method: 'POST',
             body: JSON.stringify(payload),
             cache: 'no-store',
-        });
+        }) as any;
 
-        console.log('End server action fetch')
-        if (data.status === 200) {
+        const res = await data.json();
+
+        console.log('End server action fetch: ', res.success, ' check: ', !!res.success);
+        if (!!res.success) {
             console.log('server action fetch success');
-
-            const res = await data.json();
-            console.log('From server action:  RAW RES - ', res)
+            console.log('From server action:  RAW RES - ', res.success)
             const d = res.data;
-            console.log('From server action: DATA - ', d)
+            console.log('From server action: DATA - ', !!d)
             const dataResponse = {} as any;
 
             !!d.sources ? dataResponse['sources'] = d.sources : dataResponse['sources'] = false;
@@ -68,9 +68,13 @@ export async function getDataFromAPI(generation: any) {
             !!d.user ? dataResponse['user'] = d.user : dataResponse['user'] = false;
             !!d.meta ? dataResponse['meta'] = d.meta : dataResponse['meta'] = false;
 
-            console.log('From server action ', dataResponse)
+            console.log('From server action ', !!dataResponse.sources, !!dataResponse.tones, !!dataResponse.formulas, !!dataResponse.threads, !!dataResponse.user, !!dataResponse.meta)
 
             return dataResponse
+        } else {
+            console.log('server action fetch failed');
+            new Error('Server action fetch failed');
+            return null
         }
 
     } catch (error) {

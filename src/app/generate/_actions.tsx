@@ -45,6 +45,9 @@ export async function getDataFromAPI(generation: any) {
         !!generation ? payload['thread'] = generation : payload['thread'] = false;
 
         console.log('Start server action fetch')
+        console.log("endpoint: ", endpoint);
+        console.log("payload: ", payload);
+
         const data = await fetch(endpoint, {
             method: 'POST',
             body: JSON.stringify(payload),
@@ -54,11 +57,13 @@ export async function getDataFromAPI(generation: any) {
         const res = await data.json();
 
         console.log('End server action fetch: ', res.success, ' check: ', !!res.success);
+
         if (!!res.success) {
             console.log('server action fetch success');
             console.log('From server action:  RAW RES - ', res.success)
+
             const d = res.data;
-            console.log('From server action: DATA - ', !!d)
+
             const dataResponse = {} as any;
 
             !!d.sources ? dataResponse['sources'] = d.sources : dataResponse['sources'] = false;

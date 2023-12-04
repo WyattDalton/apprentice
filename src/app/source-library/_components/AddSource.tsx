@@ -168,8 +168,8 @@ function AddSource({ setUpdating, setSourcesData, sourcesData }: AddSourceProps)
     return (
         <Card className="w-full">
             <Tab.Group>
-                <div className="flex flex-col md:flex-row gap-2 items-center justify-between mb-2">
-                    <h2>Add a Source</h2>
+                <div className="flex flex-col md:flex-row gap-2 items-center justify-between mb-2 mx-auto prose">
+                    <h2 className="m-0">Add a Source</h2>
                     <Tab.List className="flex bg-gray-100 px-4 py-2 rounded-full gap-2">
                         <Tab className="ui-selected:bg-gray-700 px-4 py-2 rounded-full text-gray-500 ui-selected:text-white">Files</Tab>
                         <Tab className="ui-selected:bg-gray-700 px-4 py-2 rounded-full text-gray-500 ui-selected:text-white">Urls</Tab>
@@ -178,7 +178,7 @@ function AddSource({ setUpdating, setSourcesData, sourcesData }: AddSourceProps)
                 <Tab.Panels>
                     <Tab.Panel>
                         <div
-                            className="flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-md"
+                            className="flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 p-4 rounded-md"
                             onDragOver={handleDragOver}
                             onDrop={handleDrop}
                         >
@@ -215,7 +215,7 @@ function AddSource({ setUpdating, setSourcesData, sourcesData }: AddSourceProps)
                     </Tab.Panel>
                     <Tab.Panel>
                         <div
-                            className="flex flex-col gap-4 p-4 items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-md"
+                            className="flex flex-col gap-4 p-4 items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 p-4 rounded-md"
                         >
                             <input type="text" className="w-full rounded-md bg-gray-100 px-4 py-2" value={url} onChange={(e) => setUrl(e.target.value)} />
 

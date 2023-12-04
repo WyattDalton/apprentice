@@ -11,13 +11,13 @@ function AddTone({ handleAddTone }: Props) {
     return (
         <Card className="w-full">
 
-            <div className="flex flex-col prose justify-center items-center gap-2 m-auto">
-                <h2>Add a Tone</h2>
-                <p className="text-sm text-gray-500">Adding your first tone of voice is easy. Just give a copy and paste a few examples for Apprentice to learn from. We&lsquo;ll take care of the rest.</p>
+            <div className="flex flex-col gap-2 items-center justify-center mb-2 prose mx-auto">
 
+                <h2 className="m-0">Add a Tone</h2>
+                <p className="text-sm text-gray-500">Adding a tone of voice is easy. Just copy and paste a few examples for Apprentice to learn from. We&lsquo;ll take care of the rest.</p>
                 <div className="flex flex-col items-center justify-center w-full h-full">
                     <button
-                        className="px-4 py-2 text-dark bg-secondary rounded-md"
+                        className="px-4 py-2 text-white bg-gray-700 rounded-md"
                         onClick={handleAddTone}
                     >
                         Add a tone of voice

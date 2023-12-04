@@ -3,8 +3,11 @@
 import FormulaLibrary_FormulaField from "@/components/FormulaLibrary_FormulaField";
 import LoadingText from "@/components/LoadingText";
 import Card from "@/components/UI/Card";
+import Sidebar from "./Sidebar";
 import { XMarkIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { useState, useEffect, useMemo } from "react";
+import Content from "./Content";
+import { set } from "lodash";
 
 type FormulaProps = {
     _id: string,
@@ -35,6 +38,29 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
             formula,
         });
     }, [title, instructions, formula]);
+
+    /* * * * * * * * ** * * * * * * *
+    /* Delete a formula
+    /* * * * * * * * ** * * * * * * */
+    const handleDeleteFormula = async () => {
+        try {
+            const payload = {
+                'dataType': 'delete',
+                'data': { _id },
+            }
+            const res = await fetch('/api/formulas', {
+                method: 'POST',
+                body: JSON.stringify(payload),
+            });
+            if (!res.ok) throw new Error('Error deleting formula of voice');
+
+            window.location.href = '/formula-library';
+            window.history.back();
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
 
     /* * * * * * * * * * */
     // Handle Functions
@@ -174,187 +200,35 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
     // Render
     /* * * * * * * * * * */
     return (
-        <section className="relative min-h-screen">
-            <div className="grid grid-cols-5 w-full min-h-screen max-w-[90%] mx-auto bg-gray-200/50 rounded-t-3xl p-4 gap-4">
-                <div className="col-span-5 flex flex-col gap-4">
-
-                    {/* Input field for title */}
-                    <div className="mb-4">
-                        <label
-                            htmlFor="title"
-                            className="block font-semibold mb-2 text-gray-700 text-2xl"
-                        >
-                            {title ? 'Formula Title' : 'New Formula Title'}
-                        </label>
-
-                        <Card className="!p-0 !rounded-md">
-                            <input
-                                type="text"
-                                id="title"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                className="w-full px-3 py-2  rounded-md focus:ring-2 focus:ring-blue-500"
-                            />
-                        </Card>
-                    </div>
-
-                    {/* Input fields for instructions */}
-                    <div>
-                        <label
-                            htmlFor="instructions"
-                            className="block font-semibold mb-2 text-gray-700 text-xl"
-                        >
-                            Instructions for formula
-                        </label>
-
-                        {!!instructions && instructions.map((instruction: any, index: number) => (
-                            <div
-                                key={index}
-                                className="w-full p-4 relative rounded-lg overflow-hidden bg-white shadow-lg mb-4"
-                            >
-                                <span className="absolute top-1 right-1 w-6 h-6 flex justify-center items-center text-xs font-semibold text-dark bg-secondary rounded-lg">
-                                    {index + 1}
-                                </span>
-
-                                <label
-                                    htmlFor={`instruction-${index}-title`}
-                                    className="block mb-2 font-sm font-semibold text-gray-700"
-                                >
-                                    Instruction Title
-                                </label>
-                                <input
-                                    type="text"
-                                    id={`instruction-${index}-title`}
-                                    data-action="update-instruction-title"
-                                    onChange={(e) => handleUpdateInstructions(e, index)}
-                                    value={instruction.title ? instruction.title : ''}
-                                    className="w-full px-3 py-2 mb-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-
-                                <label
-                                    htmlFor={`instruction-${index}-text`}
-                                    className="block mb-2 mt-4 font-sm font-semibold text-gray-700"
-                                >
-                                    Instruction Text
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id={`instruction-${index}-text`}
-                                    data-action="update-instruction-text"
-                                    onChange={(e) => handleUpdateInstructions(e, index)}
-                                    value={
-                                        instruction.instruction ? instruction.instruction : ''
-                                    }
-                                    className="w-full px-3 py-2 mb-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-
-                                <p className="mb-2 mt-4 font-xs font-semibold text-gray-700">
-                                    Examples:
-                                </p>
-
-                                {!!instruction.examples &&
-                                    instruction.examples.map(
-                                        (example: any, exampleIndex: any) => (
-                                            <div
-                                                key={exampleIndex}
-                                                className="flex rounded-lg overflow-hidden mb-1 gap-0"
-                                                id={`instruction-${index}-example-${exampleIndex}`}
-                                            >
-                                                <input
-                                                    type="text"
-                                                    value={example}
-                                                    id={`instruction-${index}-example-${exampleIndex}-text`}
-                                                    data-action="uppdate-example-text"
-                                                    data-example-index={exampleIndex}
-                                                    onChange={(e) => handleUpdateInstructions(e, index)}
-                                                    className="w-full px-3 py-2 border border-gray-300  focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-l-lg"
-                                                />
-
-                                                <button
-                                                    type="button"
-                                                    id={`instruction-${index}-remove-example-${exampleIndex}`}
-                                                    data-action="remove-example"
-                                                    data-example-index={exampleIndex}
-                                                    onClick={(e) => handleUpdateInstructions(e, index)}
-                                                    className="text-white rounded-r-lg bg-gray-700 p-2 focus:outline-none"
-                                                >
-                                                    <XMarkIcon className="w-6 h-6 pointer-events-none" />
-                                                </button>
-                                            </div>
-                                        )
-                                    )}
-
-                                <div className="flex justify-between items-center mt-4">
-                                    <button
-                                        type="button"
-                                        id={`instruction-${index}-add-example`}
-                                        className="font-semibold text-secondary focus:outline-none w-max p-1 mb-2 rounded-lg bg-transparent border border-decoration hover:border-primary hover:text-dadrk shadow-sm flex justify-center items-center"
-                                        data-action="add-example"
-                                        onClick={(e) => handleUpdateInstructions(e, index)}
-                                    >
-                                        <PlusIcon className="inline-block w-5 h-5 mr-2 pointer-events-none" />
-                                        Add Example
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        id={`instruction-${index}-delete`}
-                                        data-action="remove-instruction"
-                                        onClick={(e) => handleUpdateInstructions(e, index)}
-                                        className="text-gray-500 bg-transparent focus:outline-none flex justify-center items-center gap-1"
-                                    >
-                                        Delete
-                                        <XMarkIcon className="w-6 h-6 pointer-events-none" />
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-
-                        <button
-                            type="button"
-                            id={`instruction--add`}
-                            data-action="add-instruction"
-                            onClick={(e) =>
-                                handleUpdateInstructions(
-                                    e,
-                                    instructions.length ? instructions.length : 0
-                                )
-                            }
-                            className="font-semibold text-secondary focus:outline-none w-full p-4 mb-2 rounded-lg bg-transparent border border-decoration hover:border-primary hover:text-dark shadow-sm"
-                        >
-                            <PlusIcon className="inline-block w-5 h-5 mr-2 pointer-events-none" />
-                            Add Instruction
-                        </button>
-                    </div>
-
-                    {/* Textarea field for formula */}
-                    {/* CONVERT TO CONTENT EDITABLE DIV TO INSERT TAGS */}
-                    <div className="mt-4">
-                        <FormulaLibrary_FormulaField
-                            newFormula={newFormula}
-                            handleFormulaChange={handleFormulaChange}
-                            handleInsertInstruction={handleInsertInstruction}
-                        />
-                    </div>
-
-
-                </div>
-            </div>
-            <div className="sticky bottom-0 right-0 w-full max-w-[88%] mx-auto bg-white rounded-t-3xl flex gap-4 p-4 shadow-[0_-5px_15px_-15px_rgba(0,0,0,0.6)]">
-                <h3 className="mt-0 mb-0 mr-auto text-gray-500 text-2xl font-bold">{title}</h3>
-                {/* Submit button */}
-                <button
-                    onClick={handleSubmit}
-                    className="p-4 mt-4 text-dark bg-secondary rounded-md focus:outline-none shadow-sm"
-                >
-                    {!uploading ? 'Save Formula' : <LoadingText
-                        text="Saving Formula"
-                        className="!text-dark gap-2"
-                        iconClassName="!text-dark order-last !mr-0"
-                    />}
-                </button>
-            </div>
+        <section className="
+            relative 
+            flex-grow 
+            h-full 
+            grid 
+            grid-cols-6
+            w-[90%] 
+            mx-auto
+            gap-4 
+        ">
+            <Content
+                className="col-span-6 lg:col-span-4 flex flex-col items-center gap-4 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]"
+                title={title}
+                setTitle={setTitle}
+                instructions={instructions}
+                setInstructions={setInstructions}
+                newFormula={newFormula} 
+                setNewFormula={setNewFormula}
+                handleUpdateInstructions={handleUpdateInstructions}
+                handleFormulaChange={handleFormulaChange}
+                handleInsertInstruction={handleInsertInstruction}
+            />
+            <Sidebar
+                className="col-span-6 md:col-span-2 gap-4 rounded-lg sticky bottom-0 lg:flex lg:flex-col lg:justify-end lg:flex-grow p-0 lg:p-4 bg-transparent lg:bg-neutral-50"
+                title={title}
+                handleSubmit={handleSubmit}
+                handleDeleteFormula={handleDeleteFormula}
+                uploading={uploading}
+            />
         </section>
     );
 };

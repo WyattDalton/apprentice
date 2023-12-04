@@ -46,6 +46,8 @@ export async function POST(req: NextRequest) {
             const { _id } = data;
             const res = await db.collection("tones").deleteOne({ _id: new ObjectId(_id) });
             const tones = await db.collection("tones").find({}).toArray();
+
+            // console.log(tones.length);
             return NextResponse.json({
                 'success': true,
                 'tones': tones,

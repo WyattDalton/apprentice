@@ -48,8 +48,9 @@ export default function TonesUi({ tonesSource }: TonesUiProps) {
         try {
             const payload = {
                 'dataType': 'delete',
-                'data': _id,
+                'data': { _id },
             }
+            console.log(payload)
             const res = await fetch('/api/tonesUpdate', {
                 method: 'POST',
                 body: JSON.stringify(payload),
@@ -78,40 +79,29 @@ export default function TonesUi({ tonesSource }: TonesUiProps) {
     /* Render
     /* * * * * * * * ** * * * * * * */
     return (
-        <section>
+        <section className='w-[90%] mx-auto flex flex-col gap-4 h-full flex-grow'>
 
             <AddTone handleAddTone={handleAddNewTone} />
 
             {!!tones && (
-                <div className="flex flex-col gap-4">
+                <div className="flex-grow grid grid-col-1 md:grid-cols-2 gap-8 auto-rows-min inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]">
+
                     {!!tones.length && tones.map((tone: any, index: number) => (
-                        <Card key={index} className=''>
-                            <div className='flex items-center gap-4'>
-                                <h2 className="text-xl font-semibold text-dark w-full">{tone.title || 'Default Title'}</h2>
-                                <button
-                                    className="group w-max font-semibold flex items-center rounded-md bg-theme_primary hover:bg-decoration py-0 px-4 dark !mt-0"
-                                    onClick={() => handleEditTone(tone._id)}
-                                >
-                                    Edit
-                                </button>
-                                <button
-                                    className="flex items-center text-red-700 !mt-0"
-                                    onClick={() => handleDeleteTone(tone._id)}
-                                >
-                                    Delete
-                                </button>
+                        <Card key={index} className='flex flex-col gap-4 prose'>
+                            <div className='flex items-center justify-start gap-4 text-sm'>
+                                <h2 className="mt-0 mb-0 capitalize">{tone.title || 'Default Title'}</h2>
                             </div>
 
                             {/* Tone processed information */}
                             {!!tone.keywords && !!tone.description ? (
-                                <div className="grid grid-cols-5 gap-4">
+                                <div className="flex flex-col gap-4">
 
                                     {/* Tone words */}
                                     {
                                         tone.keywords ? (
-                                            <div className="flex flex-wrap gap-4 w-full col-span-1">
+                                            <div className="flex flex-wrap gap-2 w-full">
                                                 {tone.keywords.map((word: any, index: number) => (
-                                                    <div key={index} className="bg-secondary dark px-2 py-1 rounded-md">
+                                                    <div key={index} className="bg-gray-200 text-gray-500 px-4 rounded-full">
                                                         {word}
                                                     </div>
                                                 ))}
@@ -122,17 +112,21 @@ export default function TonesUi({ tonesSource }: TonesUiProps) {
                                     {/* Tone description */}
                                     {
                                         tone.description ? (
-                                            <div className="col-span-4">
-                                                <p className="text-dark">
+
+                                            <p className="m-0">
                                                     {tone.description}
                                                 </p>
-                                            </div>
+
                                         ) : null
                                     }
 
                                 </div>
                             ) : null}
 
+                            <div className="flex items-center justify-end gap-4 w-full">
+                                <button className="border border-gray-700 text-gray-700 px-4 rounded-md" onClick={() => handleEditTone(tone._id)}>Edit</button>
+                                <button className="text-red-500" onClick={() => handleDeleteTone(tone._id)}>Delete</button>
+                            </div>
                         </Card>
                     ))}
                 </div>

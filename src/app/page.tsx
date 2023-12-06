@@ -88,7 +88,7 @@ export default async function Home() {
 
           <div className='w-full col-span-full prose'>
             <h2 className='text-2xl font-bold text-gray-500 m-0'>In the works</h2>
-            <p className="">We're working on some cool features to make Apprentice even more powerful. Stay tuned!</p>
+            <p className="">We&apos;re working on some cool features to make Apprentice even more powerful. Stay tuned!\</p>
           </div>
 
           <Card className="!bg-neutral-50 flex flex-col gap-2 col-span-full md:col-span-3">

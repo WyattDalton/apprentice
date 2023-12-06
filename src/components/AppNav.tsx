@@ -30,12 +30,6 @@ const AppNavigation = () => {
                     Dashboard
                 </Link>
                 <Link
-                    href="/settings"
-                    className={`py-1 px-2 hover:text-primary`}
-                >
-                    Settings
-                </Link>
-                <Link
                     href="https://makerdigital.io/my-account/"
                     className={`py-1 px-2 hover:text-primary`}
                 >

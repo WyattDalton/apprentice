@@ -30,7 +30,7 @@ export async function fetchFormulas() {
 export async function fetchThreads() {
     const db = await getMongoDB() as any;
     const threads = db.collection("threads");
-    const allThreads = await threads.find({}).toArray();
+    const allThreads = await threads.find({}).sort({ created: -1 }).toArray();
     const cleanThreads = allThreads.map(({ _id, ...rest }: any) => ({ _id: _id.toString(), ...rest }));
     return cleanThreads;
 }

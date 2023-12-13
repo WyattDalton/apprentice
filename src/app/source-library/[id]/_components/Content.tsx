@@ -8,11 +8,12 @@ type Props = {
     setSource: any;
 };
 
-function Content({ className, source, setSource }: Props) {
+function Content({ className = '', source = {}, setSource = () => { } }: Props) {
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    const { title, text } = source;
+    const [title, setTitle] = useState(source?.title || "");
+    const [text, setText] = useState(source?.text || "");
 
     useEffect(() => {
         // Adjust textarea height to fit content
@@ -22,7 +23,15 @@ function Content({ className, source, setSource }: Props) {
             const scrollHeight = field.scrollHeight;
             field.style.height = scrollHeight + "px";
         }
-    }, [source.text]);
+    }, [text]);
+
+    useEffect(() => {
+        const oldSource = { ...source };
+        if (oldSource.title === title && oldSource.text === text) return;
+        oldSource.title === title ? null : oldSource.title = title;
+        oldSource.text === text ? null : oldSource.text = text;
+        setSource(oldSource);
+    }, [title, text]);
 
     return (
         <div className={className}>
@@ -33,7 +42,7 @@ function Content({ className, source, setSource }: Props) {
                     placeholder="Title"
                     value={title}
                     onChange={(e) => {
-                        setSource({ ...source, title: e.target.value });
+                        setTitle(e.target.value);
                     }}
                 />
                 <textarea
@@ -42,7 +51,7 @@ function Content({ className, source, setSource }: Props) {
                     placeholder="Content"
                     value={text}
                     onChange={(e) => {
-                        setSource({ ...source, text: e.target.value });
+                        setText(e.target.value);
 
                         // Adjust textarea height to fit content
                         if (textareaRef.current) {

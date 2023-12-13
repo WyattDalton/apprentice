@@ -11,10 +11,11 @@ type Props = {
     type: string;
     text: string;
     handleUpdate: any;
-    updating: boolean;
+    updating: any;
+    handleOpenModal?: any;
 };
 
-function Source({ _id, name, title, type, text, handleUpdate, updating }: Props) {
+function Source({ _id, name, title, type, text, handleUpdate, updating, handleOpenModal }: Props) {
 
     const [source, setSource] = useState({
         _id: _id || "",
@@ -41,18 +42,19 @@ function Source({ _id, name, title, type, text, handleUpdate, updating }: Props)
         ">
 
             <Content
-                className={'col-span-4 flex flex-col items-center gap-4 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]'}
+                className={'col-span-6 lg:col-span-4 flex flex-col items-center gap-4 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]'}
                 source={source}
                 setSource={setSource} />
 
             <Sidebar
-                className={'col-span-2 flex flex-col justify-end flex-grow p-4 gap-4 bg-neutral-50 rounded-lg'}
+                className={'col-span-6 md:col-span-2 gap-4 rounded-lg sticky bottom-0 lg:flex lg:flex-col lg:justify-end lg:flex-grow p-0 lg:p-4 bg-transparent lg:bg-neutral-50'}
                 handleUpdate={handleUpdate}
                 source={source}
                 type={type}
                 name={name}
-                updating={updating} />
-
+                updating={updating}
+                handleOpenModal={handleOpenModal}
+            />
         </section>
     )
 }

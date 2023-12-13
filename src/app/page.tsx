@@ -59,7 +59,7 @@ export default async function Home() {
             <p className='text-gray-500 mb-2'>Create formulas to generate content with your own patterns.</p>
             <Link
               href="/formula-library"
-              className={`mt-auto no-underline bg-transparent border border-gray-700 rounded-md max-w-max text-gray-500 py-1 px-4 text-lg`}>
+              className={`mt-auto no-underline bg-gray-700 text-white py-1 px-4 rounded-md max-w-max flex justify-center items-center text-lg`}>
               Go to formula library
             </Link>
           </Card>
@@ -68,7 +68,7 @@ export default async function Home() {
             <p className='text-gray-500 mb-2'>Create your own styles and tone of voice.</p>
             <Link
               href="/tone-library"
-              className={`mt-auto no-underline bg-transparent border border-gray-700 rounded-md max-w-max text-gray-500 py-1 px-4 text-lg`}>
+              className={`mt-auto no-underline bg-gray-700 text-white py-1 px-4 rounded-md max-w-max flex justify-center items-center text-lg`}>
               Go to tone library
             </Link>
           </Card>
@@ -77,7 +77,7 @@ export default async function Home() {
             <p className='text-gray-500 mb-2'>Give Apprentice source material to use while generating content.</p>
             <Link
               href="/source-library"
-              className={`mt-auto no-underline bg-transparent border border-gray-700 rounded-md max-w-max text-gray-500 py-1 px-4 text-lg`}>
+              className={`mt-auto no-underline bg-gray-700 text-white py-1 px-4 rounded-md max-w-max flex justify-center items-center text-lg`}>
               Go to source library
             </Link>
           </Card>
@@ -94,7 +94,7 @@ export default async function Home() {
           <Card className="!bg-neutral-50 flex flex-col gap-2 col-span-full md:col-span-3">
             <h3 className='text-xl text-gray-700 m-0'>Layout Library</h3>
             <p className='text-gray-500 mb-2'>Create complex content patterns for Apprentice to follow.</p>
-            <span className="mt-auto bg-gray-700 text-white p-2 w-full rounded-md flex justify-center items-center">Coming soon</span>
+            <span className="mt-auto no-underline bg-transparent border border-gray-700 rounded-md max-w-max text-gray-500 py-1 px-4 text-lg">Coming soon</span>
             {/* <Link
               href="/layout-library"
               className={`no-underline bg-transparent border border-gray-700 rounded-md max-w-max text-gray-500 py-1 px-4 text-lg`}>
@@ -106,7 +106,7 @@ export default async function Home() {
             {/* Create a commin soon tag */}
             <h3 className='text-xl text-gray-700 m-0'>Campaigns</h3>
             <p className='mb-2 text-gray-500'>Create campaign templates that enable you to generate all of the marketing material you need for an entire month in a single command.</p>
-            <span className="mt-auto bg-gray-700 text-white p-2 w-full rounded-md flex justify-center items-center">Coming soon</span>
+            <span className="mt-auto no-underline bg-transparent border border-gray-700 rounded-md max-w-max text-gray-500 py-1 px-4 text-lg">Coming soon</span>
             {/* <Link
               href="/campaigns"
               className={`no-underline bg-transparent border border-gray-700 rounded-md max-w-max text-gray-500 py-1 px-4 text-lg`}>
@@ -134,7 +134,7 @@ export default async function Home() {
         <div className='w-full flex flex-col gap-4'>
           <h2 className='text-2xl font-bold text-gray-700 w-full'>Your recent generations</h2>
           <div
-            className={'bg-gray-700 text-white p-6 rounded-lg max-h-[70vh] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 z-50'}
+            className={'bg-gray-700 text-white p-6 rounded-lg max-h-[70vh] w-full overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200'}
           >
             <ThreadsList threads={threads} />
           </div>

@@ -15,7 +15,7 @@ const AppNavigation = () => {
                     <Image
                         className="cursor-pointer w-12 h-12 block"
                         src={logo}
-                        alt="Next.js Logo"
+                        alt="MakerDigital Logo"
                         width={180}
                         height={180}
                         priority
@@ -25,13 +25,13 @@ const AppNavigation = () => {
             <div className="flex gap-2 ml-auto">
                 <Link
                     href="/"
-                    className={`py-1 px-2 hover:text-primary`}
+                    className={`py-1 px-2 border border-shade-900 rounded-md text-shade-900 hover:border-shade hover:text-shade`}
                 >
                     Dashboard
                 </Link>
                 <Link
                     href="https://makerdigital.io/my-account/"
-                    className={`py-1 px-2 hover:text-primary`}
+                    className={`py-1 px-2 border border-shade-900 rounded-md text-shade-900 hover:border-shade hover:text-shade`}
                 >
                     Account
                 </Link>

@@ -10,7 +10,14 @@ import {
 	faChevronUp,
 	faFile,
 	faLink,
+	faClose,
 } from '@fortawesome/free-solid-svg-icons';
+
+export const CloseIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon className={!!className ? className : ''} icon={faClose} />
+	);
+};
 
 export const SettingsIcon = ({ className }) => {
 	return (

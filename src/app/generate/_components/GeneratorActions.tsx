@@ -149,6 +149,16 @@ const GeneratorActions = ({
                 const firstUserMessage = messages.find((message) => message.role === 'user');
                 const lastUserMessageIndex = messages.map((message) => message.role).lastIndexOf('user');
                 if (!!settings.enabled) {
+
+                    if (!!settings.tone) {
+                        const tone = toneLibrary.find((tone) => tone._id.toString() === settings.tone);
+                        settings.tone = tone.title;
+                    }
+                    if (!!settings.formula) {
+                        const formula = formulaLibrary.find((formula) => formula._id.toString() === settings.formula);
+                        settings.formula = formula.title;
+                    }
+
                     messages[lastUserMessageIndex] = {
                         ...messages[lastUserMessageIndex],
                         settings: settings,
@@ -315,15 +325,17 @@ const GeneratorActions = ({
                         </span>
                     </button>
 
-                    <button
-                        className={'panel-switch group flex flex-col justify-center items-center gap-2 p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
-                        onClick={(e) => changeActivePanel(e, 'info')}
-                        data-active="false"
-                    >
-                        <span className="icon w-6 aspect-square flex justify-center items-center rounded-xl">
-                            <InfoIcon className="h-6 w-6" />
-                        </span>
-                    </button>
+                    {!!generation && (
+                        <button
+                            className={'panel-switch group flex flex-col justify-center items-center gap-2 p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
+                            onClick={(e) => changeActivePanel(e, 'info')}
+                            data-active="false"
+                        >
+                            <span className="icon w-6 aspect-square flex justify-center items-center rounded-xl">
+                                <InfoIcon className="h-6 w-6" />
+                            </span>
+                        </button>
+                    )}
                 </div>
 
                 <button

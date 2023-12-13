@@ -6,10 +6,10 @@ type SidebarProps = {
     title: string,
     handleSubmit: any,
     uploading: boolean,
-    handleDeleteFormula: any,
+    handleOpenModal?: any
 }
 
-function Sidebar({ className, title, handleSubmit, uploading, handleDeleteFormula }: SidebarProps) {
+function Sidebar({ className, title, handleSubmit, uploading, handleOpenModal }: SidebarProps) {
     return (
 
         <div className={className}>
@@ -19,7 +19,7 @@ function Sidebar({ className, title, handleSubmit, uploading, handleDeleteFormul
 
                 <div className="flex items-center justify-center gap-4 flex-wrap flex-grow lg:flex-grow-0">
                     <button className="border border-gray-700 text-gray-700 px-4 py-2 rounded-md flex gap-2 justify-center items-center" onClick={handleSubmit}>Update {uploading ? <LoadingSpinner /> : ''}</button>
-                    <button className="text-red-500" onClick={handleDeleteFormula}>Delete</button>
+                    <button className="text-red-500" onClick={handleOpenModal}>Delete</button>
                 </div>
             </div>
         </div>

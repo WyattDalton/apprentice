@@ -176,55 +176,52 @@ export async function POST(req: NextRequest) {
             }));
 
         } else if (dataType === 'update') {
-            const processedSources = await Promise.all(sources.map(async (source: any) => {
 
-                /* * * * * * * * * * * * * */
-                /* Get MongoDB
-                /* * * * * * * * * * * * * */
-                const db = await getMongoDB() as any;
-                const sourcesCollection = db.collection("sources");
+            console.log('updating')
 
-                /* * * * * * * * * * * * * */
-                /* Try to find the document
-                /* * * * * * * * * * * * * */
-                const docId = new ObjectId(source._id);
+            /* * * * * * * * * * * * * */
+            /* Try to find the document
+            /* * * * * * * * * * * * * */
+            const source = sources[0];
+            const docId = new ObjectId(source._id);
 
-                const sourceDocument = await sourcesCollection.findOne({ _id: docId });
-                if (!sourceDocument) throw new Error('source not found');
-                const sourcePayload = {} as any;
+            const sourceDocument = await sourcesCollection.findOne({ _id: docId });
+            if (!sourceDocument) throw new Error('source not found');
+            const sourcePayload = {} as any;
 
-                const title = source.title !== sourceDocument.title ? source.title : null;
-                const text = source.text !== sourceDocument.text ? source.text : null;
+            const title = source.title !== sourceDocument.title ? source.title : null;
+            const text = source.text !== sourceDocument.text ? source.text : null;
 
-                let chunks, embeddings;
+            let chunks, embeddings;
+            console.log('building chunks...')
 
-                if (!!text && text !== sourceDocument.text) {
-                    chunks = createChunks(text) || [];
-                    embeddings = await Promise.all(chunks.map((chunk, index) => getEmbedding(chunk, title, index)));
-                } else {
-                    chunks = null;
-                    embeddings = null;
-                }
+            if (!!text && text !== sourceDocument.text) {
+                chunks = createChunks(text) || [];
+                embeddings = await Promise.all(chunks.map((chunk, index) => getEmbedding(chunk, title, index)));
+            } else {
+                chunks = null;
+                embeddings = null;
+            }
 
-                if (!!title) sourcePayload.title = title;
-                if (!!text) sourcePayload.text = text;
-                if (!!embeddings) sourcePayload.embeddings = embeddings;
-                if (!!chunks) sourcePayload.chunks = chunks;
+            console.log('chunks built')
+            if (!!title) sourcePayload.title = title;
+            if (!!text) sourcePayload.text = text;
+            if (!!embeddings) sourcePayload.embeddings = embeddings;
+            if (!!chunks) sourcePayload.chunks = chunks;
 
-                // Search for an existing document with the same "name" and "type"
-                newSource = await sourcesCollection.updateOne(
-                    { _id: docId },
-                    { $set: sourcePayload },
-                    { upsert: true }
-                );
+            // Search for an existing document with the same "name" and "type"
+            newSource = await sourcesCollection.updateOne(
+                { _id: docId },
+                { $set: sourcePayload },
+                { upsert: true }
+            );
 
-                /* * * * * * * * * * * * * */
-                /* Return new source
-                /* * * * * * * * * * * * * */
-                const returnSource = await sourcesCollection.findOne({ _id: docId });
-                return returnSource;
+            /* * * * * * * * * * * * * */
+            /* Return new source
+            /* * * * * * * * * * * * * */
+            const returnSource = await sourcesCollection.findOne({ _id: docId });
+            return returnSource;
 
-            }));
         }
 
         return NextResponse.json({ "source": newSource, success: true });

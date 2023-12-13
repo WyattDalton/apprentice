@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
 
             const { _id } = data;
             const deleteThread = await collection.deleteOne({ _id: new ObjectId(_id) });
-            const threads = await collection.find({}).toArray();
+            const threads = await collection.find({}).sort({ created: -1 }).toArray();
             return NextResponse.json({
                 'success': true,
                 'threads': threads,
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
         } else if (dataType === 'getTitle') {
             const { messages, _id } = data;
 
-            const cleanedMessages = messages.map(({ createdAt, id, ...rest }: any) => rest);
+            const cleanedMessages = messages.map(({ createdAt, id, settings, ...rest }: any) => rest);
 
             const instructions = 'Create a descriptive title for this thread that summarizes the previous messages. Limit the response to less than 100 characters. It should be as short as possible while also being descriptive enough to be useful. IMPORTANT: Your response should only include text. No special characters, and no numbers.';
             const instructionMessage = {

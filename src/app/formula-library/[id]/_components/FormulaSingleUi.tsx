@@ -1,13 +1,13 @@
 'use client'
 
-import FormulaLibrary_FormulaField from "@/components/FormulaLibrary_FormulaField";
 import LoadingText from "@/components/LoadingText";
-import Card from "@/components/UI/Card";
 import Sidebar from "./Sidebar";
-import { XMarkIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { useState, useEffect, useMemo } from "react";
 import Content from "./Content";
-import { set } from "lodash";
+import { Dialog, Transition } from "@headlessui/react";
+import { useRouter } from 'next/navigation';
+import { Fragment } from "react";
+
 
 type FormulaProps = {
     _id: string,
@@ -18,6 +18,8 @@ type FormulaProps = {
 
 export default function FormulaSingleUi({ _id, titleData, instructionsData, formulaData }: FormulaProps) {
 
+    const router = useRouter();
+
     /* * * * * * * * * * */
     // Use State
     /* * * * * * * * * * */
@@ -27,6 +29,10 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
     const [title, setTitle] = useState(titleData || '');
     const [instructions, setInstructions] = useState(instructionsData || []);
     const [formula, setFormula] = useState(formulaData || '');
+
+    const [openModal, setOpenModal] = useState(false);
+    const [formulaToDelete, setFormulaToDelete] = useState({ id: '', title: '' });
+    const [deleting, setDeleting] = useState(false);
 
     /* * * * * * * * * * */
     // Update Formula on data change
@@ -44,22 +50,36 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
     /* * * * * * * * ** * * * * * * */
     const handleDeleteFormula = async () => {
         try {
+            setDeleting(true);
+
             const payload = {
                 'dataType': 'delete',
-                'data': { _id },
+                'data': { _id: _id },
             }
             const res = await fetch('/api/formulas', {
                 method: 'POST',
                 body: JSON.stringify(payload),
             });
             if (!res.ok) throw new Error('Error deleting formula of voice');
-
-            window.location.href = '/formula-library';
-            window.history.back();
+            const data = await res.json();
+            setDeleting(false);
+            handleCloseModal();
+            router.push('/formula-library');
         }
         catch (error) {
             console.log(error);
         }
+    }
+
+    /* * * * * * * * ** * * * * * * *
+    /* Open and close modal
+    /* * * * * * * * ** * * * * * * */
+    const handleOpenModal = (id: any, title: any) => {
+        setOpenModal(true);
+    }
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
     }
 
     /* * * * * * * * * * */
@@ -200,7 +220,72 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
     // Render
     /* * * * * * * * * * */
     return (
-        <section className="
+        <>
+
+            <Transition appear show={openModal} as={Fragment}>
+                <Dialog as="div" className="relative z-50" onClose={handleCloseModal}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-black/25" />
+                    </Transition.Child>
+
+                    <div className="fixed inset-0 overflow-y-auto">
+                        <div className="flex min-h-full items-center justify-center p-4 text-center">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 scale-95"
+                                enterTo="opacity-100 scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 scale-100"
+                                leaveTo="opacity-0 scale-95"
+                            >
+                                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                                    <Dialog.Title
+                                        as="h3"
+                                        className="text-lg font-medium leading-6 text-gray-900"
+                                    >
+                                        Permanently Delete
+                                    </Dialog.Title>
+                                    <div className="mt-2">
+                                        <p className="text-sm text-gray-500">
+                                            Are you sure you want to delete <span className="font-semibold">{!!title ? title : ('this formula')}</span>? This cannot be undone.
+                                        </p>
+                                    </div>
+
+                                    <div className="mt-4">
+                                        {!deleting && (
+                                            <button
+                                                type="button"
+                                                className="inline-flex justify-center rounded-md border border-transparent bg-gray-700 px-4 py-2 text-sm font-medium text-white hover:bg-shade-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                                onClick={handleCloseModal}
+                                            >
+                                                Cancel
+                                            </button>
+                                        )}
+                                        <button
+                                            type="button"
+                                            className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 ml-2"
+                                            onClick={handleDeleteFormula}
+                                        >
+                                            {!deleting ? ('Delete') : (<LoadingText text={'Deleting...'} className={''} iconClassName={''} />)}
+                                        </button>
+                                    </div>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition>
+
+            <section className="
             relative 
             flex-grow 
             h-full 
@@ -210,25 +295,26 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
             mx-auto
             gap-4 
         ">
-            <Content
-                className="col-span-6 lg:col-span-4 flex flex-col items-center gap-4 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]"
-                title={title}
-                setTitle={setTitle}
-                instructions={instructions}
-                setInstructions={setInstructions}
-                newFormula={newFormula} 
-                setNewFormula={setNewFormula}
-                handleUpdateInstructions={handleUpdateInstructions}
-                handleFormulaChange={handleFormulaChange}
-                handleInsertInstruction={handleInsertInstruction}
-            />
-            <Sidebar
-                className="col-span-6 md:col-span-2 gap-4 rounded-lg sticky bottom-0 lg:flex lg:flex-col lg:justify-end lg:flex-grow p-0 lg:p-4 bg-transparent lg:bg-neutral-50"
-                title={title}
-                handleSubmit={handleSubmit}
-                handleDeleteFormula={handleDeleteFormula}
-                uploading={uploading}
-            />
-        </section>
+                <Content
+                    className="col-span-6 lg:col-span-4 flex flex-col items-center gap-4 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]"
+                    title={title}
+                    setTitle={setTitle}
+                    instructions={instructions}
+                    setInstructions={setInstructions}
+                    newFormula={newFormula}
+                    setNewFormula={setNewFormula}
+                    handleUpdateInstructions={handleUpdateInstructions}
+                    handleFormulaChange={handleFormulaChange}
+                    handleInsertInstruction={handleInsertInstruction}
+                />
+                <Sidebar
+                    className="col-span-6 md:col-span-2 gap-4 rounded-lg sticky bottom-0 lg:flex lg:flex-col lg:justify-end lg:flex-grow p-0 lg:p-4 bg-transparent lg:bg-neutral-50"
+                    title={title}
+                    handleSubmit={handleSubmit}
+                    handleOpenModal={handleOpenModal}
+                    uploading={uploading}
+                />
+            </section>
+        </>
     );
 };

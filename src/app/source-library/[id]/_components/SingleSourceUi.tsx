@@ -1,7 +1,6 @@
 'use client'
 
 import { Fragment, useEffect, useState } from 'react';
-import Source from './Source';
 import { useRouter } from 'next/navigation';
 import { Dialog, Transition } from '@headlessui/react';
 import LoadingText from '@/components/LoadingText';
@@ -162,6 +161,7 @@ function SingleSourceUi({ _id, sourceData, deleteSource, updateSource }: SourceD
                     updating={updating}
                     handleOpenModal={handleOpenModal}
                 />
+
             </section>
         </>
     )

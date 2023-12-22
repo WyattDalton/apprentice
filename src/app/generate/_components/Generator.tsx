@@ -3,7 +3,7 @@
 import GeneratorActions from "./GeneratorActions";
 import GeneratorContent from "./GeneratorContent";
 import GeneratorSettings from "./GeneratorSettings";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Disclosure, Tab, Transition } from "@headlessui/react";
 import Card from "@/components/UI/Card";
 import GeneratorInformation from "./GeneratorInformation";
@@ -11,9 +11,6 @@ import { useRouter } from "next/navigation";
 import { ArrowDownIcon, ArrowUpIcon } from "@/components/icons";
 import ThreadsList from "@/components/ThreadsList";
 import GeneratorContentSkeleton from "../[id]/_components/GeneratorContentSkeleton";
-import NewContentGridSkeleton from "./NewContentGridSkeleton";
-import NewContentGrid from "./NewContentGrid";
-
 
 type GeneratorProps = {
     initConversation?: any | null;

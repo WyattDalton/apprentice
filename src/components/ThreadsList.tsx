@@ -133,7 +133,7 @@ export default function ThreadsList({ threads }: Props) {
                 {allThreads.map((thread: any, i: number) => {
 
                     const createdDate = new Date(thread.created);
-                    const localCreatedDate = createdDate.toLocaleDateString();
+                    const localCreatedDate = createdDate.toLocaleString('en-US', { month: 'short', day: 'numeric' });
 
                     return (
                         <div className="flex items-center justify-center gap-2 max-w-full w-full" key={i}>
@@ -147,16 +147,15 @@ export default function ThreadsList({ threads }: Props) {
 
                             <button
                                 key={i}
-                                className="flex gap-2 py-4 px-6 hover:bg-white/20 rounded-md items-center group/thread flex-grow"
+                                className="flex flex-grow gap-2 py-4 px-6 hover:bg-white/20 rounded-md items-center truncate group/thread"
                                 onClick={() => { handleOpenThread(thread._id) }}
                             >
-
                                 <span className="text-sm font-semibold truncate"> {thread.title ? thread.title : thread._id} </span>
-                                <span className="text-xs ml-auto" > {localCreatedDate} </span>
-
-
-                                <GeneratorArrowIcon className="h-5 w-5 text-gray-400 group-hover/thread:translate-x-1 transition duration-150" />
+                                <GeneratorArrowIcon className="h-4 w-4 text-gray-400 group-hover/thread:translate-x-1 transition duration-150" />
                             </button>
+
+                            <span className="text-xs ml-auto">{localCreatedDate}</span>
+
                         </div>
                     )
                 })}

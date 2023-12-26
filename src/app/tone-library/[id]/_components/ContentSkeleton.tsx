@@ -9,7 +9,7 @@ export default function ContentSkeleton() {
                     <div className="flex flex-col gap-4 p-4">
                         <div className="w-full mx-auto flex justify-end items-center gap-4">
                             <div className={`py-2 px-4 rounded-md w-full ml-auto flex justify-end items-center gap-2 text-xl font-bold`}>
-                                <span className="text-transparent bg-gray-200 animate-pulse rounded-md">Add new example'</span>
+                                <span className="text-transparent bg-gray-200 animate-pulse rounded-md">Add new example</span>
                             </div>
 
                         </div>

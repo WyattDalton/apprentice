@@ -20,7 +20,7 @@ export default function Loading() {
             <div className="flex-grow grid grid-col-1 md:grid-cols-2 gap-8 auto-rows-min inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]">
                 <div className='flex flex-col gap-4 prose bg-white rounded-md p-4'>
                     <div className='flex items-center justify-start gap-4 text-sm'>
-                        <h2 className="mt-0 mb-0 capitalize rounded-md bg-gray-200 text-transparent animate-pulse" aria-hidden="true">'Default Title</h2>
+                        <h2 className="mt-0 mb-0 capitalize rounded-md bg-gray-200 text-transparent animate-pulse" aria-hidden="true">Default Title</h2>
                     </div>
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-2 divide-y divide-gray-200">
@@ -48,7 +48,7 @@ export default function Loading() {
 
                 <div className='flex flex-col gap-4 prose bg-white rounded-md p-4'>
                     <div className='flex items-center justify-start gap-4 text-sm'>
-                        <h2 className="mt-0 mb-0 capitalize rounded-md bg-gray-200 text-transparent animate-pulse" aria-hidden="true">'Default Title</h2>
+                        <h2 className="mt-0 mb-0 capitalize rounded-md bg-gray-200 text-transparent animate-pulse" aria-hidden="true">Default Title</h2>
                     </div>
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-2 divide-y divide-gray-200">

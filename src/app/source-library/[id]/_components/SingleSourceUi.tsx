@@ -140,7 +140,7 @@ function SingleSourceUi({ _id, sourceData, deleteSource, updateSource }: SourceD
 
             <section className="
             relative 
-            flex-grow 
+            grow 
             h-full 
             grid 
             grid-cols-6
@@ -150,7 +150,7 @@ function SingleSourceUi({ _id, sourceData, deleteSource, updateSource }: SourceD
         ">
 
                 <Content
-                    className={'col-span-6 lg:col-span-4 flex flex-col items-center gap-4 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]'}
+                    className={'col-span-6 lg:col-span-4 min-h-full flex flex-col items-center gap-4 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]'}
                     source={source}
                     setSource={setSource} />
 

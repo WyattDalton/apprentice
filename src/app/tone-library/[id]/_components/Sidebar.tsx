@@ -7,7 +7,7 @@ type SidebarProps = {
     className?: string,
     title: string,
     handleUpdateTone: any,
-    handleDeleteTone: any,
+    handleOpenModal: any,
     loading: boolean,
     description: string,
     setDescription: any,
@@ -21,7 +21,7 @@ function Sidebar({
     className,
     title,
     handleUpdateTone,
-    handleDeleteTone,
+    handleOpenModal,
     loading,
     description,
     setDescription,
@@ -39,7 +39,7 @@ function Sidebar({
 
                 <div className="flex items-center justify-center gap-4 flex-wrap flex-grow lg:flex-grow-0">
                     <button className="border border-gray-700 text-gray-700 px-4 py-2 rounded-md flex gap-2 justify-center items-center" onClick={handleUpdateTone}>Update {loading ? <LoadingSpinner /> : ''}</button>
-                    <button className="text-red-500" onClick={handleDeleteTone}>Delete</button>
+                    <button className="text-red-500" onClick={handleOpenModal}>Delete</button>
                 </div>
 
             </div>

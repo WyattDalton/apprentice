@@ -35,7 +35,7 @@ function Content({ className = '', source = {}, setSource = () => { } }: Props) 
 
     return (
         <div className={className}>
-            <form className="flex-grow-1 flex flex-col gap-4 prose w-full">
+            <form className="grow min-h-[100%] flex flex-col gap-4 prose w-full">
                 <input
                     className="px-2 py-1 text-2xl font-bold rounded-md bg-neutral-50"
                     type="text"
@@ -47,7 +47,7 @@ function Content({ className = '', source = {}, setSource = () => { } }: Props) 
                 />
                 <textarea
                     ref={textareaRef}
-                    className="px-2 py-1 flex-grow-1 rounded-md resize-none  bg-neutral-50"
+                    className="px-2 py-1 grow rounded-md resize-none  bg-neutral-50"
                     placeholder="Content"
                     value={text}
                     onChange={(e) => {

@@ -1,35 +1,12 @@
 'use server';
 
-import { ObjectId } from "mongodb";
-import { getMongoDB } from "@/components/utils/getMongo";
 import SingleToneUi from "./_components/SingleToneUi";
-
-const getToneData = async (id: string) => {
-    try {
-        const db = await getMongoDB() as any;
-        const _id = new ObjectId(id);
-        const tone = await db.collection("tones").findOne({ _id: _id });
-        const cleanTone = { _id: tone._id.toString(), ...tone };
-
-        const payload = {} as any;
-
-        !!cleanTone.title ? payload.title = cleanTone.title : false;
-        !!cleanTone.examples ? payload.examples = cleanTone.examples : false;
-        !!cleanTone.description ? payload.description = cleanTone.description : false;
-        !!cleanTone.keywords ? payload.keywords = cleanTone.keywords : false;
-        !!cleanTone.instructions ? payload.instructions = cleanTone.instructions : false;
-
-        return payload;
-    } catch (error: any) {
-        console.error('Error in GET:', error.message);
-    }
-}
-
+import { deleteTone, getToneData } from "../_actions";
 
 async function Page({ params }: { params: { id: string } }) {
 
     const data = await getToneData(params.id);
-
+    console.log(data.length)
     return (
         <SingleToneUi
             titleData={data.title || ''}
@@ -37,6 +14,7 @@ async function Page({ params }: { params: { id: string } }) {
             descriptionData={data.description || ''}
             keywordsData={data.keywords || []}
             instructionsData={data.instructions || []}
+            deleteTone={deleteTone}
             id={params.id}
         />
     )

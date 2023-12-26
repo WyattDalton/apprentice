@@ -6,12 +6,15 @@ import AddTone from './AddTone';
 import { useRouter } from 'next/navigation';
 import { Dialog, Transition } from '@headlessui/react';
 import LoadingText from '@/components/LoadingText';
+import { createTone } from '../_actions';
 
 type TonesUiProps = {
     tonesSource: any;
+    deleteTone: any;
+    createTone: any;
 }
 
-export default function TonesUi({ tonesSource }: TonesUiProps) {
+export default function TonesUi({ tonesSource, deleteTone, createTone }: TonesUiProps) {
     const router = useRouter();
     const [tones, setTones] = useState(tonesSource);
     const [newTone, setNewTone] = useState({
@@ -29,18 +32,8 @@ export default function TonesUi({ tonesSource }: TonesUiProps) {
     /* * * * * * * * ** * * * * * * */
     const handleAddNewTone = async () => {
         try {
-            const payload = {
-                'dataType': 'create',
-                'data': newTone
-            }
-            const res = await fetch('/api/tonesUpdate', {
-                method: 'POST',
-                body: JSON.stringify(payload),
-                cache: 'no-store',
-            });
-            if (!res.ok) throw new Error('Error creating tone of voice');
-            const data = await res.json();
-            router.push(`/tone-library/${data.tone}`);
+            const tone = await createTone(newTone);
+            router.push(`/tone-library/${tone.insertedId}`);
         }
         catch (error) {
             console.log(error);
@@ -53,18 +46,8 @@ export default function TonesUi({ tonesSource }: TonesUiProps) {
     const handleDeleteTone = async () => {
         try {
             setDeleting(true)
-            const payload = {
-                'dataType': 'delete',
-                'data': { id: toneToDelete.id },
-            }
-            console.log(payload)
-            const res = await fetch('/api/tonesUpdate', {
-                method: 'POST',
-                body: JSON.stringify(payload),
-            });
-            if (!res.ok) throw new Error('Error deleting tone of voice');
-            const data = await res.json();
-            setTones(data.tones);
+            const tones = await deleteTone(toneToDelete.id);
+            setTones(tones);
             setOpenModal(false);
             setDeleting(false);
         }

@@ -63,7 +63,6 @@ export default function ThreadsList({ threads }: Props) {
 
     return (
         <>
-
             <Transition appear show={openModal} as={Fragment}>
                 <Dialog as="div" className="relative z-50" onClose={handleCloseModal}>
                     <Transition.Child
@@ -77,7 +76,6 @@ export default function ThreadsList({ threads }: Props) {
                     >
                         <div className="fixed inset-0 bg-black/25" />
                     </Transition.Child>
-
                     <div className="fixed inset-0 overflow-y-auto">
                         <div className="flex min-h-full items-center justify-center p-4 text-center">
                             <Transition.Child
@@ -101,7 +99,6 @@ export default function ThreadsList({ threads }: Props) {
                                             Are you sure you want to delete the thread titled: <span className="font-semibold">{!!threadToDelete.title ? threadToDelete.title : threadToDelete.id}</span>? This cannot be undone.
                                         </p>
                                     </div>
-
                                     <div className="mt-4">
                                         {!deleting && (
                                             <button
@@ -126,25 +123,18 @@ export default function ThreadsList({ threads }: Props) {
                     </div>
                 </Dialog>
             </Transition>
-
-
             <div className="flex flex-col gap-2" >
-
                 {allThreads.map((thread: any, i: number) => {
-
                     const createdDate = new Date(thread.created);
                     const localCreatedDate = createdDate.toLocaleString('en-US', { month: 'short', day: 'numeric' });
-
                     return (
                         <div className="flex items-center justify-center gap-2 max-w-full w-full" key={i}>
-
                             <button
                                 onClick={() => handleOpenModal(thread._id, thread.title)}
                                 className="group bg-white/50 rounded-md hover:bg-white p-1 w-6 h-6 aspect-ratio-square flex justify-center items-center transition duration-150 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
                             >
                                 <CloseIcon className="h-4 w-4 text-white group-hover:text-gray-700" />
                             </button>
-
                             <button
                                 key={i}
                                 className="flex flex-grow gap-2 py-4 px-6 hover:bg-white/20 rounded-md items-center truncate group/thread"
@@ -153,9 +143,7 @@ export default function ThreadsList({ threads }: Props) {
                                 <span className="text-sm font-semibold truncate"> {thread.title ? thread.title : thread._id} </span>
                                 <GeneratorArrowIcon className="h-4 w-4 text-gray-400 group-hover/thread:translate-x-1 transition duration-150" />
                             </button>
-
                             <span className="text-xs ml-auto">{localCreatedDate}</span>
-
                         </div>
                     )
                 })}

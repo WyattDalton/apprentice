@@ -168,7 +168,7 @@ function AddSource({ setUpdating, setSourcesData, sourcesData }: AddSourceProps)
     return (
         <Card className="w-full">
             <Tab.Group>
-                <div className="flex flex-col md:flex-row gap-2 items-center justify-between mb-2 mx-auto prose">
+                <div className="flex flex-col md:flex-row gap-2 items-center justify-between mb-2 mx-auto">
                     <h2 className="m-0">Add a Source</h2>
                     <Tab.List className="flex bg-gray-100 px-4 py-2 rounded-full gap-2">
                         <Tab className="ui-selected:bg-gray-700 px-4 py-2 rounded-full text-gray-500 ui-selected:text-white">Files</Tab>

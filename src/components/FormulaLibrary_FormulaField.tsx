@@ -39,8 +39,7 @@ const FormulaBuilder = ({
 				<div className="flex flex-col">
 					{!!newFormula.instructions && (
 						<h3 className="block mb-2 font-sm font-semibold text-gray-700">
-							Instructions
-							<span className="text-sm text-gray-500">(click to insert)</span>
+							Instructions <span className="text-sm text-gray-500">(click to insert)</span>
 						</h3>
 					)}
 					{!!newFormula.instructions && newFormula.instructions.map((instruction: any, index: any) =>

@@ -8,6 +8,8 @@ import LoadingText from "@/components/LoadingText";
 import Content from "./Content";
 import Sidebar from "./Sidebar";
 
+import { getEmbedding, getInstructions, processInstructions, getKeywords, processKeywords, getDesription, processDescriptions } from "../_actions";
+
 type UiProps = {
     titleData: any,
     examplesData: any,

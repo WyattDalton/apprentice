@@ -17,7 +17,7 @@ const openAIApi = new OpenAIApi(configuration);
  * @param openai - The OpenAI instance.
  * @returns The generated instructions for replicating the writing style and tone.
  */
-export const getInstructions = async (template: string, string: string, openai = openAIApi as any) => {
+export async function getInstructions(template: string, string: string, openai = openAIApi as any) {
     'use server'
     try {
         const instructionMessages = [
@@ -49,7 +49,7 @@ export const getInstructions = async (template: string, string: string, openai =
  * @param openai - The OpenAI instance used for creating chat completions.
  * @returns A Promise that resolves to a string representing the combined instructions.
  */
-export const processInstructions = async (instructions: any, openai = openAIApi as any) => {
+export async function processInstructions(instructions: any, openai = openAIApi as any) {
     'use server'
     try {
         // Combine the instructions into a single string
@@ -98,7 +98,7 @@ export const processInstructions = async (instructions: any, openai = openAIApi 
  * @param openai - The OpenAI instance.
  * @returns A promise that resolves to a string array of the top 5 keywords.
  */
-export const getKeywords = async (template: string, string: string, openai = openAIApi as any): Promise<string[]> => {
+export async function getKeywords(template: string, string: string, openai = openAIApi as any): Promise<string[]> {
     'use server'
     const keywordsMessages = [
         {
@@ -127,7 +127,7 @@ export const getKeywords = async (template: string, string: string, openai = ope
  * @param openai - The OpenAI instance.
  * @returns An array of keywords that combines the best shared elements of the example keywords.
  */
-export const processKeywords = async (keywords: any, openai = openAIApi as any) => {
+export async function processKeywords(keywords: any, openai = openAIApi as any) {
     'use server'
     const keywordsString = keywords.reduce((acc: string, description: string) => {
         return `${acc}### Start new keywords ###\n${keywords}\n### End of keywords ###\n`
@@ -163,7 +163,7 @@ export const processKeywords = async (keywords: any, openai = openAIApi as any) 
  * @param openai - The OpenAI instance.
  * @returns The description of the tone of voice.
  */
-export const getDesription = async (template: string, string: string, openai = openAIApi as any) => {
+export async function getDesription(template: string, string: string, openai = openAIApi as any) {
     'use server'
     // Get tone keywords
     const descriptionMessages = [
@@ -190,7 +190,7 @@ export const getDesription = async (template: string, string: string, openai = o
  * @param openai - The OpenAI instance.
  * @returns A single description that combines the best shared elements of the example descriptions.
  */
-export const processDescriptions = async (descriptions: any, openai = openAIApi as any) => {
+export async function processDescriptions(descriptions: any, openai = openAIApi as any) {
     'use server'
     // add each description to a string, started and ended with "### Start new description ###" and "### End of description ###"
     const descriptionString = descriptions.reduce((acc: string, description: string) => {

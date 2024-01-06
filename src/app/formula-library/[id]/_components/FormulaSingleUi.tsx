@@ -308,7 +308,7 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
                     handleInsertInstruction={handleInsertInstruction}
                 />
                 <Sidebar
-                    className="col-span-6 md:col-span-2 gap-4 rounded-lg sticky bottom-0 lg:flex lg:flex-col lg:justify-end lg:flex-grow p-0 lg:p-4 bg-transparent lg:bg-neutral-50"
+                    className="col-span-6 mlg:col-span-2 gap-4 rounded-lg sticky bottom-0 lg:flex lg:flex-col lg:justify-end lg:flex-grow p-0 lg:p-4 bg-transparent lg:bg-neutral-50"
                     title={title}
                     handleSubmit={handleSubmit}
                     handleOpenModal={handleOpenModal}

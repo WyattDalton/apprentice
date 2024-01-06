@@ -33,7 +33,6 @@ export const getAuth = async () => {
 
         // If the response is 200, return the user data
         const userData = await authorizedUser.json();
-
         return userData;
 
     } catch (err) {

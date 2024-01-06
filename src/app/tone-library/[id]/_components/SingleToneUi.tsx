@@ -16,9 +16,31 @@ type UiProps = {
     instructionsData: any,
     deleteTone: any,
     id: any,
+    getEmbedding: any,
+    getInstructions: any,
+    processInstructions: any,
+    getKeywords: any,
+    processKeywords: any,
+    getDesription: any,
+    processDescriptions: any,
 }
 
-function SingleToneUi({ titleData, examplesData, descriptionData, keywordsData, instructionsData, deleteTone, id }: UiProps) {
+function SingleToneUi({
+    titleData,
+    examplesData,
+    descriptionData,
+    keywordsData,
+    instructionsData,
+    deleteTone,
+    id,
+    getEmbedding,
+    getInstructions,
+    processInstructions,
+    getKeywords,
+    processKeywords,
+    getDesription,
+    processDescriptions
+}: UiProps) {
     const router = useRouter();
 
     const [title, setTitle] = useState(titleData || '');
@@ -30,9 +52,104 @@ function SingleToneUi({ titleData, examplesData, descriptionData, keywordsData, 
     const [newExample, setNewExample] = useState('');
     const [displayAddExample, setDisplayAddExample] = useState(false);
     const [loading, setLoading] = useState<any>(false);
+    const [progress, setProgress] = useState<any>('Initializing...');
 
     const [openModal, setOpenModal] = useState(false);
     const [deleting, setDeleting] = useState(false);
+
+
+
+
+    const processTone = async (tone: any) => {
+        try {
+
+            const { examples, title } = tone;
+
+            // ###
+            // Outline elements of tone
+            const tone_template = `1. Pace: The speed at which the story, action, or conflict unfolds and events occur.\n 
+        2. Mood: The overall emotional atmosphere or feeling of the text.\n
+        3. Tone: The attitude towards the subject matter.\n
+        4. Voice: Unique style and personality as it comes through in writing.\n
+        5. Diction: The choice of words and phrases.\n
+        6. Syntax: The arrangement of words and phrases to create well-formed sentences.\n
+        7. Imagery: The use of vivid and descriptive language to create mental images for the reader.\n
+        8. Theme: The central idea or message of the text.\n
+        9. Point of View: The perspective from which the text is written (first person, third person, etc.).\n
+        10. Structure: The organization and arrangement of the text, including headings and sections, and sentence and paragraph length.\n`;
+
+            // ###
+            // Get embeddings for each example
+            setProgress('Breaking down each example...');
+            const examplesWithEmbeddings = await Promise.all(examples.map(async (example: any) => {
+                const text = example.text;
+                const embedding = await getEmbedding(example.text);
+                return { text: text, embedding: embedding };
+            }));
+
+            // ###
+            // Split examples into chunks of 5 and add to array for processing
+            setProgress('Processing examples...');
+            const examplesToProcess: string[] = [];
+            let string = "";
+            examplesWithEmbeddings.forEach((example: any, index: number) => {
+                if (index % 10 === 0 && index !== 0) {
+                    examplesToProcess.push(string);
+                    string = "";
+                }
+                string += `### Start new example ###\n${example.text}\n### End of example ###\n`;
+            }
+            );
+            examplesToProcess.push(string);
+
+            // ###
+            // Instructions
+            setProgress('Generating tone blueprint (this can take a minute or two)');
+            const instructionsList = await Promise.all(examplesToProcess.map(async (example: string) => {
+                const instructions = await getInstructions(tone_template, example);
+                console.log('\n\n INSTRUCTIONS \n\n', instructions);
+                return instructions;
+            }
+            ));
+            const instructions = await processInstructions(instructionsList);
+
+            // ###
+            // Keywords
+            setProgress('Generating keywords...');
+            const keywordsList = await Promise.all(examplesToProcess.map(async (example: string) => {
+                const keywords = await getKeywords(tone_template, example);
+                return keywords;
+            }));
+            const keywords = await processKeywords(keywordsList);
+
+            // ###
+            // Descriptions
+            setProgress('Wrapping up...');
+            const descriptions = await Promise.all(examplesToProcess.map(async (example: string) => {
+                const description = await getDesription(tone_template, example);
+                return description;
+            }));
+            const description = await processDescriptions(descriptions);
+
+            // ###
+            // Format newTone
+            const newTone = {
+                title: title,
+                examples: examplesWithEmbeddings,
+                instructions: instructions,
+                keywords: keywords,
+                description: description,
+            }
+
+            setProgress('Done!');
+
+            return newTone;
+        } catch (error) {
+            console.log(error);
+            setProgress('Error processing tone');
+        }
+    }
+
 
     /* * * * * * * * * * * * * * * * *
         /* Update the tone
@@ -40,9 +157,10 @@ function SingleToneUi({ titleData, examplesData, descriptionData, keywordsData, 
     const handleUpdateTone = async () => {
         try {
             setLoading(true);
+            const newTone = await processTone({ title: title, examples: examples });
             const payload = {
                 'dataType': 'update',
-                'data': { _id: id, update: { title: title, examples: examples, description: description, keywords: keywords, instructions: instructions } },
+                'data': { _id: id, update: newTone },
             }
             const res = await fetch(`/api/tonesUpdate`, {
                 method: 'POST',
@@ -50,6 +168,7 @@ function SingleToneUi({ titleData, examplesData, descriptionData, keywordsData, 
             });
             if (!res.ok) throw new Error('Error updating tone of voice');
             setLoading(false);
+            setProgress('Initializing...');
 
         } catch (error) {
             console.log(error);
@@ -218,7 +337,7 @@ function SingleToneUi({ titleData, examplesData, descriptionData, keywordsData, 
                 />
 
                 <Sidebar
-                    className={'col-span-6 md:col-span-2 gap-4 rounded-lg sticky bottom-0 lg:flex lg:flex-col lg:justify-end lg:flex-grow p-0 lg:p-4 bg-transparent lg:bg-neutral-50'}
+                    className={'col-span-6 lg:col-span-2 gap-4 rounded-lg sticky bottom-0 lg:flex lg:flex-col lg:justify-end lg:flex-grow p-0 lg:p-4 bg-transparent lg:bg-neutral-50'}
                     description={description}
                     setDescription={setDescription}
                     keywords={keywords}
@@ -228,8 +347,9 @@ function SingleToneUi({ titleData, examplesData, descriptionData, keywordsData, 
                     title={title}
                     handleUpdateTone={handleUpdateTone}
                     handleOpenModal={handleOpenModal}
-                    loading={loading} />
-
+                    loading={loading}
+                    progress={progress}
+                />
             </section>
         </>
     )

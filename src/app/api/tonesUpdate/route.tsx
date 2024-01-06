@@ -30,10 +30,10 @@ export async function POST(req: NextRequest) {
 
             // Process the examples with OpenAI
             // Need to check if new examples match old examples before attempting to process
-            const tone = await processTone(update, openai);
+            // const tone = await processTone(update, openai);
             const res = await db.collection("tones").updateOne(
                 { _id: new ObjectId(_id) },
-                { $set: tone },
+                { $set: update },
                 { upsert: true }
             );
 
@@ -46,8 +46,6 @@ export async function POST(req: NextRequest) {
             const { _id } = data;
             const res = await db.collection("tones").deleteOne({ _id: new ObjectId(_id) });
             const tones = await db.collection("tones").find({}).toArray();
-
-            // console.log(tones.length);
             return NextResponse.json({
                 'success': true,
                 'tones': tones,

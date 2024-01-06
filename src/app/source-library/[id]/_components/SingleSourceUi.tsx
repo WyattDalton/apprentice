@@ -155,7 +155,7 @@ function SingleSourceUi({ _id, sourceData, deleteSource, updateSource }: SourceD
                     setSource={setSource} />
 
                 <Sidebar
-                    className={'col-span-6 md:col-span-2 gap-4 rounded-lg sticky bottom-0 lg:flex lg:flex-col lg:justify-end lg:flex-grow p-0 lg:p-4 bg-transparent lg:bg-neutral-50'}
+                    className={'col-span-6 lg:col-span-2 gap-4 rounded-lg sticky bottom-0 lg:flex lg:flex-col lg:justify-end lg:flex-grow p-0 lg:p-4 bg-transparent lg:bg-neutral-50'}
                     handleUpdate={handleUpdate}
                     source={source}
                     updating={updating}

@@ -201,6 +201,7 @@ const processDescriptions = async (descriptions: any, openai = openAIApi as any)
     const descriptionString = descriptions.reduce((acc: string, description: string) => {
         return `${acc}### Start new description ###\n${description}\n### End of description ###\n`
     }, "");
+
     const messages = [
         {
             "role": "system",

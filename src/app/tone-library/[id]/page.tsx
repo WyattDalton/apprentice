@@ -197,7 +197,7 @@ const getDesription = async (template: string, string: string, openai = openAIAp
  */
 const processDescriptions = async (descriptions: any, openai = openAIApi as any) => {
     'use server'
-    // add each description to a string, started and ended with "### Start new description ###" and "### End of description ###"
+
     const descriptionString = descriptions.reduce((acc: string, description: string) => {
         return `${acc}### Start new description ###\n${description}\n### End of description ###\n`
     }, "");

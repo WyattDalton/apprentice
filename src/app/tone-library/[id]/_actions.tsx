@@ -6,10 +6,6 @@ const configuration = new Configuration({
 });
 const openAIApi = new OpenAIApi(configuration);
 
-
-
-
-
 /* * * * * * * * * * * * * * * * */
 /* Handle instructions processing
 /* * * * * * * * * * * * * * * * */

@@ -36,13 +36,13 @@ async function Page({ params }: { params: { id: string } }) {
             instructionsData={data.instructions || []}
             deleteTone={deleteTone}
             id={params.id}
-            getEmbedding={getEmbedding}
-            getInstructions={getInstructions}
-            processInstructions={processInstructions}
-            getKeywords={getKeywords}
-            processKeywords={processKeywords}
-            getDesription={getDesription}
-            processDescriptions={processDescriptions}
+            getEmbedding={UIgetEmbedding}
+            getInstructions={UIgetInstructions}
+            processInstructions={UIprocessInstructions}
+            getKeywords={UIgetKeywords}
+            processKeywords={UIprocessKeywords}
+            getDesription={UIgetDesription}
+            processDescriptions={UIprocessDescriptions}
         />
     )
 }

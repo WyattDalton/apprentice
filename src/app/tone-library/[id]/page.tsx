@@ -258,13 +258,13 @@ async function Page({ params }: { params: { id: string } }) {
     const data = await getToneData(params.id);
 
     // Transfer functions to UI
-    const UIgetEmbedding = getEmbedding;
-    const UIgetInstructions = getInstructions;
-    const UIprocessInstructions = processInstructions;
-    const UIgetKeywords = getKeywords;
-    const UIprocessKeywords = processKeywords;
-    const UIgetDesription = getDesription;
-    const UIprocessDescriptions = processDescriptions;
+    // const UIgetEmbedding = getEmbedding;
+    // const UIgetInstructions = getInstructions;
+    // const UIprocessInstructions = processInstructions;
+    // const UIgetKeywords = getKeywords;
+    // const UIprocessKeywords = processKeywords;
+    // const UIgetDesription = getDesription;
+    // const UIprocessDescriptions = processDescriptions;
 
     return (
         <SingleToneUi
@@ -275,13 +275,13 @@ async function Page({ params }: { params: { id: string } }) {
             instructionsData={data.instructions || []}
             deleteTone={deleteTone}
             id={params.id}
-            getEmbedding={UIgetEmbedding}
-            getInstructions={UIgetInstructions}
-            processInstructions={UIprocessInstructions}
-            getKeywords={UIgetKeywords}
-            processKeywords={UIprocessKeywords}
-            getDesription={UIgetDesription}
-            processDescriptions={UIprocessDescriptions}
+            getEmbedding={getEmbedding}
+            getInstructions={getInstructions}
+            processInstructions={processInstructions}
+            getKeywords={getKeywords}
+            processKeywords={processKeywords}
+            getDesription={getDesription}
+            processDescriptions={processDescriptions}
         />
     )
 }

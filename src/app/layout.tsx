@@ -19,9 +19,9 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-slate-100`}>
         <AuthProvider>
-          <div className="bg-slate-100 flex flex-col gap-4 min-h-screen">
+          <div className=" flex flex-col gap-4 min-h-screen">
             <AppNavigation />
             <div className="flex flex-col grow-1 w-full flex-grow">
               {children}

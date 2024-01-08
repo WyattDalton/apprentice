@@ -32,6 +32,8 @@ export async function POST(req: NextRequest) {
 		const tones = data.toneLibrary;
 		const formulas = data.formulaLibrary;
 
+		console.log("Formula from settings: ", settings.formula, "\n\n")
+
 		// ###
 		// ### format settings for prompt
 		const formatSettings = async (settings: any) => {
@@ -96,7 +98,7 @@ export async function POST(req: NextRequest) {
 			// ### format formula
 			if (!!formula) {
 				const f = await templatize(formula, formulas)
-
+				console.log(f);
 				// messages.append(response_data['templatizedMessage'])
 				settingsString += `
 				### The response should strictly follow this formula ###\n
@@ -149,7 +151,6 @@ export async function POST(req: NextRequest) {
 			### End of settings ###\n\n
 			### Using the above settings, respond to the following prompt ###   
 			`;
-
 			return settingsString;
 		}
 

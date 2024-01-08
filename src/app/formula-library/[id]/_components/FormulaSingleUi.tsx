@@ -28,7 +28,7 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
     const [newFormula, setNewFormula] = useState({});
     const [title, setTitle] = useState(titleData || '');
     const [instructions, setInstructions] = useState(instructionsData || []);
-    const [formula, setFormula] = useState(formulaData || '');
+    const [format, setFormat] = useState(formulaData || '');
 
     const [openModal, setOpenModal] = useState(false);
     const [formulaToDelete, setFormulaToDelete] = useState({ id: '', title: '' });
@@ -41,9 +41,9 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
         setNewFormula({
             title,
             instructions,
-            formula,
+            format,
         });
-    }, [title, instructions, formula]);
+    }, [title, instructions, format]);
 
     /* * * * * * * * ** * * * * * * *
     /* Delete a formula
@@ -94,7 +94,7 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
             case 'add-instruction':
                 newInstructions = [
                     ...newInstructions,
-                    { title: '', instruction: '', examples: [] },
+                    { title: '', instruction: '', example: '' },
                 ];
                 break;
             case 'remove-instruction':
@@ -113,48 +113,15 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
                     idx === index ? { ...instr, instruction: e.target.value } : instr
                 );
                 break;
-            case 'add-example':
+            case 'update-instruction-example':
                 newInstructions = newInstructions.map((instr: any, idx: any) =>
-                    idx === index
-                        ? { ...instr, examples: [...instr.examples, ''] }
-                        : instr
-                );
-                break;
-            case 'uppdate-example-text':
-                const exampleIndex = parseInt(e.target.dataset.exampleIndex, 10);
-                newInstructions = newInstructions.map((instr: any, idx: any) =>
-                    idx === index
-                        ? {
-                            ...instr,
-                            examples: instr.examples.map((ex: any, exIdx: any) =>
-                                exIdx === exampleIndex ? e.target.value : ex
-                            ),
-                        }
-                        : instr
-                );
-                break;
-            case 'remove-example':
-                const removeIndex = parseInt(e.target.dataset.exampleIndex, 10);
-                newInstructions = newInstructions.map((instr: any, idx: any) =>
-                    idx === index
-                        ? {
-                            ...instr,
-                            examples: instr.examples.filter(
-                                (_: any, exIdx: any) => exIdx !== removeIndex
-                            ),
-                        }
-                        : instr
+                    idx === index ? { ...instr, example: e.target.value } : instr
                 );
                 break;
             default:
                 break;
         }
         setInstructions(newInstructions);
-    };
-
-    // Handle formula title change
-    const handleFormulaChange = (e: any) => {
-        setFormula(e.target.value);
     };
 
     // Handle instruction insert into formula
@@ -304,7 +271,8 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
                     newFormula={newFormula}
                     setNewFormula={setNewFormula}
                     handleUpdateInstructions={handleUpdateInstructions}
-                    handleFormulaChange={handleFormulaChange}
+                    format={format}
+                    setFormat={setFormat}
                     handleInsertInstruction={handleInsertInstruction}
                 />
                 <Sidebar

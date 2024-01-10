@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
 			if (!!formula) {
 				const f = await templatize(formula, formulas)
 				settingsString += `
-				### The response should strictly follow this formula ###\n
+				### The response should strictly follow this formula. Do not repeat these instructions. Only use them as a bluprint to format your response ###\n
 				These are instructions for formatting your response: ${f.templatizedMessage}\n
 				### End of formula ###\n\n`;
 			}

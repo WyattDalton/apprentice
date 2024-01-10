@@ -37,9 +37,9 @@ export async function templatize(_id: any, formulaLibrary: any) {
             if (!example) example = !!instruction.examples ? instruction.examples[0] : false;
 
             // Format instruction with examples (if available)
-            let formatted_instruction = `# ${position}, ${content}`;
+            let formatted_instruction = `${position}, ${content}`;
             if (!!example) formatted_instruction += `(for example: ${example})`;
-            formatted_instruction += `#\n\n`;
+            formatted_instruction += `\n\n`;
 
             returnString += formatted_instruction;
         });

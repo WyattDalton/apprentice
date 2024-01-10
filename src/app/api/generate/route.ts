@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 		const tones = data.toneLibrary;
 		const formulas = data.formulaLibrary;
 
-		console.log("Formula from settings: ", settings.formula, "\n\n")
+		let responseSources: any = [];
 
 		// ###
 		// ### format settings for prompt
@@ -98,11 +98,9 @@ export async function POST(req: NextRequest) {
 			// ### format formula
 			if (!!formula) {
 				const f = await templatize(formula, formulas)
-				console.log(f);
-				// messages.append(response_data['templatizedMessage'])
 				settingsString += `
 				### The response should strictly follow this formula ###\n
-				Formula to follow: ${f.templatizedMessage}\n
+				These are instructions for formatting your response: ${f.templatizedMessage}\n
 				### End of formula ###\n\n`;
 			}
 
@@ -130,7 +128,7 @@ export async function POST(req: NextRequest) {
 			// ###
 			// ### format use sources
 			if (!!useSources) {
-				const responseSources = await getResponseSources(sources, promptEmbeddingVectors, 10, 0.75, 'general');
+				responseSources = await getResponseSources(sources, promptEmbeddingVectors, 10, 0.70, 'general');
 
 				settingsString += `
 				### Use the following sources as factual information for the response ###\n`;
@@ -140,8 +138,8 @@ export async function POST(req: NextRequest) {
 				})
 
 				settingsString += `### End of sources ###\n\n
-				### If there are no sources, start respond with a variation of the following ###\n
-				WARNING: I do not have enough information to respond to your request factually. I will do my best to respond, but you edit my response for accuracy.\n
+				### If there are no sources, start your response with a variation of the following ###\n
+				WARNING: I do not have enough information to respond to your request factually. I will do my best to respond, but you may need to edit my response for accuracy.\n
 				### End of warning ###\n\n`;
 			}
 

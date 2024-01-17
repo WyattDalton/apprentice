@@ -12,19 +12,19 @@ export async function POST(req: NextRequest) {
 
         //### Get data from request body
         const body = await req.json();
-        const { userId, organization, username } = body;
+        const { userId, username } = body;
 
         //### Init db
         let db;
 
         //### Get db for {userId}-{organization}
-        db = await getMongoDB(userId, organization, username) as any;
+        db = await getMongoDB(userId, username) as any;
 
         //### Access the users collection
         const collection = db.collection("users");
 
         // ### Upsert the user to the collection with information from request body
-        const res = await collection.updateOne({ userId: userId }, { $set: { userId: userId, organization: organization, username: username } }, { upsert: true });
+        const res = await collection.updateOne({ userId: userId }, { $set: { userId: userId, username: username } }, { upsert: true });
 
         // ### Return a JSON response with a success flag and updated user data
         return NextResponse.json({

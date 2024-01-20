@@ -27,7 +27,7 @@ export default async function Home() {
       <section className="flex-grow flex flex-col gap-8 inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]">
 
         <div className='w-full'>
-          <h1 className='text-4xl font-bold text-gray-700 w-full'>Say Hello to Apprentice</h1>
+          <h1 className='text-4xl font-bold text-gray-700 w-full'>Say Hello to <span className="relative pt-3">Apprentice<span className="absolute top-0 right-0 text-sm font-light">Early Access</span></span></h1>
           <p className='text-gray-500'>Your newest team member. Generate effective marketing in 15 minutes or less.</p>
         </div>
 
@@ -88,7 +88,7 @@ export default async function Home() {
 
           <div className='w-full col-span-full prose'>
             <h2 className='text-2xl font-bold text-gray-500 m-0'>In the works</h2>
-            <p className="">We&apos;re working on some cool features to make Apprentice even more powerful. Stay tuned!\</p>
+            <p className="">We&apos;re working on some cool features to make Apprentice even more powerful. Stay tuned!</p>
           </div>
 
           <Card className="!bg-neutral-50 flex flex-col gap-2 col-span-full md:col-span-3">

@@ -11,6 +11,10 @@ import {
 	faFile,
 	faLink,
 	faClose,
+	faUser,
+	faBook,
+	faFlask,
+	faBullhorn,
 } from '@fortawesome/free-solid-svg-icons';
 
 export const CloseIcon = ({ className }) => {
@@ -25,6 +29,32 @@ export const SettingsIcon = ({ className }) => {
 	);
 };
 
+export const UserIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon className={!!className ? className : ''} icon={faUser} />
+	);
+};
+
+export const SourceIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon className={!!className ? className : ''} icon={faBook} />
+	);
+};
+
+export const FormulaIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon className={!!className ? className : ''} icon={faFlask} />
+	);
+};
+
+export const ToneIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon
+			className={!!className ? className : ''}
+			icon={faBullhorn}
+		/>
+	);
+};
 export const ListIcon = ({ className }) => {
 	return (
 		<FontAwesomeIcon className={!!className ? className : ''} icon={faList} />

@@ -8,10 +8,13 @@ import { Dialog, Transition } from '@headlessui/react'
 import GridSkeleton from './GridSkeleton'
 
 type SourcesUiProps = {
-    sources: any
+    sources: any,
+    fetchHtmlFromUrl: any,
+    processHtmlFromUrl: any,
+    addUrl: any,
 }
 
-export default async function SourcesUi({ sources }: SourcesUiProps) {
+export default async function SourcesUi({ sources, fetchHtmlFromUrl, processHtmlFromUrl, addUrl }: SourcesUiProps) {
 
     const [sourcesData, setSourcesData] = useState(sources || [])
     const [updating, setUpdating] = useState(false)
@@ -22,8 +25,18 @@ export default async function SourcesUi({ sources }: SourcesUiProps) {
 
     return (
         <section className='w-[90%] mx-auto flex flex-col gap-4 h-full flex-grow'>
-            <AddSource setUpdating={setUpdating} sourcesData={sourcesData} setSourcesData={setSourcesData} />
-            <SourcesGrid data={sourcesData} />
+            <AddSource
+                setUpdating={setUpdating}
+                sourcesData={sourcesData}
+                setSourcesData={setSourcesData}
+
+                fetchHtmlFromUrl={fetchHtmlFromUrl}
+                processHtmlFromUrl={processHtmlFromUrl}
+                addUrl={addUrl}
+            />
+            {!!sourcesData.length &&
+                <SourcesGrid data={sourcesData} />
+            }
         </section>
     )
 }

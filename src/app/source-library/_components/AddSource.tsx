@@ -10,15 +10,66 @@ type AddSourceProps = {
     setUpdating: any,
     setSourcesData: any,
     sourcesData: any,
+    fetchHtmlFromUrl: any,
+    processHtmlFromUrl: any,
+    addUrl: any,
 }
 
-function AddSource({ setUpdating, setSourcesData, sourcesData }: AddSourceProps) {
+function AddSource({ setUpdating, setSourcesData, sourcesData, addUrl, processHtmlFromUrl, fetchHtmlFromUrl }: AddSourceProps) {
 
     const [loading, setLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState("");
     const [error, setError] = useState("");
     const [files, setFiles] = useState([]);
     const [url, setUrl] = useState("");
     const fileInputRef = useRef(null) as any;
+
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const [rawName, setRawName] = useState("");
+    const [rawText, setRawText] = useState("");
+
+
+
+
+    /**
+     * Handles the submission of raw data to the server.
+     * @param e - The event object.
+     */
+    const handelRawSubmit = async (e: any) => {
+        e.preventDefault();
+        try {
+            setLoading(true);
+            const data = await fetch("/api/sourcesUpdate", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ "dataType": "raw", "data": [{ "name": rawName, "text": rawText }] })
+            });
+
+            if (!data.ok) {
+                setError('Failed to return data');
+                throw new Error('Failed to return data')
+            }
+
+            // ###
+            // ### Reset after success
+            setLoading(false);
+            setRawName("");
+            setRawText("");
+
+            // ###
+            // ### Update sources with new source
+            const newSource = await data.json();
+            const newSourcesData = [newSource, ...sourcesData];
+            setSourcesData(newSourcesData);
+
+        } catch (error) {
+            console.error(error);
+            setError("Failed to add raw text to sources");
+            setLoading(false);
+        }
+    }
 
     /**
      * Handles the change event for the file input element.
@@ -118,49 +169,80 @@ function AddSource({ setUpdating, setSourcesData, sourcesData }: AddSourceProps)
         try {
 
             // ###
-            // ### Check that url is a valid url
-            const urlObject = new URL(url);
-            if (urlObject.protocol !== 'http:' && urlObject.protocol !== 'https:') {
-                setError('Invalid url');
-                throw new Error('Invalid url');
-            }
-
-            // ###
             // ### Set Loading to true
             setLoading(true);
 
             // ###
-            // ### Fetch the url
-            const data = await fetch("/api/sourcesUpdate", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ "dataType": "url", "data": [{ "url": url }] })
-            });
+            // ### Check that url is a valid url
+            const urlObject = new URL(url);
+            if (!urlObject.protocol.includes('http')) {
+                setError('Invalid url');
+                setTimeout(() => {
+                    setLoading(false);
+                    throw new Error('Failed to add url to sources')
+                }, 1000);
+            }
 
             // ###
-            // ### Check if the fetch was successful
-            if (!data.ok) {
+            // ### Fetch the url
+            setLoadingMessage("Getting content from url");
+            const data = await fetchHtmlFromUrl(url);
+            if (!data.success) {
                 setError('Failed to fetch data');
-                throw new Error('Failed to fetch data')
+                setTimeout(() => {
+                    setLoading(false);
+                    throw new Error('Failed to add url to sources')
+                }, 1000);
+            }
+
+            // ###
+            // ### Process the data
+            setLoadingMessage("Processing content from url");
+            const processedData = await processHtmlFromUrl(data);
+            if (!processedData.success) {
+                setError('Failed to process data');
+                setTimeout(() => {
+                    setLoading(false);
+                    throw new Error('Failed to add url to sources')
+                }, 1000);
+            }
+
+            /*/
+            After data is processed, a modal should open to display the data and allow the user to edit it before submitting to the database. At this point they should be able to approve or reject the data and stop the process
+            /*/
+
+            // ###
+            // ### Send new source to DB
+            setLoadingMessage("Adding URL to sources");
+            const newSource = await addUrl(processedData);
+            if (!newSource.success) {
+                setError('Failed to add url to sources');
+                setTimeout(() => {
+                    setLoading(false);
+                    throw new Error('Failed to add url to sources')
+                }, 1000);
+
             }
 
             // ###
             // ### Reset after success
-            setLoading(false);
             setUrl("");
+            setLoadingMessage("Success!");
+            setTimeout(() => {
+                setLoading(false);
+                setLoadingMessage("");
+            }, 1000);
 
             // ###
             // ### Update sources with new source
-            const newSource = await data.json();
-            const newSourcesData = [newSource, ...sourcesData];
+            const newSourcesData = [newSource.source, ...sourcesData];
             setSourcesData(newSourcesData);
 
         } catch (error) {
-            console.error(error);
             setError("Failed to add url to sources");
-            setLoading(false);
+            setTimeout(() => {
+                setLoading(false);
+            }, 1000);
         }
     }
 
@@ -171,11 +253,60 @@ function AddSource({ setUpdating, setSourcesData, sourcesData }: AddSourceProps)
                 <div className="flex flex-col md:flex-row gap-2 items-center justify-between mb-2 mx-auto">
                     <h2 className="m-0">Add a Source</h2>
                     <Tab.List className="flex bg-gray-100 px-4 py-2 rounded-full gap-2">
+                        <Tab className="ui-selected:bg-gray-700 px-4 py-2 rounded-full text-gray-500 ui-selected:text-white">Raw Text</Tab>
                         <Tab className="ui-selected:bg-gray-700 px-4 py-2 rounded-full text-gray-500 ui-selected:text-white">Files</Tab>
                         <Tab className="ui-selected:bg-gray-700 px-4 py-2 rounded-full text-gray-500 ui-selected:text-white">Urls</Tab>
                     </Tab.List>
                 </div>
                 <Tab.Panels>
+                    <Tab.Panel>
+                        <div
+                            className="flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 p-4 rounded-md"
+                            onSubmit={(e) => handelRawSubmit(e)}
+                        >
+                            <form className="flex flex-col gap-4 prose w-full">
+                                <input
+                                    className="px-2 py-1 text-2xl font-bold rounded-md bg-neutral-50"
+                                    type="text"
+                                    placeholder="Title"
+                                    value={rawName}
+                                    onChange={(e) => {
+                                        setRawName(e.target.value);
+                                    }}
+                                />
+                                <textarea
+                                    ref={textareaRef}
+                                    className="px-2 py-1 grow rounded-md resize-none  bg-neutral-50"
+                                    placeholder="Content"
+                                    value={rawText}
+                                    onChange={(e) => {
+                                        setRawText(e.target.value);
+
+                                        // Adjust textarea height to fit content
+                                        if (textareaRef.current) {
+                                            const field = textareaRef.current;
+                                            field.style.height = "0px";
+                                            const scrollHeight = field.scrollHeight;
+                                            field.style.height = scrollHeight + "px";
+                                        }
+                                    }}
+                                />
+                                <button type="submit" className="px-4 py-2 text-white bg-gray-700 rounded-md">Add Raw Text to Sources</button>
+                            </form>
+
+                            <Transition
+                                show={loading}
+                                enter="transition-opacity duration-300"
+                                enterFrom="opacity-0"
+                                enterTo="opacity-100"
+                                leave="transition-opacity duration-300"
+                                leaveFrom="opacity-100"
+                                leaveTo="opacity-0"
+                            >
+                                <LoadingText text={"Adding content to sources"} className={""} iconClassName={""} />
+                            </Transition>
+                        </div>
+                    </Tab.Panel>
                     <Tab.Panel>
                         <div
                             className="flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 p-4 rounded-md"
@@ -229,7 +360,7 @@ function AddSource({ setUpdating, setSourcesData, sourcesData }: AddSourceProps)
                                 leaveFrom="opacity-100"
                                 leaveTo="opacity-0"
                             >
-                                <LoadingText text="Adding content to sources" className={""} iconClassName={""} />
+                                {!!error ? (<span>{error}</span>) : <LoadingText text={loadingMessage} className={""} iconClassName={""} />}
                             </Transition>
                         </div>
                     </Tab.Panel>

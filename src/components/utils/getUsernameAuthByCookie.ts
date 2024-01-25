@@ -30,7 +30,7 @@ export const getAuthUsername = () => {
         username = extractUsername(loggedInCookie.value);
     } else if (process.env.NODE_ENV === 'development') {
         username = 'Wyatt';
-        username = 'janna.dalton';
+        // username = 'janna.dalton';
     }
 
     return username;

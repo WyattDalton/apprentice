@@ -1,17 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server'
+import { fetchHtmlFromUrl, processHtmlFromUrl } from './utils/newSource_urlProcessors';
 import { getMongoDB } from '@/components/utils/getMongo';
-import { Configuration, OpenAIApi } from "openai";
 import { ObjectId } from 'mongodb';
+import { Configuration, OpenAIApi } from "openai";
+
 const configuration = new Configuration({
     organization: "org-B0x5nwrSR31e5bkeQuwEKeyY",
     apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
-
 const mammoth = require("mammoth");
 const pdfParse = require('pdf-parse');
-const cheerio = require('cheerio');
-
 
 export async function POST(req: NextRequest) {
 
@@ -72,7 +71,40 @@ export async function POST(req: NextRequest) {
         const db = await getMongoDB() as any;
         const sourcesCollection = db.collection("sources");
 
-        if (dataType === 'file') {
+        if (dataType === 'raw') {
+            const processedSources = await Promise.all(sources.map(async (source: any) => {
+                const sourcePayload = {} as any;
+
+                const text = source.text;
+                const name = source.name;
+                const chunks = createChunks(text) as any;
+                const embeddings = await Promise.all(chunks.map((chunk: any, index: number) => getEmbedding(chunk, name, index)));
+
+                sourcePayload.name = name;
+                sourcePayload.title = name;
+                sourcePayload.type = 'raw';
+                sourcePayload.text = text;
+                sourcePayload.embeddings = embeddings;
+                sourcePayload.category = 'general';
+
+                /* * * * * * * * * * * * * */
+                /* Add to MongoDB
+                /* * * * * * * * * * * * * */
+                const newSourceawait = await sourcesCollection.updateOne(
+                    { name: name, type: 'raw' }, // Filter
+                    { $set: sourcePayload },     // Update
+                    { upsert: true }             // Options: if no match is found, create a new document
+                );
+
+                /* * * * * * * * * * * * * */
+                /* Return new source
+                /* * * * * * * * * * * * * */
+                const returnSource = await sourcesCollection.findOne({ _id: name, type: 'raw' });
+                return returnSource;
+            }));
+
+
+        } else if (dataType === 'file') {
             const processedSources = await Promise.all(sources.map(async (source: any) => {
                 const sourcePayload = {} as any;
 
@@ -130,49 +162,43 @@ export async function POST(req: NextRequest) {
         } else if (dataType === 'url') {
             const processedSources = await Promise.all(sources.map(async (source: any) => {
 
-                // ###
-                // ### Initiate variables
-                const sourcePayload = {} as any;
-
-                // ###
-                // ### Fetch the url
-                const url = source.url;
-                const res = await fetch(url);
-                const html = await res.text();
-                const $ = cheerio.load(html);
+                const content = getPrimaryContent(source.url);
 
                 // ###
                 // ### Get the data
-                const name = url;
-                const title = $('title').text();
-                const text = $('body').text();
+                // console.log(selector)
+                // const name = url;
+                // const title = $('title').text();
+                // const text = $(selector).text();
+                // console.log(text)
 
-                const chunks = createChunks(text) as any;
-                const embeddings = await Promise.all(chunks.map((chunk: any, index: any) => getEmbedding(chunk, title, index)));
+                // const chunks = createChunks(text) as any;
+                // const embeddings = await Promise.all(chunks.map((chunk: any, index: any) => getEmbedding(chunk, title, index)));
 
-                // ###
-                // ### Create the payload
-                sourcePayload.name = name;
-                sourcePayload.title = title;
-                sourcePayload.type = 'url';
-                sourcePayload.text = text;
-                sourcePayload.embeddings = embeddings;
-                sourcePayload.category = 'general';
+                // // ###
+                // // ### Create the payload
+                // sourcePayload.name = name;
+                // sourcePayload.title = title;
+                // sourcePayload.type = 'url';
+                // sourcePayload.text = text;
+                // sourcePayload.embeddings = embeddings;
+                // sourcePayload.category = 'general';
 
-                /* * * * * * * * * * * * * */
-                /* Add to MongoDB
-                /* * * * * * * * * * * * * */
-                newSource = await sourcesCollection.updateOne(
-                    { name: sourcePayload.name, type: sourcePayload.type }, // Filter
-                    { $set: sourcePayload },     // Update
-                    { upsert: true }             // Options: if no match is found, create a new document
-                );
+                // /* * * * * * * * * * * * * */
+                // /* Add to MongoDB
+                // /* * * * * * * * * * * * * */
+                // newSource = await sourcesCollection.updateOne(
+                //     { name: sourcePayload.name, type: sourcePayload.type }, // Filter
+                //     { $set: sourcePayload },     // Update
+                //     { upsert: true }             // Options: if no match is found, create a new document
+                // );
 
-                /* * * * * * * * * * * * * */
-                /* Return new source
-                /* * * * * * * * * * * * * */
-                const returnSource = await sourcesCollection.findOne({ name: name, type: 'url' });
-                return returnSource;
+                // /* * * * * * * * * * * * * */
+                // /* Return new source
+                // /* * * * * * * * * * * * * */
+                // const returnSource = await sourcesCollection.findOne({ name: name, type: 'url' });
+                // return returnSource;
+                return;
             }));
 
         } else if (dataType === 'update') {

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { fetchHtmlFromUrl, processHtmlFromUrl } from './utils/newSource_urlProcessors';
 import { getMongoDB } from '@/components/utils/getMongo';
 import { ObjectId } from 'mongodb';
 import { Configuration, OpenAIApi } from "openai";
@@ -161,8 +160,6 @@ export async function POST(req: NextRequest) {
             }));
         } else if (dataType === 'url') {
             const processedSources = await Promise.all(sources.map(async (source: any) => {
-
-                const content = getPrimaryContent(source.url);
 
                 // ###
                 // ### Get the data

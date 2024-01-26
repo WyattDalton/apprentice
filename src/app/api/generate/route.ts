@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 			// ###
 			// ### get prompt embedding
 			const promptEmbeddingRaw = await openai.createEmbedding({
-				model: "text-embedding-ada-002",
+				model: "text-embedding-3-small",
 				input: prompt,
 			})
 			const promptEmbedding = await promptEmbeddingRaw.json();
@@ -164,7 +164,7 @@ export async function POST(req: NextRequest) {
 
 		// Request the OpenAI API for the response based on the prompt
 		const response = await openai.createChatCompletion({
-			model: 'gpt-4-1106-preview',
+			model: 'gpt-4-turbo-preview',
 			stream: true,
 			messages: messages
 		})

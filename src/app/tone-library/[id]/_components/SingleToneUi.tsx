@@ -8,23 +8,19 @@ import LoadingText from "@/components/LoadingText";
 import Content from "./Content";
 import Sidebar from "./Sidebar";
 
-import { getEmbedding, getInstructions, processInstructions, getKeywords, processKeywords, getDesription, processDescriptions } from "../_actions";
-
 type UiProps = {
     titleData: any,
     examplesData: any,
     descriptionData: any,
     keywordsData: any,
+    sampleData: any,
     instructionsData: any,
     deleteTone: any,
     id: any,
     getEmbedding: any,
     getInstructions: any,
     processInstructions: any,
-    getKeywords: any,
-    processKeywords: any,
-    getDesription: any,
-    processDescriptions: any,
+    generateSample: any
 }
 
 function SingleToneUi({
@@ -32,16 +28,14 @@ function SingleToneUi({
     examplesData,
     descriptionData,
     keywordsData,
+    sampleData,
     instructionsData,
     deleteTone,
     id,
     getEmbedding,
     getInstructions,
     processInstructions,
-    getKeywords,
-    processKeywords,
-    getDesription,
-    processDescriptions
+    generateSample
 }: UiProps) {
     const router = useRouter();
 
@@ -50,6 +44,7 @@ function SingleToneUi({
     const [description, setDescription] = useState(descriptionData || '');
     const [keywords, setKeywords] = useState(keywordsData || []);
     const [instructions, setInstructions] = useState(instructionsData || '');
+    const [sample, setSample] = useState(sampleData || '');
 
     const [newExample, setNewExample] = useState('');
     const [displayAddExample, setDisplayAddExample] = useState(false);
@@ -60,25 +55,10 @@ function SingleToneUi({
     const [deleting, setDeleting] = useState(false);
 
 
-
-
     const processTone = async (tone: any) => {
         try {
 
             const { examples, title } = tone;
-
-            // ###
-            // Outline elements of tone
-            const tone_template = `1. Pace: The speed at which the story, action, or conflict unfolds and events occur.\n 
-        2. Mood: The overall emotional atmosphere or feeling of the text.\n
-        3. Tone: The attitude towards the subject matter.\n
-        4. Voice: Unique style and personality as it comes through in writing.\n
-        5. Diction: The choice of words and phrases.\n
-        6. Syntax: The arrangement of words and phrases to create well-formed sentences.\n
-        7. Imagery: The use of vivid and descriptive language to create mental images for the reader.\n
-        8. Theme: The central idea or message of the text.\n
-        9. Point of View: The perspective from which the text is written (first person, third person, etc.).\n
-        10. Structure: The organization and arrangement of the text, including headings and sections, and sentence and paragraph length.\n`;
 
             // ###
             // Get embeddings for each example
@@ -107,40 +87,21 @@ function SingleToneUi({
             // ###
             // Instructions
             setProgress('Generating tone blueprint (this can take a minute or two)');
-            const instructionsList = await Promise.all(examplesToProcess.map(async (example: string) => {
-                const instructions = await getInstructions(tone_template, example);
-                console.log('\n\n INSTRUCTIONS \n\n', instructions);
-                return instructions;
+            let instructionsList: any[] = [];
+            await Promise.all(examplesToProcess.map(async (example: string) => {
+                const instructions = await getInstructions(example);
+                instructionsList.push(instructions);
             }
             ));
-            const instructions = await processInstructions(instructionsList);
 
-            // ###
-            // Keywords
-            setProgress('Generating keywords...');
-            const keywordsList = await Promise.all(examplesToProcess.map(async (example: string) => {
-                const keywords = await getKeywords(tone_template, example);
-                return keywords;
-            }));
-            const keywords = await processKeywords(keywordsList);
+            const instructions = await processInstructions(instructionsList) as any;
 
-            // ###
-            // Descriptions
-            setProgress('Wrapping up...');
-            const descriptions = await Promise.all(examplesToProcess.map(async (example: string) => {
-                const description = await getDesription(tone_template, example);
-                return description;
-            }));
-            const description = await processDescriptions(descriptions);
-
-            // ###
-            // Format newTone
+            // // ###
+            // // Format newTone
             const newTone = {
                 title: title,
                 examples: examplesWithEmbeddings,
-                instructions: instructions,
-                keywords: keywords,
-                description: description,
+                instructions: instructions
             }
 
             setProgress('Done!');
@@ -159,7 +120,14 @@ function SingleToneUi({
     const handleUpdateTone = async () => {
         try {
             setLoading(true);
-            const newTone = await processTone({ title: title, examples: examples });
+            const newTone = await processTone({ title: title, examples: examples }) as any;
+            // ###
+            // Generate sample
+            setProgress('Generating sample...');
+            const sampleResponse = await generateSample(newTone)
+            newTone.sample = sampleResponse;
+            setSample(sampleResponse);
+
             const payload = {
                 'dataType': 'update',
                 'data': { _id: id, update: newTone },
@@ -169,6 +137,8 @@ function SingleToneUi({
                 body: JSON.stringify(payload),
             });
             if (!res.ok) throw new Error('Error updating tone of voice');
+
+
             setLoading(false);
             setProgress('Initializing...');
 
@@ -317,10 +287,12 @@ function SingleToneUi({
             mx-auto
             gap-4 
         ">
+
                 <Content
                     className="col-span-6 lg:col-span-4 flex flex-col items-center gap-4 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]"
                     title={title}
                     setTitle={setTitle}
+                    sample={sample}
                     examples={examples}
                     setExamples={setExamples}
                     newExample={newExample}
@@ -330,12 +302,6 @@ function SingleToneUi({
                     handleAddExample={handleAddExample}
                     handleUpdateExample={handleUpdateExample}
                     handleDeleteExample={handleDeleteExample}
-                // description={description} 
-                // setDescription={setDescription} 
-                // keywords={keywords} 
-                // setKeyords={setKeyords} 
-                // instructions={instructions} 
-                // setInstructions={setInstructions}
                 />
 
                 <Sidebar

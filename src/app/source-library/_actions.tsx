@@ -45,7 +45,7 @@ function createChunks(text: string) {
 async function getEmbedding(chunk: string, title: string, index: number) {
 	try {
 		const embeddingResponse = await openai.createEmbedding({
-			model: 'text-embedding-ada-002',
+			model: 'text-embedding-3-small',
 			input: chunk,
 		});
 		const embedding = embeddingResponse.data.data[0].embedding;

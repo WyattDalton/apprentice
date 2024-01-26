@@ -164,7 +164,16 @@ export default function TonesUi({ tonesSource, deleteTone, createTone }: TonesUi
                             </div>
 
                             {/* Tone processed information */}
-                            {!!tone.keywords && !!tone.description ? (
+                            {!!tone.sample && (
+                                <div className="flex flex-col gap-4">
+                                    <p className="m-0">
+                                        <span className="font-semibold">Sample:</span> {tone.sample}
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* Tone keywords and description */}
+                            {!!tone.keywords && !!tone.description && !tone.sample ? (
                                 <div className="flex flex-col gap-4">
 
                                     {/* Tone words */}

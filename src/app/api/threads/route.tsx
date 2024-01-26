@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
             cleanedMessages.push(instructionMessage);
 
             const res = await openai.createChatCompletion({
-                model: 'gpt-4-1106-preview',
+                model: 'gpt-4-turbo-preview',
                 messages: cleanedMessages
             })
 

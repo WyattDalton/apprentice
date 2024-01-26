@@ -2,7 +2,7 @@
 
 import SingleToneUi from "./_components/SingleToneUi";
 import { deleteTone, getToneData } from "../_actions";
-import { getEmbedding, getInstructions, processInstructions, getKeywords, processKeywords, getDesription, processDescriptions } from "./_actions";
+import { getEmbedding, getInstructions, processInstructions, generateSample } from "./_actions";
 
 
 
@@ -26,15 +26,13 @@ async function Page({ params }: { params: { id: string } }) {
             descriptionData={data.description || ''}
             keywordsData={data.keywords || []}
             instructionsData={data.instructions || []}
+            sampleData={data.sample || ''}
             deleteTone={deleteTone}
             id={params.id}
             getEmbedding={getEmbedding}
             getInstructions={getInstructions}
             processInstructions={processInstructions}
-            getKeywords={getKeywords}
-            processKeywords={processKeywords}
-            getDesription={getDesription}
-            processDescriptions={processDescriptions}
+            generateSample={generateSample}
         />
     )
 }

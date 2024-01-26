@@ -4,11 +4,13 @@ import Card from "@/components/UI/Card";
 import TextareaAutosize from "./TextAreaAutosize";
 import { Disclosure, Transition } from "@headlessui/react";
 import { ArrowDownIcon, ArrowUpIcon } from "@/components/icons";
+import { useEffect } from "react";
 
 type ContentProps = {
     className: string,
     title: string,
     setTitle: any,
+    sample: string,
     examples: any,
     newExample: any,
     setNewExample: any,
@@ -24,6 +26,7 @@ function Content({
     className,
     title,
     setTitle,
+    sample,
     examples,
     setExamples,
     newExample,
@@ -34,9 +37,14 @@ function Content({
     handleDeleteExample
 }: ContentProps) {
 
+    useEffect(() => {
+        console.log('sample', sample);
+    }, [sample])
+
     return (
         <div className={className}>
             <div className="flex flex-col gap-4 prose w-full">
+                <span className="text-gray-500 text-lg font-bold"></span>
                 <Card className="!p-0">
                     <input type="text" className="w-full text-gray-500 text-2xl font-bold p-2 bg-neutral-50" value={title} placeholder="Give the tone of voice a title" onChange={(e) => setTitle(e.target.value)} />
                 </Card>
@@ -53,7 +61,7 @@ function Content({
                                             </>
                                         ) : (
                                             <>
-                                                <span>{!open ? 'Add your first example example' : 'Close'}</span>
+                                                    <span>{!open ? 'Add your first example' : 'Close'}</span>
                                             </>
                                         )}
 
@@ -86,7 +94,6 @@ function Content({
                         <div className="flex flex-col gap-4 p-4 rounded-md">
                             {
                                 examples.map((example: any, index: number) => (
-                                    <>
                                         <Card key={index} className="flex flex-col gap-2 !bg-neutral-50">
                                             <h3 className="text-gray-500 text-lg font-bold !m-0">Example {index + 1}</h3>
 
@@ -103,8 +110,7 @@ function Content({
                                                 <button className="text-red-500" onClick={() => handleDeleteExample(index)}>Delete Example</button>
                                             </div>
 
-                                        </Card>
-                                    </>
+                                    </Card>
                                 ))
 
                             }

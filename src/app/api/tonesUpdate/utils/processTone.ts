@@ -135,6 +135,8 @@ const processInstructions = async (instructions: any, openai: any) => {
     }
 }
 
+/*** ADD EXAMPLE RESPONSES. THIS IS MORE USEFUL THAN KEYWORDS AND DESCRIOPTIONS */
+
 
 /* * * * * * * * * * * * * * * * */
 /* Handle keywords processing
@@ -241,7 +243,7 @@ const processDescriptions = async (descriptions: any, openai: any) => {
 async function getEmbedding(chunk: string, openai: any) {
     try {
         const embeddingResponse = await openai.createEmbedding({
-            model: "text-embedding-ada-002",
+            model: "text-embedding-3-small",
             input: chunk,
         });
         const embedding = embeddingResponse.data.data[0].embedding;

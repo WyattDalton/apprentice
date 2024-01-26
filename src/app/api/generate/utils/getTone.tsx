@@ -1,6 +1,3 @@
-import { random } from "lodash";
-
-
 
 export async function getTone(toneId: any, promptEmbeddingVectors: string, tones: any) {
     function dotProduct(vecA: any, vecB: any) {

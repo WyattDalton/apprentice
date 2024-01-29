@@ -1,7 +1,7 @@
 import ThreadsList from '@/components/ThreadsList'
 import Card from '@/components/UI/Card'
 import Link from 'next/link'
-import { getMongoDB } from "@/components/utils/getMongo";
+import { getMongoDB } from "@/utils/getMongo";
 import { GeneratorArrowIcon } from '@/components/icons';
 
 

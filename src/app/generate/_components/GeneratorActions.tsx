@@ -24,6 +24,8 @@ type GeneratorActionsProps = {
     sources: any[];
     toneLibrary: any[];
     formulaLibrary: any[];
+    saveThread: any;
+    getTitle: any;
 };
 
 const GeneratorActions = ({
@@ -42,6 +44,8 @@ const GeneratorActions = ({
     sources,
     toneLibrary,
     formulaLibrary,
+    saveThread,
+    getTitle,
 }: GeneratorActionsProps) => {
 
     /* * * * * * * * * * * * * * * * * * * */
@@ -56,20 +60,10 @@ const GeneratorActions = ({
     /* * * * * * * * * * * * * * * * * * */
     const preserveThread = async (payload: any) => {
         try {
-
-            const data = await fetch("/api/saveThread", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload)
-            });
-
-            const response = await data.json();
-
-            if (generation != response.item._id && window.location.pathname !== `/generate/${generation}`) {
-                setGeneration(await response.item._id);
-                window.history.pushState({ page: 1 }, response.item.initial_prompt, `/generate/${response.item._id}`);
+            const data = await saveThread(payload);
+            if (generation != data._id && window.location.pathname !== `/generate/${generation}`) {
+                setGeneration(await data._id);
+                window.history.pushState({ page: 1 }, data.initial_prompt, `/generate/${data._id}`);
             }
 
         } catch (error) {
@@ -77,20 +71,12 @@ const GeneratorActions = ({
         }
     }
 
-    const getTitle = async (payload: any) => {
+    const handleGetTitle = async (messages: any, generation: any) => {
         try {
-            const data = await fetch("/api/threads", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload)
-            });
+            const data = await getTitle(messages, generation);
 
-            const response = await data.json();
-
-            if (response.success && !!response.title) {
-                setMeta({ ...meta, title: response.title });
+            if (!!data.title) {
+                setMeta({ ...meta, title: data.title });
             }
         } catch (error) {
             console.log(error);
@@ -141,11 +127,8 @@ const GeneratorActions = ({
     /* Handle current response change
     /* * * * * * * * * * * * * * * * * * * */
     useEffect(() => {
-
         if (isLoading && !!messages.length) {
-
             try {
-
                 const firstUserMessage = messages.find((message) => message.role === 'user');
                 const lastUserMessageIndex = messages.map((message) => message.role).lastIndexOf('user');
                 if (!!settings.enabled) {
@@ -186,15 +169,8 @@ const GeneratorActions = ({
         } else if (!isLoading && !!messages.length) {
             try {
                 if (messages.length > 5 && !meta.title) {
-                    getTitle({
-                        dataType: 'getTitle',
-                        data: {
-                            messages: messages,
-                            _id: generation,
-                        }
-                    });
+                    handleGetTitle(messages, generation);
                 }
-
                 const firstUserMessage = messages.find((message) => message.role === 'user');
                 const lastUserMessageIndex = messages.map((message) => message.role).lastIndexOf('user');
                 if (!!settings.enabled) {
@@ -213,20 +189,17 @@ const GeneratorActions = ({
                     "created": firstUserMessage?.createdAt,
                     "messages": messages,
                 }
-
                 preserveThread(payload);
-
             } catch (error) {
                 console.log('Error when finished: ', error)
             }
         }
-
     }, [isLoading])
 
     /* * * * * * * * * * * * * * * * * * * */
     /* Handle save thread to database
     /* * * * * * * * * * * * * * * * * * * */
-    const saveThread = async () => {
+    const handleSaveThread = async () => {
         try {
             setSaved(!saved)
             const firstUserMessage = messages.find((message) => message.role === 'user');
@@ -234,13 +207,7 @@ const GeneratorActions = ({
                 "_id": generation,
                 "saved": saved.toString(),
             }
-            const response = await fetch("/api/saveThread", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            });
+            saveThread(payload);
         } catch (error) {
             console.log(error);
         }

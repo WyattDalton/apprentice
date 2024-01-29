@@ -1,7 +1,7 @@
 'use server';
 import { fetchHtmlFromUrl, processHtmlFromUrl, addUrl, fetchSources } from './_actions';
 import SourcesUi from './_components/SourcesUi';
-import { getMongoDB } from '@/components/utils/getMongo';
+import { getMongoDB } from '@/utils/getMongo';
 
 export default async function Page() {
 

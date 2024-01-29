@@ -1,6 +1,6 @@
 import { ArrowDownIcon, ArrowUpIcon, GeneratorArrowIcon } from "@/components/icons";
 import { Disclosure, Transition } from "@headlessui/react";
-import React from "react";
+import React, { Fragment } from "react";
 import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -13,63 +13,11 @@ type GeneratorContentProps = {
 
 const GeneratorContent = ({ conversation, className }: GeneratorContentProps) => {
 
-    useEffect(() => {
-        const handleScroll = () => {
-            const stickyElements = document.querySelectorAll(".sticky-message");
-            let currentSticky: any;
-
-            stickyElements.forEach((sticky, index) => {
-                const stickyContainer = sticky.querySelector(".sticky-content");
-                const stickyContent = sticky.querySelector(".sticky-content") as any;
-                const nextSticky = stickyElements[index + 1];
-
-                const rectSticky = sticky.getBoundingClientRect();
-                const viewportOffsetTop = 0; // You can adjust this if you have a header or other element offsetting your stickies
-
-                if (rectSticky.top <= viewportOffsetTop && (!nextSticky || (nextSticky && rectSticky.bottom < nextSticky.getBoundingClientRect().top))) {
-                    currentSticky = sticky;
-                }
-
-                // if stickyContent is null, stop
-                if (!stickyContent) return;
-
-                if (nextSticky) {
-                    const rectNextSticky = nextSticky.getBoundingClientRect();
-                    const distanceApart = rectNextSticky.top - rectSticky.bottom;
-
-                    if (distanceApart <= 20 && distanceApart >= 10) {
-                        const opacity = (distanceApart - 10) / 10;
-                        stickyContent.style.opacity = Math.max(opacity, 0);
-                    } else if (distanceApart < 10) {
-                        stickyContent.style.opacity = '0';
-                    } else {
-                        stickyContent.style.opacity = '1';
-                    }
-                }
-            });
-
-            // Remove shadow-md class from all stickies
-            stickyElements.forEach(sticky => sticky.classList.remove("shadow-md"));
-
-            // Add shadow-md class to the current sticky
-            if (currentSticky) currentSticky.classList.add("shadow-md");
-
-            // Remove bg-white class from all stickies
-            stickyElements.forEach(sticky => sticky.classList.remove("bg-white"));
-
-            // Add bg-white class to the current sticky
-            if (currentSticky) currentSticky.classList.add("bg-white");
-        };
-
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
     return (
         <div className={`${className}`}>
             {conversation.map((item: any, index: any) => (
 
-                <>
+                <Fragment key={index}>
                     {item.role === 'user' && (
                         !!item.settings ? (
                             <Disclosure key={item.id}>
@@ -173,7 +121,7 @@ const GeneratorContent = ({ conversation, className }: GeneratorContentProps) =>
                             </div>
                         </div>
                     )}
-                </>
+                </Fragment>
             ))}
         </div>
     );

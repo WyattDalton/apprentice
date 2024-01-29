@@ -2,7 +2,7 @@ import AppNavigation from '@/components/AppNav'
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { AuthProvider } from '@/components/utils/AuthProvider'
+import { AuthProvider } from '@/utils/AuthProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 

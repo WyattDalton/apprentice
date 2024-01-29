@@ -1,6 +1,5 @@
-import { fetchThreads, fetchTones, fetchFormulas, fetchSources } from "./_actions";
+import { fetchThreads, fetchTones, fetchFormulas, fetchSources, fetchMetaData, saveThread, getTitle, updateThread } from "./_actions";
 import Generator from "./_components/Generator";
-import GeneratorDashboard from "./_components/GeneratorDashboard";
 
 // export const runtime = 'edge'
 
@@ -10,5 +9,14 @@ export default async function Page() {
     const formulas = await fetchFormulas();
     const sources = await fetchSources();
 
-    return <Generator threadsData={threads || []} tonesData={tones || []} formulasData={formulas || []} sources={sources || []} />
+    return <Generator
+        threadsData={threads || []}
+        tonesData={tones || []}
+        formulasData={formulas || []}
+        sources={sources || []}
+        fetchMetaData={fetchMetaData}
+        saveThread={saveThread}
+        getTitle={getTitle}
+        updateThread={updateThread}
+    />
 } 

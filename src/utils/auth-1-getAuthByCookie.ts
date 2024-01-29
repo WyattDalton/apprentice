@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
  * Returns the username of the authenticated user from the "wordpress_logged_in" cookie.
  * @returns {string|boolean} The username of the authenticated user or false if the cookie is not found.
  */
-export const getAuthUsername = () => {
+export const getAuthByCookie = () => {
     // ### Get all cookies
     const cookieStore = cookies();
 

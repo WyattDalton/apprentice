@@ -1,4 +1,4 @@
-import { getMongoDB } from '@/components/utils/getMongo';
+import { getMongoDB } from '@/utils/getMongo';
 import { Configuration, OpenAIApi } from "openai";
 import { ObjectId } from 'mongodb';
 const configuration = new Configuration({

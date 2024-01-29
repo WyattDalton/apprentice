@@ -1,17 +1,17 @@
 'use server';
 
-import { getAuth } from '@/app/_actions';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation'
-import { getAuthUsername } from './getUsernameAuthByCookie';
+import { getAuthByCookie } from './auth-1-getAuthByCookie';
+import { getAuthFromWP } from './auth-2-getAuthFromWP';
 
 export const AuthProvider = async ({ children }: any) => {
 
     //  ### Get the username from the cookie
-    const username = getAuthUsername();
+    const username = getAuthByCookie();
 
     // ### Get the user data from WP_API
-    const auth = await getAuth() as any;
+    const auth = await getAuthFromWP() as any;
 
     //  ### Get the current URL
     const host = headers().get('host') ? headers().get('host') : 'app.makerdigital.io';

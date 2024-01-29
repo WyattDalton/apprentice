@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMongoDB } from '@/components/utils/getMongo';
+import { getMongoDB } from '@/utils/getMongo';
 import { ObjectId } from 'mongodb';
 
 export async function POST(req: NextRequest) {

@@ -1,4 +1,4 @@
-import { getMongoDB } from "@/components/utils/getMongo";
+import { getMongoDB } from "@/utils/getMongo";
 import { ObjectId } from "mongodb";
 
 

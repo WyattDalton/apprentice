@@ -1,5 +1,5 @@
-import { getUserData } from '@/components/utils/getUserData';
-import clientPromise from './getMongoClient';
+import { getUserData } from './mongo-1-getUserData';
+import clientPromise from './mongo-2-getMongoClient';
 
 export const getMongoDB = async (id, username) => {
 	try {
@@ -33,5 +33,3 @@ export const getMongoDB = async (id, username) => {
 		console.log('Error getting mongo: ', error);
 	}
 };
-
-

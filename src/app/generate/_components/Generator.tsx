@@ -20,12 +20,16 @@ type GeneratorProps = {
     savedData?: any;
     sources?: any;
     metaData?: any;
+    fetchMetaData?: any;
     threadsData?: any;
     tonesData?: any;
     formulasData?: any;
+    saveThread?: any;
+    getTitle?: any;
+    updateThread?: any;
 }
 
-export default function Generator({ initConversation, savedData, className, launcher, threadsData, tonesData, formulasData, generationId, sources, metaData }: GeneratorProps) {
+export default function Generator({ initConversation, savedData, className, launcher, threadsData, tonesData, formulasData, generationId, sources, metaData, fetchMetaData, saveThread, getTitle, updateThread }: GeneratorProps) {
     const router = useRouter();
     const [saved, setSaved] = useState(savedData || false);
 
@@ -122,24 +126,8 @@ export default function Generator({ initConversation, savedData, className, laun
     // ### Get the meta data for the current thread
     const getMeta = async (threadId: string) => {
         if (!threadId) return;
-        const res = await fetch('/api/threads', {
-            method: 'POST',
-            body: JSON.stringify({
-                dataType: 'get',
-                data: { _id: threadId },
-            }),
-        });
-        if (!res.ok) {
-            throw new Error(res.statusText);
-        }
-        const threadRes = await res.json();
-        const threadMeta = {} as any;
-
-        threadRes.thread.title ? threadMeta['title'] = threadRes.thread.title : null;
-
-        if (!threadMeta) return;
-
-        setMeta(threadMeta);
+        const res = await fetchMetaData(threadId);
+        setMeta(res);
     }
     useEffect(() => {
         getMeta(generation);
@@ -251,6 +239,7 @@ export default function Generator({ initConversation, savedData, className, laun
                                 meta={meta}
                                 setMeta={setMeta}
                                 _id={generation}
+                                updateThread={updateThread}
                             />
                         </Transition>
                     </div>
@@ -276,6 +265,9 @@ export default function Generator({ initConversation, savedData, className, laun
                             sources={sources}
                             toneLibrary={tonesData}
                             formulaLibrary={formulasData}
+                            saveThread={saveThread}
+                            getTitle={getTitle}
+                            updateThread={updateThread}
                         />
                     </div>
                 </div>
@@ -298,6 +290,9 @@ export default function Generator({ initConversation, savedData, className, laun
                         sources={sources}
                         toneLibrary={tonesData}
                         formulaLibrary={formulasData}
+                        saveThread={saveThread}
+                        getTitle={getTitle}
+                        updateThread={updateThread}
                     />
                 </div>
             </section>

@@ -1,6 +1,6 @@
 'use server'
 
-import { getMongoDB } from "@/components/utils/getMongo";
+import { getMongoDB } from "@/utils/getMongo";
 import { ObjectId } from 'mongodb';
 
 import FormulaSingleUi from "./_components/FormulaSingleUi";

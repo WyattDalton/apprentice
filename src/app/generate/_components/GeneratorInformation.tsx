@@ -11,6 +11,7 @@ type GeneratorInformationProps = {
     setMeta: any,
     meta: any,
     _id: string,
+    updateThread: any
 };
 
 const GeneratorInformation = ({
@@ -18,7 +19,8 @@ const GeneratorInformation = ({
     placeholder,
     setMeta,
     meta,
-    _id
+    _id,
+    updateThread
 }: GeneratorInformationProps) => {
 
     const [title, setTitle] = useState(meta.title || '');
@@ -42,25 +44,15 @@ const GeneratorInformation = ({
 
         // ### Prep payload to update
         const payload = {
-            dataType: 'update',
-            data: {
                 _id: _id,
                 update: {
                     title: title
-                }
             }
         }
 
         // ### Update Thread
-        const update = await fetch('/api/threads', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-        const res = await update.json();
-        const thread = res.thread;
+        const update = await updateThread(payload);
+        const thread = update.thread;
 
         // ### Prep meta to update
         const newTitle = !!thread.title ? thread.title : false;

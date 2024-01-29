@@ -1,3 +1,4 @@
+import { deleteThread } from "../_actions/_threads/deleteThread";
 import { fetchThreads, fetchTones, fetchFormulas, fetchSources, fetchMetaData, saveThread, getTitle, updateThread } from "./_actions";
 import Generator from "./_components/Generator";
 
@@ -18,5 +19,6 @@ export default async function Page() {
         saveThread={saveThread}
         getTitle={getTitle}
         updateThread={updateThread}
+        deleteThread={deleteThread}
     />
 } 

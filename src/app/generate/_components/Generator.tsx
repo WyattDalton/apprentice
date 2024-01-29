@@ -27,9 +27,10 @@ type GeneratorProps = {
     saveThread?: any;
     getTitle?: any;
     updateThread?: any;
+    deleteThread?: any;
 }
 
-export default function Generator({ initConversation, savedData, className, launcher, threadsData, tonesData, formulasData, generationId, sources, metaData, fetchMetaData, saveThread, getTitle, updateThread }: GeneratorProps) {
+export default function Generator({ initConversation, savedData, className, launcher, threadsData, tonesData, formulasData, generationId, sources, metaData, fetchMetaData, saveThread, getTitle, updateThread, deleteThread }: GeneratorProps) {
     const router = useRouter();
     const [saved, setSaved] = useState(savedData || false);
 
@@ -185,7 +186,7 @@ export default function Generator({ initConversation, savedData, className, laun
                                             </div>
 
                                             {!threads ? `Loading...` : null}
-                                            {!!threads && threads.length === 0 ? <p className="text-gray-400">No recent content</p> : <ThreadsList threads={threads} />}
+                                            {!!threads && threads.length === 0 ? <p className="text-gray-400">No recent content</p> : <ThreadsList threads={threads} deleteThread={deleteThread} />}
 
 
                                         </Disclosure.Panel>

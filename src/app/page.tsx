@@ -3,6 +3,7 @@ import Card from '@/components/UI/Card'
 import Link from 'next/link'
 import { getMongoDB } from "@/utils/getMongo";
 import { GeneratorArrowIcon } from '@/components/icons';
+import { deleteThread } from './_actions/_threads/deleteThread';
 
 
 
@@ -136,7 +137,7 @@ export default async function Home() {
           <div
             className={'bg-gray-700 text-white p-6 rounded-lg max-h-[70vh] w-full overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200'}
           >
-            <ThreadsList threads={threads} />
+            <ThreadsList threads={threads} deleteThread={deleteThread} />
           </div>
         </div>
 

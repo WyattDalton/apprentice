@@ -8,11 +8,12 @@ import LoadingText from './LoadingText';
 
 type Props = {
     threads: any;
+    deleteThread: any;
 }
 
 // ###
 // ### Build recent threads component
-export default function ThreadsList({ threads }: Props) {
+export default function ThreadsList({ threads, deleteThread }: Props) {
     const router = useRouter();
     const [allThreads, setAllThreads] = useState<any>(threads || []);
     const [openModal, setOpenModal] = useState(false);
@@ -43,18 +44,9 @@ export default function ThreadsList({ threads }: Props) {
 
     const handleDeleteThread = async (threadId: string) => {
         setDeleting(true);
-        const payload = {
-            dataType: 'delete',
-            data: { _id: threadId }
-        }
-        const res = await fetch(`/api/threads`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
-        const data = await res.json();
+        const payload = { _id: threadId }
+
+        const data = await deleteThread(payload);
         const newThreads = data.threads;
         setAllThreads(newThreads);
         setDeleting(false);

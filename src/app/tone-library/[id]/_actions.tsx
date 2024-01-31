@@ -31,7 +31,7 @@ export async function getInstructions(string: string, openai = openAIApi as any)
         ]
 
         const instructions = await await openai.createChatCompletion({
-            model: 'gpt-3.5-turbo',
+            model: process.env.PROCESSING_MODEL,
             messages: instructionMessages,
             max_tokens: 400,
         })
@@ -71,7 +71,7 @@ export async function processInstructions(instructions: any, openai = openAIApi 
 
         // Create the chat completion
         const instruction = await openai.createChatCompletion({
-            model: 'gpt-3.5-turbo',
+            model: process.env.PROCESSING_MODEL,
             messages: messages,
             max_tokens: 400,
         });
@@ -118,7 +118,7 @@ export async function generateSample(tone: any, openai = openAIApi as any) {
 
         // Create the chat completion
         const instruction = await openai.createChatCompletion({
-            model: 'gpt-4-turbo-preview',
+            model: process.env.GENERATOR_MODEL,
             messages: messages,
             max_tokens: 400,
         });
@@ -146,7 +146,7 @@ export async function getEmbedding(chunk: string, openai = openAIApi as any) {
     'use server'
     try {
         const embeddingResponse = await openai.createEmbedding({
-            model: "text-embedding-3-small",
+            model: process.env.SMALL_EMBEDDING_MODEL,
             input: chunk,
         });
         const embedding = embeddingResponse.data.data[0].embedding;

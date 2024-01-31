@@ -12,9 +12,12 @@ type SourcesUiProps = {
     fetchHtmlFromUrl: any,
     processHtmlFromUrl: any,
     addUrl: any,
+    addFile: any,
+    addRaw: any,
+    deleteSource: any
 }
 
-export default async function SourcesUi({ sources, fetchHtmlFromUrl, processHtmlFromUrl, addUrl }: SourcesUiProps) {
+export default async function SourcesUi({ sources, fetchHtmlFromUrl, processHtmlFromUrl, addUrl, addFile, addRaw, deleteSource }: SourcesUiProps) {
 
     const [sourcesData, setSourcesData] = useState(sources || [])
     const [updating, setUpdating] = useState(false)
@@ -33,9 +36,12 @@ export default async function SourcesUi({ sources, fetchHtmlFromUrl, processHtml
                 fetchHtmlFromUrl={fetchHtmlFromUrl}
                 processHtmlFromUrl={processHtmlFromUrl}
                 addUrl={addUrl}
+
+                addFile={addFile}
+                addRaw={addRaw}
             />
             {!!sourcesData.length &&
-                <SourcesGrid data={sourcesData} />
+                <SourcesGrid data={sourcesData} deleteSource={deleteSource} />
             }
         </section>
     )

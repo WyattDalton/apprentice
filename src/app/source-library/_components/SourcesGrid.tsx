@@ -9,8 +9,9 @@ import LoadingText from "@/components/LoadingText";
 
 type Props = {
     data: any;
+    deleteSource: any;
 }
-function SourcesGrid({ data }: Props) {
+function SourcesGrid({ data, deleteSource }: Props) {
     const router = useRouter();
     const currentUrl = usePathname();
 
@@ -38,17 +39,9 @@ function SourcesGrid({ data }: Props) {
     /* * * * * * * * ** * * * * * * */
     const handleDeleteSource = async (id: string) => {
         setDeleting(true)
-        const res = await fetch(`/api/sourcesDelete`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ "id": id }),
-        });
-        if (!res.ok) {
-            throw new Error('Failed to fetch data')
-        }
-        const data = await res.json();
+
+        const data = await deleteSource(id);
+
         if (data.success) {
             setSources(sources.filter((source: any) => source._id !== id));
             setOpenModal(false);

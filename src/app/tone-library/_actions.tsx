@@ -60,3 +60,17 @@ export async function createTone(payload: any) {
         console.error('Error in POST:', error.message);
     }
 }
+
+export async function updateTone(id: string, payload: any) {
+    'use server'
+    try {
+        const db = await getMongoDB() as any;
+        const _id = new ObjectId(id);
+        const update = await db.collection("tones").updateOne({ _id: _id }, { $set: payload });
+        const tone = await db.collection("tones").findOne({ _id: _id });
+        const cleanedTone = { _id: tone._id.toString(), ...tone };
+        return { success: true, tone: cleanedTone };
+    } catch (error: any) {
+        console.error('Error in PUT:', error.message);
+    }
+}

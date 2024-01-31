@@ -1,7 +1,7 @@
 'use server';
 
 import SingleToneUi from "./_components/SingleToneUi";
-import { deleteTone, getToneData } from "../_actions";
+import { deleteTone, getToneData, updateTone } from "../_actions";
 import { getEmbedding, getInstructions, processInstructions, generateSample } from "./_actions";
 
 
@@ -21,14 +21,20 @@ async function Page({ params }: { params: { id: string } }) {
 
     return (
         <SingleToneUi
+            // Tone data
+            id={params.id}
             titleData={data.title || ''}
             examplesData={data.examples || []}
             descriptionData={data.description || ''}
             keywordsData={data.keywords || []}
             instructionsData={data.instructions || []}
             sampleData={data.sample || ''}
+
+            // CRUD functions
             deleteTone={deleteTone}
-            id={params.id}
+            updateTone={updateTone}
+
+            // Processing functions
             getEmbedding={getEmbedding}
             getInstructions={getInstructions}
             processInstructions={processInstructions}

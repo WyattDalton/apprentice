@@ -6,6 +6,7 @@ import { Tab, Transition } from "@headlessui/react";
 import LoadingText from "@/components/LoadingText";
 
 
+
 type AddSourceProps = {
     setUpdating: any,
     setSourcesData: any,
@@ -13,9 +14,11 @@ type AddSourceProps = {
     fetchHtmlFromUrl: any,
     processHtmlFromUrl: any,
     addUrl: any,
+    addFile: any,
+    addRaw: any
 }
 
-function AddSource({ setUpdating, setSourcesData, sourcesData, addUrl, processHtmlFromUrl, fetchHtmlFromUrl }: AddSourceProps) {
+function AddSource({ setUpdating, setSourcesData, sourcesData, addUrl, processHtmlFromUrl, fetchHtmlFromUrl, addFile, addRaw }: AddSourceProps) {
 
     const [loading, setLoading] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState("");
@@ -39,17 +42,11 @@ function AddSource({ setUpdating, setSourcesData, sourcesData, addUrl, processHt
         e.preventDefault();
         try {
             setLoading(true);
-            const data = await fetch("/api/sourcesUpdate", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ "dataType": "raw", "data": [{ "name": rawName, "text": rawText }] })
-            });
-
-            if (!data.ok) {
-                setError('Failed to return data');
-                throw new Error('Failed to return data')
+            const data = await addRaw({ "name": rawName, "text": rawText });
+            if (!data.success) {
+                setError('Failed to add raw text to sources');
+                setLoading(false);
+                throw new Error('Failed to add raw text to sources');
             }
 
             // ###
@@ -60,7 +57,7 @@ function AddSource({ setUpdating, setSourcesData, sourcesData, addUrl, processHt
 
             // ###
             // ### Update sources with new source
-            const newSource = await data.json();
+            const newSource = data.source;
             const newSourcesData = [newSource, ...sourcesData];
             setSourcesData(newSourcesData);
 
@@ -138,22 +135,11 @@ function AddSource({ setUpdating, setSourcesData, sourcesData, addUrl, processHt
             }
 
             // ### Send new source to API
-            const data = await fetch("/api/sourcesUpdate", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ "dataType": "file", "data": processedFiles })
-            });
-
-            if (!data.ok) {
-                setError('Failed to return data');
-                throw new Error('Failed to return data')
-            }
+            const data = await addFile(processedFiles);
 
             // ###
             // ### Update sources with new source
-            const newSource = await data.json();
+            const newSource = await data.source;
             const newSourcesData = [newSource, ...sourcesData];
             setSourcesData(newSourcesData);
         } catch (error) {

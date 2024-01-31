@@ -4,9 +4,6 @@ import { getResponseSources } from './utils/getResponseSources'
 import { getTone } from './utils/getTone'
 import { templatize } from './utils/getFormula'
 import { NextRequest, NextResponse } from 'next/server'
-import { getMongoDB } from '@/utils/getMongo'
-import { getUserData } from '@/components/utils/getUserData'
-
 
 // Optional, but recommended: run on the edge runtime.
 // See https://vercel.com/docs/concepts/functions/edge-functions

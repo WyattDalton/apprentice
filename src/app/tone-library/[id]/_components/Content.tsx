@@ -37,10 +37,6 @@ function Content({
     handleDeleteExample
 }: ContentProps) {
 
-    useEffect(() => {
-        console.log('sample', sample);
-    }, [sample])
-
     return (
         <div className={className}>
             <div className="flex flex-col gap-4 prose w-full">
@@ -96,8 +92,6 @@ function Content({
                                 examples.map((example: any, index: number) => (
                                         <Card key={index} className="flex flex-col gap-2 !bg-neutral-50">
                                             <h3 className="text-gray-500 text-lg font-bold !m-0">Example {index + 1}</h3>
-
-                                            {/* <textarea className="w-full text-gray-500 text-lg border-2 border-gray-100 rounded-md p-2 resize-none" value={example.text} onChange={(e) => handleUpdateExample(index, e.target.value)} placeholder="Add an example" /> */}
 
                                             <TextareaAutosize
                                                 className="w-full text-gray-500 text-lg border-2 border-gray-100 rounded-md p-2 resize-none transition-all duration-300 ease-in-out focus:border-gray-300 focus:ring-0"

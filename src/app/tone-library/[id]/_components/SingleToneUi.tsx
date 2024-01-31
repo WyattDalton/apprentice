@@ -20,7 +20,8 @@ type UiProps = {
     getEmbedding: any,
     getInstructions: any,
     processInstructions: any,
-    generateSample: any
+    generateSample: any,
+    updateTone: any
 }
 
 function SingleToneUi({
@@ -35,7 +36,8 @@ function SingleToneUi({
     getEmbedding,
     getInstructions,
     processInstructions,
-    generateSample
+    generateSample,
+    updateTone
 }: UiProps) {
     const router = useRouter();
 
@@ -129,15 +131,12 @@ function SingleToneUi({
             setSample(sampleResponse);
 
             const payload = {
-                'dataType': 'update',
-                'data': { _id: id, update: newTone },
+                id: id,
+                update: newTone
             }
-            const res = await fetch(`/api/tonesUpdate`, {
-                method: 'POST',
-                body: JSON.stringify(payload),
-            });
-            if (!res.ok) throw new Error('Error updating tone of voice');
+            const data = await updateTone(payload);
 
+            if (!data.success) throw new Error('Error updating tone of voice');
 
             setLoading(false);
             setProgress('Initializing...');

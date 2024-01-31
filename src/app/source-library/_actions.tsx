@@ -60,6 +60,48 @@ async function getEmbedding(chunk: string, title: string, index: number) {
 	}
 }
 
+export async function addRaw(sources: any) {
+	const db = await getMongoDB() as any;
+	const sourcesCollection = db.collection("sources");
+
+	const processedSources = await Promise.all(sources.map(async (source: any) => {
+		const sourcePayload = {} as any;
+
+		const text = source.text;
+		const name = source.name;
+		const chunks = createChunks(text) as any;
+		const embeddings = await Promise.all(chunks.map((chunk: any, index: number) => getEmbedding(chunk, name, index)));
+
+		sourcePayload.name = name;
+		sourcePayload.title = name;
+		sourcePayload.type = 'raw';
+		sourcePayload.text = text;
+		sourcePayload.embeddings = embeddings;
+		sourcePayload.category = 'general';
+
+		/* * * * * * * * * * * * * */
+		/* Add to MongoDB
+		/* * * * * * * * * * * * * */
+		const newSourceawait = await sourcesCollection.updateOne(
+			{ name: name, type: 'raw' }, // Filter
+			{ $set: sourcePayload },     // Update
+			{ upsert: true }             // Options: if no match is found, create a new document
+		);
+
+		/* * * * * * * * * * * * * */
+		/* Return new source
+		/* * * * * * * * * * * * * */
+		const returnSource = await sourcesCollection.findOne({
+			_id: newSourceawait.upsertedId,
+			type: 'raw'
+		},
+			{
+				projection: { category: 1, name: 1, text: 1, title: 1, type: 1, _id: 1 }
+			});
+		const cleanedSource = { ...returnSource, _id: returnSource._id.toString() };
+		return { success: true, source: cleanedSource };
+	}));
+}
 
 
 /**
@@ -67,12 +109,12 @@ async function getEmbedding(chunk: string, title: string, index: number) {
  * @param sources An array of sources to be added.
  * @returns A Promise that resolves to an array of newly added sources.
  */
-export async function addFiles(sources: any) {
+export async function addFiles(source: any) {
 	'use server'
-	const db = await getMongoDB() as any;
-	const sourcesCollection = db.collection("sources");
+	try {
+		const db = await getMongoDB() as any;
+		const sourcesCollection = db.collection("sources");
 
-	const processedSources = await Promise.all(sources.map(async (source: any) => {
 		const sourcePayload = {} as any;
 
 		const buffer = source.buffer;
@@ -123,9 +165,18 @@ export async function addFiles(sources: any) {
 		/* * * * * * * * * * * * * */
 		/* Return new source
 		/* * * * * * * * * * * * * */
-		const returnSource = await sourcesCollection.findOne({ name: name, type: 'file' });
-		return returnSource;
-	}));
+		const returnSource = await sourcesCollection.findOne({
+			_id: newSourceawait.upsertedId,
+			type: 'file'
+		},
+			{
+				projection: { category: 1, name: 1, text: 1, title: 1, type: 1, _id: 1 }
+			});
+		const cleanedSource = { ...returnSource, _id: returnSource._id.toString() };
+		return { success: true, source: cleanedSource };
+	} catch (err) {
+		return { success: false, message: err };
+	}
 }
 
 /**
@@ -281,16 +332,8 @@ export async function addUrl(obj: any) {
 			projection: { category: 1, name: 1, text: 1, title: 1, type: 1, _id: 1 },
 		}
 		);
-
-		// Convert _id to string
-		if (returnSource._id) {
-			returnSource._id = returnSource._id.toString();
-		}
-
-		return {
-			"success": true,
-			"source": returnSource
-		};
+		const cleanedSource = { ...returnSource, _id: returnSource._id.toString() };
+		return { success: true, source: cleanedSource };
 	} catch (err) {
 		return {
 			"err": err,
@@ -346,16 +389,20 @@ export async function fetchSources() {
  */
 export async function deleteSource(id: any) {
 	'use server'
-	const _id = new ObjectId(id);
-	const db = await getMongoDB() as any;
+	try {
+		const _id = new ObjectId(id);
+		const db = await getMongoDB() as any;
 
-	// delete source by id
-	const deleted = await db.collection("sources").deleteOne({ "_id": _id });
-	const sources = await db.collection("sources").find({}).toArray();
-	const cleanSources = sources.map(({ _id, embeddings, ...rest }: any) => {
-		return { ...rest, _id: _id.toString() };
-	});
-	return sources;
+		// delete source by id
+		const deleted = await db.collection("sources").deleteOne({ "_id": _id });
+		const sources = await db.collection("sources").find({}).toArray();
+		const cleanSources = sources.map(({ _id, embeddings, ...rest }: any) => {
+			return { ...rest, _id: _id.toString() };
+		});
+		return { sources: cleanSources, success: true };
+	} catch (err) {
+		return { success: false, message: err };
+	}
 }
 
 /**
@@ -410,7 +457,8 @@ export async function updateSource(id: any, update: any) {
 		/* Return new source
 		/* * * * * * * * * * * * * */
 		const returnSource = await sourcesCollection.findOne({ _id: _id });
-		return { success: true };
+		const cleanSource = { ...returnSource, _id: returnSource._id.toString() };
+		return { success: true, source: cleanSource };
 	} catch (error) {
 		return { success: false, message: error };
 	}

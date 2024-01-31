@@ -122,7 +122,7 @@ export async function getTitle(messages: any, _id: any) {
     cleanedMessages.push(instructionMessage);
 
     const res = await openai.createChatCompletion({
-        model: process.env.GENERATOR_MODEL,
+        model: `${process.env.GENERATOR_MODEL}`,
         messages: cleanedMessages
     })
 

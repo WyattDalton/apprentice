@@ -13,6 +13,7 @@ type GeneratorActionsProps = {
     handleConversationChange: any;
     currentResponse: any;
     handleCurrentResponseChange: any;
+    updateThread: any;
     saved: boolean | false;
     setSaved: any;
     meta: any;
@@ -35,6 +36,7 @@ const GeneratorActions = ({
     settings,
     conversation,
     handleConversationChange,
+    updateThread,
     meta,
     setMeta,
     generation,

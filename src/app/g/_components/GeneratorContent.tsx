@@ -1,7 +1,6 @@
-import { ArrowDownIcon, ArrowUpIcon, GeneratorArrowIcon } from "@/components/icons";
+import { ArrowDownIcon, ArrowUpIcon } from "@/components/icons";
 import { Disclosure, Transition } from "@headlessui/react";
 import React, { Fragment } from "react";
-import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 

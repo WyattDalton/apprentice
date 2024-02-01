@@ -24,7 +24,7 @@ export default function ThreadsList({ threads, deleteThread }: Props) {
     const [deleting, setDeleting] = useState(false);
 
     const handleOpenThread = async (threadId: string) => {
-        router.push(`/generate/${threadId}`)
+        router.push(`/g/${threadId}`)
     }
 
     const handleOpenModal = (id: any, title: any) => {
@@ -34,7 +34,6 @@ export default function ThreadsList({ threads, deleteThread }: Props) {
         payload.title = !!title ? title : false;
 
         setThreadToDelete({ id, title });
-        console.log('threadToDelete:', threadToDelete);
         setOpenModal(true);
     }
     const handleCloseModal = () => {

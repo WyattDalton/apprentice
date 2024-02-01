@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useMemo, memo } from "react";
 import { useChat } from 'ai/react'
 import LoadingText from "@/components/LoadingText";
-import { GeneratorArrowIcon, InfoIcon, ListIcon, SettingsIcon } from "@/components/icons";
+import { GeneratorArrowIcon, InfoIcon, SettingsIcon } from "@/components/icons";
 import { Transition } from "@headlessui/react";
 
 type GeneratorActionsProps = {
@@ -63,9 +63,10 @@ const GeneratorActions = ({
     const preserveThread = async (payload: any) => {
         try {
             const data = await saveThread(payload);
-            if (generation != data._id && window.location.pathname !== `/generate/${generation}`) {
+            console.log('save thread data: ', data);
+            if (generation != data._id && window.location.pathname !== `/g/${generation}`) {
                 setGeneration(await data._id);
-                window.history.pushState({ page: 1 }, data.initial_prompt, `/generate/${data._id}`);
+                window.history.pushState({ page: 1 }, data.initial_prompt, `/g/${data._id}`);
             }
 
         } catch (error) {
@@ -76,6 +77,7 @@ const GeneratorActions = ({
     const handleGetTitle = async (messages: any, generation: any) => {
         try {
             const data = await getTitle(messages, generation);
+            console.log('title data: ', data);
 
             if (!!data.title) {
                 setMeta({ ...meta, title: data.title });
@@ -314,10 +316,10 @@ const GeneratorActions = ({
                     {isLoading ? (
                         <LoadingText text="Loading" className={""} iconClassName={""} />
                     ) : (
-                            <span className="flex gap-2 items-center border border-gray-700 rounded-md bg-gray-700 text-white p-2 ml-auto lg:px-6 lg:py-2 lg:mt-auto">
-                                <span className="hidden lg:inline-block">Generate</span>
-                                <GeneratorArrowIcon className="h-4 w-4 inline-block" />
-                            </span>
+                        <span className="flex gap-2 items-center border border-gray-700 rounded-md bg-gray-700 text-white p-2 ml-auto lg:px-6 lg:py-2 lg:mt-auto">
+                            <span className="hidden lg:inline-block">Generate</span>
+                            <GeneratorArrowIcon className="h-4 w-4 inline-block" />
+                        </span>
                     )}
                 </button>
 

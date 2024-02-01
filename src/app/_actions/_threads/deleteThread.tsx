@@ -6,8 +6,9 @@ import { ObjectId } from 'mongodb';
  * Deletes a thread from the database.
  * @param data - The data object containing the thread ID.
  * @returns An object indicating the success of the operation and the updated list of threads.
- */
+*/
 export async function deleteThread(data: any) {
+    "use server"
     try {
         const { _id } = data;
         const db = await getMongoDB('threads') as any;

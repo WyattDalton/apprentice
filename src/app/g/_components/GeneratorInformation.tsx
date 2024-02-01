@@ -30,10 +30,6 @@ const GeneratorInformation = ({
         setTitle(meta.title);
     }, [meta])
 
-    useEffect(() => {
-        console.log('updating', updating);
-    }, [updating])
-
     const updateMeta = async () => {
 
         // ### Check if updating
@@ -44,9 +40,9 @@ const GeneratorInformation = ({
 
         // ### Prep payload to update
         const payload = {
-                _id: _id,
-                update: {
-                    title: title
+            _id: _id,
+            update: {
+                title: title
             }
         }
 

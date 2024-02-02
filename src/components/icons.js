@@ -15,6 +15,8 @@ import {
 	faBook,
 	faFlask,
 	faBullhorn,
+	faBell,
+	faBars,
 } from '@fortawesome/free-solid-svg-icons';
 
 export const CloseIcon = ({ className }) => {
@@ -118,5 +120,17 @@ export const FileIcon = ({ className }) => {
 export const LinkIcon = ({ className }) => {
 	return (
 		<FontAwesomeIcon className={!!className ? className : ''} icon={faLink} />
+	);
+};
+
+export const NotificationIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon className={!!className ? className : ''} icon={faBell} />
+	);
+};
+
+export const NavMenuIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon className={!!className ? className : ''} icon={faBars} />
 	);
 };

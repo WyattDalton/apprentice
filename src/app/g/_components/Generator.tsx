@@ -138,13 +138,13 @@ export default function Generator({ initConversation, savedData, className, laun
     // ###
     // ### Open a new thread in the generator
     const handleOpenThread = async (threadId: string) => {
-        router.push(`/generate/${threadId}`)
+        router.push(`/g/${threadId}`)
     }
 
     // ###
     // ### Open a new thread in the generator
     const handleNewThread = async () => {
-        router.push(`/generate`)
+        router.push(`/g`)
     }
 
     // ###

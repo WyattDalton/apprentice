@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Card from "@/components/UI/Card";
-import TextareaAutosize from "@/app/tone-library/[id]/_components/TextAreaAutosize";
+import TextareaAutosize from "@/app/styles/[id]/_components/TextAreaAutosize";
 import LoadingText from "@/components/LoadingText";
 
 type GeneratorInformationProps = {

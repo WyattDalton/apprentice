@@ -1,3 +1,4 @@
+"use server"
 import { getMongoDB } from '@/utils/getMongo';
 import { Configuration, OpenAIApi } from "openai";
 import { ObjectId } from 'mongodb';
@@ -16,7 +17,8 @@ const cheerio = require('cheerio');
  * @param text - The text to be split into chunks.
  * @returns An array of chunks.
  */
-function createChunks(text: string) {
+async function createChunks(text: string) {
+	"use server"
 	try {
 		const words = text.split(/\s+/);
 		const chunkSize = 215;
@@ -43,6 +45,7 @@ function createChunks(text: string) {
  * @returns An object containing the content, title, and embedding of the chunk, or null if an error occurs.
  */
 async function getEmbedding(chunk: string, title: string, index: number) {
+	"use server"
 	try {
 		const embeddingResponse = await openai.createEmbedding({
 			model: `${process.env.SMALL_EMBEDDING_MODEL}`,
@@ -61,6 +64,7 @@ async function getEmbedding(chunk: string, title: string, index: number) {
 }
 
 export async function addRaw(sources: any) {
+	"use server"
 	const db = await getMongoDB() as any;
 	const sourcesCollection = db.collection("sources");
 
@@ -69,7 +73,7 @@ export async function addRaw(sources: any) {
 
 		const text = source.text;
 		const name = source.name;
-		const chunks = createChunks(text) as any;
+		const chunks = await createChunks(text) as any;
 		const embeddings = await Promise.all(chunks.map((chunk: any, index: number) => getEmbedding(chunk, name, index)));
 
 		sourcePayload.name = name;
@@ -110,7 +114,7 @@ export async function addRaw(sources: any) {
  * @returns A Promise that resolves to an array of newly added sources.
  */
 export async function addFiles(source: any) {
-	'use server'
+	"use server"
 	try {
 		const db = await getMongoDB() as any;
 		const sourcesCollection = db.collection("sources");
@@ -142,7 +146,7 @@ export async function addFiles(source: any) {
 				content = "";
 		}
 
-		const chunks = createChunks(content) as any;
+		const chunks = await createChunks(content) as any;
 		const embeddings = await Promise.all(chunks.map((chunk: any, index: number) => getEmbedding(chunk, title, index)));
 
 		sourcePayload.name = name;
@@ -185,7 +189,7 @@ export async function addFiles(source: any) {
  * @returns A promise that resolves to the fetched HTML content.
  */
 export async function fetchHtmlFromUrl(src: any) {
-	'use server'
+	"use server"
 	try {
 		const url = src;
 		const res = await fetch(url);
@@ -204,7 +208,7 @@ export async function fetchHtmlFromUrl(src: any) {
  * @returns An object containing the success status and the processed content.
  */
 export async function processHtmlFromUrl(obj: any) {
-	'use server'
+	"use server"
 
 	// ###
 	// ### Fetch the url, load the HTML, and parse it with Cheerio. change "rawContent" if no error.
@@ -287,7 +291,7 @@ export async function processHtmlFromUrl(obj: any) {
  * @returns A Promise that resolves to the newly added source.
  */
 export async function addUrl(obj: any) {
-	'use server'
+	"use server"
 
 	try {
 		// ###
@@ -302,7 +306,7 @@ export async function addUrl(obj: any) {
 		const title = obj.content.title;
 		const text = obj.content.text;
 
-		const chunks = createChunks(text) as any;
+		const chunks = await createChunks(text) as any;
 		const embeddings = await Promise.all(chunks.map((chunk: any, index: any) => getEmbedding(chunk, title, index)));
 
 		// ###
@@ -348,7 +352,7 @@ export async function addUrl(obj: any) {
  * @returns A Promise that resolves to the retrieved source.
  */
 export async function fetchSource(idString: string) {
-	'use server'
+	"use server"
 	try {
 		const id = new ObjectId(idString);
 		const db = await getMongoDB() as any;
@@ -375,7 +379,7 @@ export async function fetchSource(idString: string) {
  * @returns A Promise that resolves to an array of sources.
  */
 export async function fetchSources() {
-	'use server'
+	"use server"
 	const db = await getMongoDB() as any;
 	const sources = await db.collection("sources").find({}).toArray();
 	const cleanSources = sources.map(({ _id, ...rest }: any) => ({ _id: _id.toString(), ...rest }));
@@ -388,7 +392,7 @@ export async function fetchSources() {
  * @returns A Promise that resolves to a success message.
  */
 export async function deleteSource(id: any) {
-	'use server'
+	"use server"
 	try {
 		const _id = new ObjectId(id);
 		const db = await getMongoDB() as any;
@@ -412,7 +416,7 @@ export async function deleteSource(id: any) {
  * @returns A Promise that resolves to the updated source.
  */
 export async function updateSource(id: any, update: any) {
-	'use server'
+	"use server"
 	try {
 		const db = await getMongoDB() as any;
 		const sourcesCollection = db.collection("sources");
@@ -434,7 +438,7 @@ export async function updateSource(id: any, update: any) {
 		let chunks, embeddings;
 
 		if (!!text && text !== sourceDocument.text) {
-			chunks = createChunks(text) || [];
+			chunks = await createChunks(text) || [];
 			embeddings = await Promise.all(chunks.map((chunk, index) => getEmbedding(chunk, title, index)));
 		} else {
 			chunks = null;

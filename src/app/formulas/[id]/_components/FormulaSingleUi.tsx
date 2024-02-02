@@ -64,7 +64,7 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
             const data = await res.json();
             setDeleting(false);
             handleCloseModal();
-            router.push('/formula-library');
+            router.push('/formulas');
         }
         catch (error) {
             console.log(error);

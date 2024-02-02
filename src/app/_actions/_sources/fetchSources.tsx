@@ -5,6 +5,7 @@ import { getMongoDB } from "@/utils/getMongo";
  * @returns {Promise<Array<Object>>} The array of clean sources.
  */
 export async function fetchSources() {
+    "use server"
     try {
         const db = await getMongoDB() as any;
         const sources = db.collection("sources");

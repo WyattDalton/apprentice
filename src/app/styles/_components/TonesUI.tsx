@@ -33,7 +33,7 @@ export default function TonesUi({ tonesSource, deleteTone, createTone }: TonesUi
     const handleAddNewTone = async () => {
         try {
             const tone = await createTone(newTone);
-            router.push(`/tone-library/${tone.insertedId}`);
+            router.push(`/styles/${tone.insertedId}`);
         }
         catch (error) {
             console.log(error);
@@ -61,7 +61,7 @@ export default function TonesUi({ tonesSource, deleteTone, createTone }: TonesUi
     /* * * * * * * * ** * * * * * * */
     const handleEditTone = (_id: string) => {
         try {
-            router.push(`/tone-library/${_id}`);
+            router.push(`/styles/${_id}`);
         } catch (error) {
             console.log(error);
         }
@@ -150,68 +150,68 @@ export default function TonesUi({ tonesSource, deleteTone, createTone }: TonesUi
                     </div>
                 </Dialog>
             </Transition>
-        <section className='w-[90%] mx-auto flex flex-col gap-4 h-full flex-grow'>
+            <section className='w-[90%] mx-auto flex flex-col gap-4 h-full flex-grow'>
 
-            <AddTone handleAddTone={handleAddNewTone} />
+                <AddTone handleAddTone={handleAddNewTone} />
 
-            {!!tones && (
-                <div className="flex-grow grid grid-col-1 md:grid-cols-2 gap-8 auto-rows-min inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]">
+                {!!tones && (
+                    <div className="flex-grow grid grid-col-1 md:grid-cols-2 gap-8 auto-rows-min inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]">
 
-                    {!!tones.length && tones.map((tone: any, index: number) => (
-                        <Card key={index} className='flex flex-col gap-4 prose'>
-                            <div className='flex items-center justify-start gap-4 text-sm'>
-                                <h2 className="mt-0 mb-0 capitalize">{tone.title || 'Default Title'}</h2>
-                            </div>
-
-                            {/* Tone processed information */}
-                            {!!tone.sample && (
-                                <div className="flex flex-col gap-4">
-                                    <p className="m-0">
-                                        <span className="font-semibold">Sample:</span> {tone.sample}
-                                    </p>
+                        {!!tones.length && tones.map((tone: any, index: number) => (
+                            <Card key={index} className='flex flex-col gap-4 prose'>
+                                <div className='flex items-center justify-start gap-4 text-sm'>
+                                    <h2 className="mt-0 mb-0 capitalize">{tone.title || 'Default Title'}</h2>
                                 </div>
-                            )}
 
-                            {/* Tone keywords and description */}
-                            {!!tone.keywords && !!tone.description && !tone.sample ? (
-                                <div className="flex flex-col gap-4">
+                                {/* Tone processed information */}
+                                {!!tone.sample && (
+                                    <div className="flex flex-col gap-4">
+                                        <p className="m-0">
+                                            <span className="font-semibold">Sample:</span> {tone.sample}
+                                        </p>
+                                    </div>
+                                )}
 
-                                    {/* Tone words */}
-                                    {
-                                        tone.keywords ? (
-                                            <div className="flex flex-wrap gap-2 w-full">
-                                                {tone.keywords.map((word: any, index: number) => (
-                                                    <div key={index} className="bg-gray-200 text-gray-500 px-4 rounded-full">
-                                                        {word}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        ) : null
-                                    }
+                                {/* Tone keywords and description */}
+                                {!!tone.keywords && !!tone.description && !tone.sample ? (
+                                    <div className="flex flex-col gap-4">
 
-                                    {/* Tone description */}
-                                    {
-                                        tone.description ? (
+                                        {/* Tone words */}
+                                        {
+                                            tone.keywords ? (
+                                                <div className="flex flex-wrap gap-2 w-full">
+                                                    {tone.keywords.map((word: any, index: number) => (
+                                                        <div key={index} className="bg-gray-200 text-gray-500 px-4 rounded-full">
+                                                            {word}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : null
+                                        }
 
-                                            <p className="m-0">
+                                        {/* Tone description */}
+                                        {
+                                            tone.description ? (
+
+                                                <p className="m-0">
                                                     {tone.description}
                                                 </p>
 
-                                        ) : null
-                                    }
+                                            ) : null
+                                        }
 
+                                    </div>
+                                ) : null}
+
+                                <div className="flex items-center justify-end gap-4 w-full">
+                                    <button className="border border-gray-700 text-gray-700 px-4 rounded-md" onClick={() => handleEditTone(tone._id)}>Edit</button>
+                                    <button className="text-red-500" onClick={() => handleOpenModal(tone._id, tone.title)}>Delete</button>
                                 </div>
-                            ) : null}
-
-                            <div className="flex items-center justify-end gap-4 w-full">
-                                <button className="border border-gray-700 text-gray-700 px-4 rounded-md" onClick={() => handleEditTone(tone._id)}>Edit</button>
-                                <button className="text-red-500" onClick={() => handleOpenModal(tone._id, tone.title)}>Delete</button>
-                            </div>
-                        </Card>
-                    ))}
-                </div>
-            )}
-        </section>
+                            </Card>
+                        ))}
+                    </div>
+                )}
+            </section>
         </>
     );
 }

@@ -170,7 +170,7 @@ function SingleToneUi({
             const res = await deleteTone(id);
             setOpenModal(false);
             setDeleting(false);
-            router.push('/tone-library');
+            router.push('/styles');
 
         }
         catch (error) {

@@ -49,7 +49,7 @@ function SingleSourceUi({ _id, sourceData, deleteSource, updateSource }: SourceD
             const res = await deleteSource(_id);
             setOpenModal(false);
             setDeleting(false);
-            router.push('/source-library');
+            router.push('/sources');
 
         }
         catch (error) {

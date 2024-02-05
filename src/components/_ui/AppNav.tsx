@@ -105,7 +105,7 @@ const AppNavigation = ({ views }: AppNavigationProps) => {
                 leaveTo="opacity-0">
                 <div className="fixed inset-0 bg-black bg-opacity-25 z-40 backdrop-blur-sm" onClick={() => {
                     setMainOpen(false)
-                    router.push(startingPath)
+                    router.replace(startingPath)
                 }}></div>
             </Transition>
 
@@ -130,7 +130,7 @@ const AppNavigation = ({ views }: AppNavigationProps) => {
                     <FormulasNavItem />
                 </div>
                 <Transition
-                    show={usePathname() != '/' ? true : false}
+                    show={(usePathname() != '/' && !usePathname().includes('/g/')) ? true : false}
                     className={'lg:col-span-9 col-span-12 flex flex-col gap-4 p-6 z-[60] rounded-2xl bg-white pointer-events-none'}
                     as="div"
                     enter="ease-out duration-300 transform"

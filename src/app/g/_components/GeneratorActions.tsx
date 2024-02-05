@@ -91,7 +91,7 @@ const GeneratorActions = ({
     /* Generate a response to the prompt
     /* * * * * * * * * * * * * * * * * */
     const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-        api: '/api/g',
+        api: '/api/generate',
         onResponse: async (res) => {
             changeActivePanel('manual', false);
             scrollToBottom('action');

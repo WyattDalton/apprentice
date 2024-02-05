@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import Card from "@/components/UI/Card";
+import Card from "@/components/_ui/Card";
 import TextareaAutosize from "@/app/styles/[id]/_components/TextAreaAutosize";
-import LoadingText from "@/components/LoadingText";
+import LoadingText from "@/components/_elements/LoadingText";
 
 type GeneratorInformationProps = {
     className: string | '',

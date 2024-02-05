@@ -1,4 +1,4 @@
-import Card from "@/components/UI/Card";
+import Card from "@/components/_ui/Card";
 
 export default function GeneratorContentSkeleton() {
     return (

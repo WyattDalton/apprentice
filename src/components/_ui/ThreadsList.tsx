@@ -2,9 +2,9 @@
 
 import { Dialog, Transition } from '@headlessui/react'
 import { useRouter } from "next/navigation";
-import { CloseIcon, GeneratorArrowIcon } from "./icons";
+import { CloseIcon, GeneratorArrowIcon } from "../_elements/icons";
 import { useState, Fragment, use, useEffect } from "react";
-import LoadingText from './LoadingText';
+import LoadingText from '../_elements/LoadingText';
 
 type Props = {
     threads: any;

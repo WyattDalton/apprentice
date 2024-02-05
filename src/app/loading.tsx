@@ -1,4 +1,4 @@
-import { GeneratorArrowIcon } from "@/components/icons";
+import { GeneratorArrowIcon } from "@/components/_elements/icons";
 
 export default function Loading() {
     return (

@@ -1,4 +1,4 @@
-import Card from '@/components/UI/Card';
+import Card from '@/components/_ui/Card';
 import { Transition } from '@headlessui/react';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 import React, { useState } from 'react'

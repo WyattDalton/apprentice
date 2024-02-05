@@ -1,7 +1,7 @@
 
 import { ArrowDownIcon } from "@heroicons/react/24/outline";
 import GeneratorContentSkeleton from "./_components/GeneratorContentSkeleton";
-import Card from "@/components/UI/Card";
+import Card from "@/components/_ui/Card";
 
 export default function GeneratorSkeleton() {
     return (

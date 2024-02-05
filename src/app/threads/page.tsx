@@ -1,6 +1,6 @@
 'use server';
 
-import ThreadsList from "@/components/ThreadsList";
+import ThreadsList from "@/components/_ui/ThreadsList";
 import { fetchThreads } from "../_actions/_threads/fetchThreads";
 
 /**

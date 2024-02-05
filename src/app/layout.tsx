@@ -1,4 +1,4 @@
-import AppNavigation from '@/components/AppNav'
+import AppNavigation from '@/components/_ui/AppNav'
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
@@ -13,8 +13,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  view_navigation,
 }: {
-  children: React.ReactNode
+    children: React.ReactNode,
+    view_navigation: React.ReactNode,
   }) {
 
   return (
@@ -22,7 +24,7 @@ export default function RootLayout({
       <body className={`${inter.className} bg-slate-100`}>
         <AuthProvider>
           <div className=" flex flex-col gap-4 min-h-screen">
-            <AppNavigation />
+            <AppNavigation views={view_navigation} />
             <div className="flex flex-col grow-1 w-full flex-grow">
               {children}
             </div>

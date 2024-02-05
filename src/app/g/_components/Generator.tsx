@@ -5,11 +5,11 @@ import GeneratorContent from "./GeneratorContent";
 import GeneratorSettings from "./GeneratorSettings";
 import { useEffect, useState } from "react";
 import { Disclosure, Tab, Transition } from "@headlessui/react";
-import Card from "@/components/UI/Card";
+import Card from "@/components/_ui/Card";
 import GeneratorInformation from "./GeneratorInformation";
 import { useRouter } from "next/navigation";
-import { ArrowDownIcon, ArrowUpIcon } from "@/components/icons";
-import ThreadsList from "@/components/ThreadsList";
+import { ArrowDownIcon, ArrowUpIcon } from "@/components/_elements/icons";
+import ThreadsList from "@/components/_ui/ThreadsList";
 import GeneratorContentSkeleton from "../[id]/_components/GeneratorContentSkeleton";
 
 type GeneratorProps = {

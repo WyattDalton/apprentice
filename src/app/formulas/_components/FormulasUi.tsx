@@ -1,11 +1,11 @@
 'use client'
 
-import Card from '@/components/UI/Card';
+import Card from '@/components/_ui/Card';
 import React, { Fragment, useEffect, useState } from 'react';
 import AddFormula from './AddFormula';
 import { useRouter } from 'next/navigation';
 import { Dialog, Transition } from '@headlessui/react';
-import LoadingText from '@/components/LoadingText';
+import LoadingText from '@/components/_elements/LoadingText';
 
 type FormulaLibraryProps = {
     formulasData: any

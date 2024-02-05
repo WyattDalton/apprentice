@@ -1,4 +1,4 @@
-import { ArrowDownIcon, ArrowUpIcon } from "@/components/icons";
+import { ArrowDownIcon, ArrowUpIcon } from "@/components/_elements/icons";
 import { Disclosure, Transition } from "@headlessui/react";
 import React, { Fragment } from "react";
 import ReactMarkdown from "react-markdown";

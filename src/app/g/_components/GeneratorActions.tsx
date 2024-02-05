@@ -2,8 +2,8 @@
 
 import { useEffect, useState, useRef, useMemo, memo } from "react";
 import { useChat } from 'ai/react'
-import LoadingText from "@/components/LoadingText";
-import { GeneratorArrowIcon, InfoIcon, SettingsIcon } from "@/components/icons";
+import LoadingText from "@/components/_elements/LoadingText";
+import { GeneratorArrowIcon, InfoIcon, SettingsIcon } from "@/components/_elements/icons";
 import { Transition } from "@headlessui/react";
 
 type GeneratorActionsProps = {

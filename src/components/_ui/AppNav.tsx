@@ -2,7 +2,7 @@
 
 import { Dialog, Transition } from '@headlessui/react';
 import { NavMenuIcon, NotificationIcon, UserIcon } from '../_elements/icons';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import Link from "next/link";
@@ -17,6 +17,7 @@ const AppLogo = () => {
             <span className="hidden">Apprentice by Maker Digital</span>
             <Link
                 href="/"
+                prefetch={true} 
             >
                 <Image
                     className="cursor-pointer w-12 h-12 block"
@@ -35,7 +36,7 @@ const AppLogo = () => {
 const ThreadsNavItem = () => {
     'use client';
     return (
-        <Link href="/threads" className="text-shade-500 hover:text-shade-700 flex gap-2 items-center py-3">
+        <Link href="/threads" prefetch={true} className="text-shade-500 hover:text-shade-700 flex gap-2 items-center py-3">
             <span>Threads</span>
         </Link>
     );
@@ -43,7 +44,7 @@ const ThreadsNavItem = () => {
 
 const SourcesNavItem = () => {
     return (
-        <Link href="/sources" className="text-shade-500 hover:text-shade-700 flex gap-2 items-center py-3">
+        <Link href="/sources" prefetch={true} className="text-shade-500 hover:text-shade-700 flex gap-2 items-center py-3">
             <SourceIcon className={'w-6 h-6'} />
             <span>Sources</span>
         </Link>
@@ -53,7 +54,7 @@ const SourcesNavItem = () => {
 const StylesNavItem = () => {
     'use client';
     return (
-        <Link href="/styles" className="text-shade-500 hover:text-shade-700 flex gap-2 items-center py-3">
+        <Link href="/styles" prefetch={true} className="text-shade-500 hover:text-shade-700 flex gap-2 items-center py-3">
             <ToneIcon className={'w-6 h-6'} />
             <span>Styles</span>
         </Link>
@@ -63,7 +64,7 @@ const StylesNavItem = () => {
 const FormulasNavItem = () => {
     'use client';
     return (
-        <Link href="/formulas" className="text-shade-500 hover:text-shade-700 flex gap-2 items-center py-3">
+        <Link href="/formulas" prefetch={true} className="text-shade-500 hover:text-shade-700 flex gap-2 items-center py-3">
             <FormulaIcon className={'w-6 h-6'} />
             <span>Formulas</span>
         </Link>
@@ -79,12 +80,18 @@ const AppNavigation = ({ views }: AppNavigationProps) => {
     const [openPanel, setOpenPanel] = useState<any>('');
     const [startingPath, setStartingPath] = useState<any>('/');
 
+    const path = usePathname();
+
+    useEffect(() => {
+        console.log('path', path);
+    }, [path]);
+
     return (
         <>
             <div className='text-dark flex justify-between items-center py-2 px-4 flex-none'>
                 <button onClick={() => {
                     setMainOpen(true)
-                    setStartingPath(usePathname())
+                    setStartingPath(path)
                 }}>
                     <NavMenuIcon className={'w-6 h-6'} />
                 </button>
@@ -130,7 +137,7 @@ const AppNavigation = ({ views }: AppNavigationProps) => {
                     <FormulasNavItem />
                 </div>
                 <Transition
-                    show={(usePathname() != '/' && !usePathname().includes('/g/')) ? true : false}
+                    show={(path != '/' && !path.includes('/g/')) ? true : false}
                     className={'lg:col-span-9 col-span-12 flex flex-col gap-4 p-6 z-[60] rounded-2xl bg-white pointer-events-none'}
                     as="div"
                     enter="ease-out duration-300 transform"

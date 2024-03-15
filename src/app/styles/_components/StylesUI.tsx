@@ -1,47 +1,39 @@
 'use client'
 
 import Card from '@/components/_ui/Card';
-import React, { Fragment, useEffect, useState } from 'react';
-import AddFormula from './AddFormula';
+import React, { Fragment, useState } from 'react';
+import AddStyle from './AddStyle';
 import { useRouter } from 'next/navigation';
 import { Dialog, Transition } from '@headlessui/react';
 import LoadingText from '@/components/_elements/LoadingText';
-import { deleteFormula } from '@/app/_actions/_formulas/deleteFormula';
+import { createStyle } from '../_actions';
 
-type FormulaLibraryProps = {
-    formulasData: any
+type StylesUiProps = {
+    stylesSource: any;
+    deleteStyle: any;
+    createStyle: any;
 }
 
-export default function FormulasUi({ formulasData }: FormulaLibraryProps) {
-
+export default function StylesUi({ stylesSource, deleteStyle, createStyle }: StylesUiProps) {
     const router = useRouter();
-    const [formulas, setFormulas] = useState(formulasData || []);
-    const [newFormula, setNewFormula] = useState({
+    const [styles, setStyles] = useState(stylesSource);
+    const [newStyle, setNewStyle] = useState({
         title: '',
-        instructions: [],
-        formula: '',
+        examples: [],
+        summary: '',
     });
 
     const [openModal, setOpenModal] = useState(false);
-    const [formulaToDelete, setFormulaToDelete] = useState({ id: '', title: '' });
+    const [styleToDelete, setStyleToDelete] = useState({ id: '', title: '' });
     const [deleting, setDeleting] = useState(false);
 
     /* * * * * * * * ** * * * * * * *
-    /* Add a new formula
+    /* Add a new style
     /* * * * * * * * ** * * * * * * */
-    const handleAddNewFormula = async () => {
+    const handleAddNewStyle = async () => {
         try {
-            const payload = {
-                'dataType': 'create',
-                'data': newFormula
-            }
-            const res = await fetch('/api/formulas', {
-                method: 'POST',
-                body: JSON.stringify(payload),
-            });
-            if (!res.ok) throw new Error('Error creating formula of voice');
-            const data = await res.json();
-            router.push(`/formulas/${data.formula}`);
+            const style = await createStyle(newStyle);
+            router.push(`/styles/${style.insertedId}`);
         }
         catch (error) {
             console.log(error);
@@ -49,18 +41,15 @@ export default function FormulasUi({ formulasData }: FormulaLibraryProps) {
     }
 
     /* * * * * * * * ** * * * * * * *
-    /* Delete a formula
+    /* Delete a style
     /* * * * * * * * ** * * * * * * */
-    const handleDeleteFormula = async (_id: string) => {
+    const handleDeleteStyle = async () => {
         try {
-            setDeleting(true);
-
-            const res = await deleteFormula(_id);
-            if (!res.success) throw new Error('Error deleting formula of voice');
-            const data = res.formulas;
-            setFormulas(data);
+            setDeleting(true)
+            const styles = await deleteStyle(styleToDelete.id);
+            setStyles(styles);
+            setOpenModal(false);
             setDeleting(false);
-            handleCloseModal();
         }
         catch (error) {
             console.log(error);
@@ -68,11 +57,11 @@ export default function FormulasUi({ formulasData }: FormulaLibraryProps) {
     }
 
     /* * * * * * * * ** * * * * * * *
-    /* Edit a formula
+    /* Edit a style
     /* * * * * * * * ** * * * * * * */
-    const handleEditFormula = (_id: string) => {
+    const handleEditStyle = (_id: string) => {
         try {
-            router.push(`/formulas/${_id}`);
+            router.push(`/styles/${_id}`);
         } catch (error) {
             console.log(error);
         }
@@ -86,12 +75,11 @@ export default function FormulasUi({ formulasData }: FormulaLibraryProps) {
         payload.id = id;
         payload.title = !!title ? title : false;
 
-        setFormulaToDelete({ id, title });
+        setStyleToDelete({ id, title });
         setOpenModal(true);
     }
 
     const handleCloseModal = () => {
-        setFormulaToDelete({ id: '', title: '' });
         setOpenModal(false);
     }
 
@@ -100,7 +88,6 @@ export default function FormulasUi({ formulasData }: FormulaLibraryProps) {
     /* * * * * * * * ** * * * * * * */
     return (
         <>
-
             <Transition appear show={openModal} as={Fragment}>
                 <Dialog as="div" className="relative z-50" onClose={handleCloseModal}>
                     <Transition.Child
@@ -135,7 +122,7 @@ export default function FormulasUi({ formulasData }: FormulaLibraryProps) {
                                     </Dialog.Title>
                                     <div className="mt-2">
                                         <p className="text-sm text-gray-500">
-                                            Are you sure you want to delete <span className="font-semibold">{!!formulaToDelete.title ? formulaToDelete.title : ''}</span>? This cannot be undone.
+                                            Are you sure you want to delete <span className="font-semibold">{!!styleToDelete.title ? styleToDelete.title : ('this style')}</span>? This cannot be undone.
                                         </p>
                                     </div>
 
@@ -152,7 +139,7 @@ export default function FormulasUi({ formulasData }: FormulaLibraryProps) {
                                         <button
                                             type="button"
                                             className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 ml-2"
-                                            onClick={() => handleDeleteFormula(formulaToDelete.id)}
+                                            onClick={handleDeleteStyle}
                                         >
                                             {!deleting ? ('Delete') : (<LoadingText text={'Deleting...'} className={''} iconClassName={''} />)}
                                         </button>
@@ -163,22 +150,62 @@ export default function FormulasUi({ formulasData }: FormulaLibraryProps) {
                     </div>
                 </Dialog>
             </Transition>
-
             <section className='w-[90%] mx-auto flex flex-col gap-4 h-full flex-grow'>
-                <AddFormula handleAddFormula={handleAddNewFormula} type="create" />
 
-                {!!formulas.length && (
+                <AddStyle handleAddStyle={handleAddNewStyle} />
+
+                {!!styles && (
                     <div className="flex-grow grid grid-col-1 md:grid-cols-2 gap-8 auto-rows-min inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]">
-                        {formulas.map((formula: any, index: number) => (
-                            <Card key={index} className='flex flex-col gap-4 prose'>
 
+                        {!!styles.length && styles.map((style: any, index: number) => (
+                            <Card key={index} className='flex flex-col gap-4 prose'>
                                 <div className='flex items-center justify-start gap-4 text-sm'>
-                                    <h2 className="mt-0 mb-0 capitalize">{formula.title || 'Default Title'}</h2>
+                                    <h2 className="mt-0 mb-0 capitalize">{style.title || 'Default Title'}</h2>
                                 </div>
 
+                                {/* Style processed information */}
+                                {!!style.sample && (
+                                    <div className="flex flex-col gap-4">
+                                        <p className="m-0">
+                                            <span className="font-semibold">Sample:</span> {style.sample}
+                                        </p>
+                                    </div>
+                                )}
+
+                                {/* Style keywords and description */}
+                                {!!style.keywords && !!style.description && !style.sample ? (
+                                    <div className="flex flex-col gap-4">
+
+                                        {/* Style words */}
+                                        {
+                                            style.keywords ? (
+                                                <div className="flex flex-wrap gap-2 w-full">
+                                                    {style.keywords.map((word: any, index: number) => (
+                                                        <div key={index} className="bg-gray-200 text-gray-500 px-4 rounded-full">
+                                                            {word}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : null
+                                        }
+
+                                        {/* Style description */}
+                                        {
+                                            style.description ? (
+
+                                                <p className="m-0">
+                                                    {style.description}
+                                                </p>
+
+                                            ) : null
+                                        }
+
+                                    </div>
+                                ) : null}
+
                                 <div className="flex items-center justify-end gap-4 w-full">
-                                    <button className="border border-gray-700 text-gray-700 px-4 rounded-md" onClick={() => handleEditFormula(formula._id)}>Edit</button>
-                                    <button className="text-red-500" onClick={() => handleOpenModal(formula._id, formula.title)}>Delete</button>
+                                    <button className="border border-gray-700 text-gray-700 px-4 rounded-md" onClick={() => handleEditStyle(style._id)}>Edit</button>
+                                    <button className="text-red-500" onClick={() => handleOpenModal(style._id, style.title)}>Delete</button>
                                 </div>
                             </Card>
                         ))}

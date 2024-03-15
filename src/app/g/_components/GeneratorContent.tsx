@@ -1,113 +1,44 @@
-import { ArrowDownIcon, ArrowUpIcon } from "@/components/_elements/icons";
-import { Disclosure, Transition } from "@headlessui/react";
-import React, { Fragment } from "react";
+
+import React, { Fragment, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import KnotSources from "./knot_components/KnotSources";
+import KnotUserPrompt from "./knot_components/KnotUserPrompt";
+import KnotThinkAbout from "./knot_components/KnotThinkAbout";
+import KnotOutline from "./knot_components/KnotOutline";
 
 
 type GeneratorContentProps = {
-    conversation: any;
+    thread: any;
     className?: string | '';
 };
 
-const GeneratorContent = ({ conversation, className }: GeneratorContentProps) => {
+const GeneratorContent = ({ thread, className }: GeneratorContentProps) => {
 
     return (
         <div className={`${className}`}>
-            {conversation.map((item: any, index: any) => (
+            {thread.map((item: any, index: any) => (
 
-                <Fragment key={index}>
-                    {item.role === 'user' && (
-                        !!item.settings ? (
-                            <Disclosure key={item.id}>
-                                {({ open }) => (
-                                    <>
-                                        <div className="relative mt-4">
-                                            <Disclosure.Button className={'bg-gray-200 text-gray-700 py-1 px-4 rounded-full flex gap-2 items-center max-w-full'}>
-                                                <span className="truncate ">{item.content}</span>
-                                                {!!open ? <ArrowUpIcon className="h-4 w-4" /> : <ArrowDownIcon className="h-4 w-4" />}
-                                            </Disclosure.Button>
+                <div className="flex flex-col gap-6 justify-start" key={index}>
+                    {!!item.user_prompt ? (
+                        <KnotUserPrompt item={item} index={index} />
+                    ) : ('')}
 
-                                            <Transition
-                                                className={'bg-gray-700 text-white p-6 rounded-xl absolute left-0 top-[120%] w-full max-w-[400px] shadow-lg max-h-[70vh] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 z-10'}
-                                                show={open}
-                                                enter="transition duration-100 ease-out"
-                                                enterFrom="transform -translate-y-6 opacity-0"
-                                                enterTo="transform translate-y-0 opacity-100"
-                                                leave="transition duration-75 ease-out"
-                                                leaveFrom="transform translate-y-0 opacity-100"
-                                                leaveTo="transform -translate-y-6 opacity-0"
-                                            >
-                                                <Disclosure.Panel static>
-                                                    <div className="flex flex-row flex-wrap items-center justify-start gap-2">
-                                                        <h3 className="text-lg font-bold w-full">Settings used for this generation</h3>
+                    {!!item.sources?.length ? (
+                        <KnotSources index={index} sources={item.sources} />
+                    ) : ('')}
 
-                                                        <span className="block text-xs font-semibold text-white border-t border-b border-white/20 py-2 my-2 w-full">
-                                                            {item.content}
-                                                        </span>
+                    {!!item.thinkAbout?.length ? (
+                        <KnotThinkAbout thinking={item.thinkAbout} index={index} />
+                    ) : ('')}
 
-                                                        {!!item.settings.sources && (
-                                                            <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1 truncate">
-                                                                <span>Sources used</span>
-                                                            </span>
-                                                        )}
-                                                        {!!item.settings.contentType && (
-                                                            <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1 truncate">
-                                                                <span>Type</span>
-                                                                <span>|</span>
-                                                                <span className="truncate">{item.settings.contentType}</span>
-                                                            </span>
-                                                        )}
-                                                        {!!item.settings.tone && (
-                                                            <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1 truncate">
-                                                                <span>Tone</span>
-                                                                <span>|</span>
-                                                                <span className="truncate">{item.settings.tone}</span>
-                                                            </span>
-                                                        )}
-                                                        {!!item.settings.intention && (
-                                                            <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1 truncate">
-                                                                <span>Intention</span>
-                                                                <span>|</span>
-                                                                <span className="truncate">{item.settings.intention}</span>
-                                                            </span>
-                                                        )}
-                                                        {!!item.settings.length && (
-                                                            <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1 truncate">
-                                                                <span>Length</span>
-                                                                <span>|</span>
-                                                                <span className="truncate">{item.settings.length}</span>
-                                                            </span>
-                                                        )}
-                                                        {!!item.settings.details && (
-                                                            <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1 truncate">
-                                                                <span>Details</span>
-                                                                <span>|</span>
-                                                                <span className="truncate">{item.settings.details}</span>
-                                                            </span>
-                                                        )}
-                                                        {!!item.settings.formula && (
-                                                            <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1 truncate">
-                                                                <span>Formula</span>
-                                                                <span>|</span>
-                                                                <span className="truncate">{item.settings.formula}</span>
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </Disclosure.Panel>
-                                            </Transition>
-                                        </div>
-                                    </>
-                                )}
-                            </Disclosure>
-                        ) : (
-                            <div key={item.id} className="relative truncate bg-gray-200 text-gray-700 py-1 px-4 rounded-full w-min max-w-full mt-4">{item.content}</div>
-                        )
-                    )}
+                    {!!item.outline?.length ? (
+                        <KnotOutline outline={item.outline} index={index} />
+                    ) : ('')}
 
-                    {item.role === 'assistant' && (
-                        <div key={item.id} className="relative ">
-                            <div className="flex flex-col prose mx-auto relative group/actions">
+                    {!!item.response ? (
+                        <div key={`${index}-response`} className="relative p-4 bg-white rounded-lg">
+                            <div className="flex flex-col prose relative group/actions">
                                 <ReactMarkdown
                                     className="mt-0"
                                     linkTarget="_blank"
@@ -115,12 +46,12 @@ const GeneratorContent = ({ conversation, className }: GeneratorContentProps) =>
                                     skipHtml={false}
                                     rehypePlugins={[rehypeRaw]}
                                 >
-                                    {(item.content || '') as string}
+                                    {(item.response || '') as string}
                                 </ReactMarkdown>
                             </div>
                         </div>
-                    )}
-                </Fragment>
+                    ) : ('')}
+                </div>
             ))}
         </div>
     );

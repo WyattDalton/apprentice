@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from 'next/image'
 import logo from '../_elements/makerdigital-logo-dark.png';
-import { FormulaIcon, SourceIcon, ToneIcon } from "../_elements/icons";
+import { FormulaIcon, SourceIcon, StyleIcon } from "../_elements/icons";
 
 const AppLogo = () => {
     'use client'
@@ -49,7 +49,7 @@ const StylesNavItem = () => {
     'use client';
     return (
         <Link href="/styles" className="text-shade-500 hover:text-shade-700 flex gap-2 items-center py-3">
-            <ToneIcon className={'w-6 h-6'} />
+            <StyleIcon className={'w-6 h-6'} />
             <span>Styles</span>
         </Link>
     );

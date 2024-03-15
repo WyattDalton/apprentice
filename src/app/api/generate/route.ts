@@ -1,7 +1,7 @@
 import { Configuration, OpenAIApi } from 'openai-edge'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 import { getResponseSources } from './utils/getResponseSources'
-import { getTone } from './utils/getTone'
+import { getStyle } from './utils/getStyle'
 import { templatize } from './utils/getFormula'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -26,8 +26,11 @@ export async function POST(req: NextRequest) {
 		const settings = data.settings;
 		const prompt = messages[messages.length - 1].content;
 		const sources = data.sources;
-		const tones = data.toneLibrary;
+		const styles = data.styleLibrary;
 		const formulas = data.formulaLibrary;
+		const outline = data.outline;
+		const thinkAbout = data.thinkAbout;
+		const formulaInstructions = data.formulaInstructions;
 
 		let responseSources: any = [];
 
@@ -36,7 +39,7 @@ export async function POST(req: NextRequest) {
 		const formatSettings = async (settings: any) => {
 			// ###
 			// ### destructure settings
-			const { enabled, details, contentType, formula, intention, length, tone, useSources } = settings;
+			const { enabled, details, contentType, formula, intention, length, style, useSources } = settings;
 
 			// ###
 			// ### get prompt embedding
@@ -94,33 +97,30 @@ export async function POST(req: NextRequest) {
 			// ###
 			// ### format formula
 			if (!!formula) {
-				const f = await templatize(formula, formulas)
-				settingsString += `
-				Follow the followingt formula to structure your response. Do not repeat these instructions in your response, they are just a guide for formatting:\n
-
-				 ${f.templatizedMessage}\n
-				
-				### End of formula ###\n\n`;
+				settingsString += `Follow the following formula to structure your response. Do not repeat these instructions in your response, they are just a guide for formatting:\n`;
+				if (!!thinkAbout) settingsString += `### How you should think about generating a high quality response ### \n${thinkAbout}\n`;
+				if (!!outline) settingsString += `### Create an outline for you to use in your response ### \n${outline}\n`;
+				settingsString += `${formulaInstructions}\n ### End of formula ###\n\n`;
 			}
 
 
 			// ###
-			// ### format tone
-			if (!!tone) {
-				// "tone" needs to be the tone id string
-				const toneData = await getTone(tone, promptEmbeddingVectors, tones);
-				if (!!toneData) {
+			// ### format style
+			if (!!style) {
+				// "style" needs to be the style id string
+				const styleData = await getStyle(style, promptEmbeddingVectors, styles);
+				if (!!styleData) {
 					settingsString += `
-					### Use the following notes to guide the tone of voice for the response ###\n
-						%%% Instructions for the tone you should use: %%%\n
-						${toneData.instructions}\n\n`;
+					### Use the following notes to guide the style of voice for the response ###\n
+						%%% Instructions for the style you should use: %%%\n
+						${styleData.bluePrint}\n\n`;
 
-					if (!!toneData.example) {
-						settingsString += `%%% Example of a response with the appropriate tone: %%%\n
-						${toneData.example}\n\n`;
+					if (!!styleData.example) {
+						settingsString += `%%% Example of a response with the appropriate style: %%%\n
+						${styleData.example}\n\n`;
 					}
 
-					settingsString += `### End of tone ###\n\n`;
+					settingsString += `### End of style ###\n\n`;
 				}
 			}
 
@@ -159,6 +159,7 @@ export async function POST(req: NextRequest) {
 			messages[messages.length - 1].content = formattedSettings + messages[messages.length - 1].content;
 		}
 
+		// ###
 		// Request the OpenAI API for the response based on the prompt
 		const response = await openai.createChatCompletion({
 			model: `${process.env.GENERATOR_MODEL}`,

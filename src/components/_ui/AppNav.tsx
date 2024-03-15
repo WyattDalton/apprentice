@@ -8,7 +8,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from "next/link";
 import Image from 'next/image'
 import logo from '../_elements/makerdigital-logo-dark.png';
-import { FormulaIcon, SourceIcon, ToneIcon } from "../_elements/icons";
+import { FormulaIcon, SourceIcon, StyleIcon } from "../_elements/icons";
 
 const AppLogo = () => {
     'use client'
@@ -43,6 +43,7 @@ const ThreadsNavItem = () => {
 }
 
 const SourcesNavItem = () => {
+    'use client';
     return (
         <Link href="/sources" prefetch={true} className="text-shade-500 hover:text-shade-700 flex gap-2 items-center py-3">
             <SourceIcon className={'w-6 h-6'} />
@@ -55,7 +56,7 @@ const StylesNavItem = () => {
     'use client';
     return (
         <Link href="/styles" prefetch={true} className="text-shade-500 hover:text-shade-700 flex gap-2 items-center py-3">
-            <ToneIcon className={'w-6 h-6'} />
+            <StyleIcon className={'w-6 h-6'} />
             <span>Styles</span>
         </Link>
     );
@@ -78,20 +79,13 @@ const AppNavigation = ({ views }: AppNavigationProps) => {
     const router = useRouter();
     const [mainOpen, setMainOpen] = useState<any>(false);
     const [openPanel, setOpenPanel] = useState<any>('');
-    const [startingPath, setStartingPath] = useState<any>('/');
 
-    const path = usePathname();
-
-    useEffect(() => {
-        console.log('path', path);
-    }, [path]);
 
     return (
         <>
             <div className='text-dark flex justify-between items-center py-2 px-4 flex-none'>
                 <button onClick={() => {
                     setMainOpen(true)
-                    setStartingPath(path)
                 }}>
                     <NavMenuIcon className={'w-6 h-6'} />
                 </button>
@@ -103,17 +97,18 @@ const AppNavigation = ({ views }: AppNavigationProps) => {
 
             <Transition
                 show={mainOpen}
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0">
-                <div className="fixed inset-0 bg-black bg-opacity-25 z-40 backdrop-blur-sm" onClick={() => {
-                    setMainOpen(false)
-                    router.replace(startingPath)
-                }}></div>
+                as={"section"}
+                className='fixed top-0 left-0 min-h-screen w-screen inset-0 overflow-y-auto z-50 backdrop-blur-sm'
+                enter="ease-out duration-300 transform"
+                enterFrom="opacity-0 -translate-x-4"
+                enterTo="opacity-100 translate-x-0"
+                leave="ease-in duration-200 transform"
+                leaveFrom="opacity-100 translate-x-0"
+                leaveTo="opacity-0 -translate-x-4"
+                appear={true}
+                unmount={true}
+            >
+                <div className='w-full h-full' onClick={(e) => setMainOpen(false)}></div>
             </Transition>
 
             <Transition
@@ -136,23 +131,6 @@ const AppNavigation = ({ views }: AppNavigationProps) => {
                     <StylesNavItem />
                     <FormulasNavItem />
                 </div>
-                <Transition
-                    show={(path != '/' && !path.includes('/g/')) ? true : false}
-                    className={'lg:col-span-9 col-span-12 flex flex-col gap-4 p-6 z-[60] rounded-2xl bg-white pointer-events-none'}
-                    as="div"
-                    enter="ease-out duration-300 transform"
-                    enterFrom="opacity-0 translate-x-4"
-                    enterTo="opacity-100 translate-x-0"
-                    leave="ease-in duration-200 transform"
-                    leaveFrom="opacity-100 translate-x-0"
-                    leaveTo="opacity-0 translate-x-4"
-                    appear={true}
-                    unmount={true}
-                >
-                    <div className="pointer-events-auto">
-                        {views}
-                    </div>
-                </Transition>
             </Transition>
         </>
     );

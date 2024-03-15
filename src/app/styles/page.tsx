@@ -1,17 +1,17 @@
 'use server'
 
-import { getAllTones, deleteTone, createTone } from "./_actions";
-import TonesUi from "./_components/TonesUI";
+import { getAllStyles, deleteStyle, createStyle } from "./_actions";
+import StylesUi from "./_components/StylesUI";
 
-export default async function ToneOfVoiceLibrary() {
+export default async function StyleOfVoiceLibrary() {
 
 
-    const tonesSource = await getAllTones();
+    const stylesSource = await getAllStyles();
 
     /* * * * * * * * ** * * * * * * *
     /* Render
     /* * * * * * * * ** * * * * * * */
     return (
-        <TonesUi tonesSource={tonesSource} deleteTone={deleteTone} createTone={createTone} />
+        <StylesUi stylesSource={stylesSource} deleteStyle={deleteStyle} createStyle={createStyle} />
     );
 }

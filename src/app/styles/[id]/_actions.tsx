@@ -1,11 +1,9 @@
 import { getMongoDB } from "@/utils/getMongo";
-import { Configuration, OpenAIApi } from "openai";
-
-const configuration = new Configuration({
+import OpenAI from "openai";
+const openAIApi = new OpenAI({
     organization: "org-B0x5nwrSR31e5bkeQuwEKeyY",
     apiKey: process.env.OPENAI_API_KEY,
 });
-const openAIApi = new OpenAIApi(configuration);
 
 /* * * * * * * * * * * * * * * * */
 /* Handle instructions processing
@@ -30,7 +28,7 @@ export async function getInstructions(string: string, openai = openAIApi as any)
             }
         ]
 
-        const instructions = await await openai.createChatCompletion({
+        const instructions = await await openai.chat.completions.create({
             model: `${process.env.PROCESSING_MODEL}`,
             messages: instructionMessages,
             max_tokens: 400,
@@ -43,92 +41,101 @@ export async function getInstructions(string: string, openai = openAIApi as any)
     }
 }
 
+
+
 /**
- * Processes the instructions by combining them into a single set of instructions.
- * 
- * @param instructions - The array of instructions to be processed.
- * @param openai - The OpenAI instance used for creating chat completions.
- * @returns A Promise that resolves to a string representing the combined instructions.
+ * Processes a blueprint by generating instructions for mimicking or replicating the style of the examples in the provided iteration.
+ * @param iteration - The iteration containing the examples and previous notes.
+ * @param openai - The OpenAI API object.
+ * @returns The generated instructions for replicating the style.
  */
-export async function processInstructions(instructions: any, openai = openAIApi as any) {
+export async function generateBlueprint(iteration: any, openai = openAIApi as any) {
     'use server'
     try {
-        // Combine the instructions into a single string
-        const instructionString = instructions.reduce((acc: string, instruction: string) => {
-            return `${acc}### Start new instruction ###\n${instruction}\n### End of instruction ###\n`
-        }, "");
-
         // Create the messages array for the chat completion
         const messages = [
+            ...iteration,
             {
-                "role": "system",
-                "content": `You are very good an analyzing similarities in text and combining mutiple examples into one set of instructions. \n\n
-            % START OF INSTRUCTIONS\n ${instructionString} \n% END OF INSTRUCTIONS\n\n
-            Respond with a single set of instructions that combines the shared elements of the example instructions. YOU MUST start YOUR RESPONSE AS FOLLOWS: \n\n
-            %%% The following are instructions on the style and tone of voice to use in your response: %%% YOU MUST FOLLOW THIS WITH JUST THE INSTRUCTIONS. DO NOT PROVIDE ANY COMENTARY ON THE EXAMPLES OR REFER TO THE EXAMPLES IN YOUR RESPONSE. \n\n`
+                "role": "user",
+                "content": `Create a set of instructions for yourself on mimicing or replicating the style of the examples in the previous messages. Keep your previous notes in mind. You should be able to replicate the style eve without seeing examples based on the instructions you create here. Respond with a single set of instructions. YOU MUST RESPOND WITH JUST THE INSTRUCTIONS. DO NOT PROVIDE ANY COMENTARY ON THE EXAMPLES OR REFER TO THE EXAMPLES IN YOUR RESPONSE.`
             }
         ];
 
         // Create the chat completion
-        const instruction = await openai.createChatCompletion({
+        const bluePrint = await openAIApi.chat.completions.create({
             model: `${process.env.PROCESSING_MODEL}`,
             messages: messages,
-            max_tokens: 400,
         });
 
-        // Return the combined instructions
-        const response = instruction.data.choices[0].message.content;
+        // Return the blueprint
+        const response = bluePrint.choices[0].message.content;
         return response;
     } catch (error) {
-        console.log("error in processInstructions: ", error);
+        console.log("error in processBluePrint: ", error);
     }
 }
 
 /**
- * Generates a sample sentence using the provided tone and OpenAI API.
- * @param tone - The tone object containing instructions and example.
+ * Generates a sample sentence using the provided style and OpenAI API.
+ * @param style - The style object containing instructions and example.
  * @param openai - The OpenAI API object.
  * @returns The generated sentence.
  */
-export async function generateSample(tone: any, openai = openAIApi as any) {
+export async function generateSample(style: any, prompt = 'Generate a sample of the style' as any, openai = openAIApi as any) {
     'use server'
     try {
         const promptEmbeddingVectors = await getEmbedding('Generate a sentence about how an apprentice helps a business owner achieve their goals');
 
-        const toneForPrompt = await getToneForPrompt(tone, promptEmbeddingVectors);
+        const styleForPrompt = await getStyleForPrompt(style, promptEmbeddingVectors);
 
-        console.log('tone: ', toneForPrompt)
+        let styleString = `### Use the following notes to guide the style of your response ###\n
+            %%% Instructions for the style you should use: %%%\n${styleForPrompt.bluePrint} \n\n`;
 
-        let toneString = `### Use the following notes to guide the tone of voice for the response ###\n
-            %%% Instructions for the tone you should use: %%%\n${toneForPrompt.instructions} \n\n`;
-        if (!!toneForPrompt.example) {
-            toneString += `%%% Example of a response with the appropriate style: %%%\n
-            ${toneForPrompt.example} \n\n`;
+        if (!!styleForPrompt.example) {
+            styleString += `%%% Example of a response with the appropriate style: %%%\n
+            ${styleForPrompt.example} \n\n`;
         }
-        toneString += `### End of tone ###\n\n`;
+        styleString += `### End of style ###\n\n`;
 
         const messages = [
             {
                 "role": "user",
-                "content": `${toneString}\n\n Generate a sentence about how an apprentice helps a business owner achieve their goals.`
+                "content": `${styleString}\n\n ${prompt}`
             }
         ];
 
-        console.log('messages: ', messages)
-
         // Create the chat completion
-        const instruction = await openai.createChatCompletion({
-            model: `${process.env.GENERATOR_MODEL}`,
+        const sample = await openai.chat.completions.create({
+            model: `${process.env.PROCESSING_MODEL}`,
             messages: messages,
-            max_tokens: 400,
         });
 
         // Return the combined instructions
-        const response = instruction.data.choices[0].message.content;
-        console.log('response: ', response)
+        const response = sample.choices[0].message.content;
+
         return response
     } catch (error) {
         console.log('Error getting sample: ', error);
+    }
+}
+
+/**
+ * Generates a comparison using OpenAI chat completions.
+ * @param messages - The messages to use for generating the comparison.
+ * @param openai - The OpenAI API object.
+ * @returns The generated comparison response.
+ */
+export async function generateComparison(messages: any, openai = openAIApi as any) {
+    'use server'
+    try {
+        const comparison = await openai.chat.completions.create({
+            model: `${process.env.PROCESSING_MODEL}`,
+            messages: messages,
+        });
+        const response = comparison.choices[0].message.content;
+        return response;
+    } catch (error) {
+        console.log('Error getting comparison: ', error);
     }
 }
 
@@ -145,11 +152,12 @@ export async function generateSample(tone: any, openai = openAIApi as any) {
 export async function getEmbedding(chunk: string, openai = openAIApi as any) {
     'use server'
     try {
-        const embeddingResponse = await openai.createEmbedding({
+
+        const embeddingResponse = await openai.embeddings.create({
             model: `${process.env.SMALL_EMBEDDING_MODEL}`,
             input: chunk,
         });
-        const embedding = embeddingResponse.data.data[0].embedding;
+        const embedding = await embeddingResponse.data[0].embedding;
         return embedding;
     } catch (error) {
         console.error("Error getting embedding:", error);
@@ -159,12 +167,12 @@ export async function getEmbedding(chunk: string, openai = openAIApi as any) {
 
 
 /**
- * Retrieves the tone for a given prompt.
- * @param tone - The tone object.
+ * Retrieves the style for a given prompt.
+ * @param style - The style object.
  * @param promptEmbeddingVectors - The embedding vectors of the prompt.
- * @returns An object containing the example and instructions for the tone.
+ * @returns An object containing the example and instructions for the style.
  */
-export async function getToneForPrompt(tone: any, promptEmbeddingVectors: string) {
+export async function getStyleForPrompt(style: any, promptEmbeddingVectors: string) {
     'use server'
 
     /**
@@ -199,7 +207,7 @@ export async function getToneForPrompt(tone: any, promptEmbeddingVectors: string
     try {
         const minCosine = 0.78;
         const examplePool = [] as any;
-        const examples = tone.examples;
+        const examples = style.examples;
 
         examples.forEach((obj: any, index: number) => {
             try {
@@ -221,9 +229,10 @@ export async function getToneForPrompt(tone: any, promptEmbeddingVectors: string
 
         const payload = {} as any;
         payload["example"] = !!examplePool[0] ? examplePool[0].content : null;
-        payload["instructions"] = tone.instructions;
+        payload["bluePrint"] = style.bluePrint;
+
         return payload;
     } catch (error) {
-        console.log('Error getting tone from DB: ', error);
+        console.log('Error getting style from DB: ', error);
     }
 }

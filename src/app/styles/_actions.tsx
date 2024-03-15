@@ -2,33 +2,35 @@ import { getMongoDB } from "@/utils/getMongo";
 import { ObjectId } from "mongodb";
 
 
-export async function getAllTones() {
+export async function getAllStyles() {
     'use server'
     try {
         const db = await getMongoDB() as any;
-        const tones = await db.collection("tones").find({}).toArray();
-        const plainTones = tones.map(({ _id, ...rest }: any) => ({ _id: _id.toString(), ...rest }));
-        return plainTones;
+        const styles = await db.collection("styles").find({}).toArray();
+        const plainStyles = styles.map(({ _id, ...rest }: any) => ({ _id: _id.toString(), ...rest }));
+        return plainStyles;
     } catch (error: any) {
         console.error('Error in GET:', error.message);
     }
 }
 
-export async function getToneData(id: string) {
+export async function getStyleData(id: string) {
     'use server'
     try {
         const db = await getMongoDB() as any;
         const _id = new ObjectId(id);
-        const tone = await db.collection("tones").findOne({ _id: _id });
-        const cleanTone = { _id: tone._id.toString(), ...tone };
+        const style = await db.collection("styles").findOne({ _id: _id });
+        const cleanStyle = { _id: style._id.toString(), ...style };
 
         const payload = {} as any;
 
-        !!cleanTone.title ? payload.title = cleanTone.title : false;
-        !!cleanTone.examples ? payload.examples = cleanTone.examples : false;
-        !!cleanTone.description ? payload.description = cleanTone.description : false;
-        !!cleanTone.keywords ? payload.keywords = cleanTone.keywords : false;
-        !!cleanTone.instructions ? payload.instructions = cleanTone.instructions : false;
+        !!cleanStyle.title ? payload.title = cleanStyle.title : false;
+        !!cleanStyle.examples ? payload.examples = cleanStyle.examples : false;
+        !!cleanStyle.description ? payload.description = cleanStyle.description : false;
+        !!cleanStyle.keywords ? payload.keywords = cleanStyle.keywords : false;
+        !!cleanStyle.bluePrint ? payload.bluePrint = cleanStyle.bluePrint : false;
+        !!cleanStyle.sample ? payload.sample = cleanStyle.sample : false;
+        !!cleanStyle.iteration ? payload.iteration = cleanStyle.iteration : false;
 
         return payload;
     } catch (error: any) {
@@ -36,40 +38,44 @@ export async function getToneData(id: string) {
     }
 }
 
-export async function deleteTone(id: string) {
+export async function deleteStyle(id: string) {
     'use server'
     try {
         const db = await getMongoDB() as any;
         const _id = new ObjectId(id);
-        const tone = await db.collection("tones").deleteOne({ _id: _id });
-        const allTones = await db.collection("tones").find({}).toArray();
-        const plainTones = allTones.map(({ _id, ...rest }: any) => ({ _id: _id.toString(), ...rest }));
-        return plainTones;
+        const style = await db.collection("styles").deleteOne({ _id: _id });
+        const allStyles = await db.collection("styles").find({}).toArray();
+        const plainStyles = allStyles.map(({ _id, ...rest }: any) => ({ _id: _id.toString(), ...rest }));
+        return plainStyles;
     } catch (error: any) {
         console.error('Error in DELETE:', error.message);
     }
 }
 
-export async function createTone(payload: any) {
+export async function createStyle(payload: any) {
     'use server'
     try {
         const db = await getMongoDB() as any;
-        const tone = await db.collection("tones").insertOne(payload);
-        return tone;
+        const style = await db.collection("styles").insertOne(payload);
+        const cleanedStyle = { ...style, _id: style.insertedId.toString() };
+        return cleanedStyle;
     } catch (error: any) {
         console.error('Error in POST:', error.message);
     }
 }
 
-export async function updateTone(id: string, payload: any) {
+export async function updateStyle(id: string, payload: any) {
     'use server'
     try {
         const db = await getMongoDB() as any;
         const _id = new ObjectId(id);
-        const update = await db.collection("tones").updateOne({ _id: _id }, { $set: payload });
-        const tone = await db.collection("tones").findOne({ _id: _id });
-        const cleanedTone = { _id: tone._id.toString(), ...tone };
-        return { success: true, tone: cleanedTone };
+
+        const update = await db.collection("styles").updateOne({ _id: _id }, { $set: payload });
+        const style = await db.collection("styles").findOne({ _id: _id });
+        // const cleanedStyle = { _id: style._id.toString(), ...style };
+        const cleanedStyle = { ...style, _id: style._id.toString() };
+
+        return { success: true, style: cleanedStyle };
     } catch (error: any) {
         console.error('Error in PUT:', error.message);
     }

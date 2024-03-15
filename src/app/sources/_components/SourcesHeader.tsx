@@ -6,11 +6,6 @@ import { useEffect, useState } from "react";
 function SourcesHeader() {
     const [query, setQuery] = useState<string>("");
 
-    // filter posts on chang of query
-    useEffect(() => {
-        console.log(query)
-    }, [query])
-
     return (
         <div className="flex items-center justify-center gap-4 mb-4">
             <SearchBar query={""} setQuery={setQuery} />

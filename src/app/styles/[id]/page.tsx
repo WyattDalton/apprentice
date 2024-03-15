@@ -1,44 +1,45 @@
 'use server';
 
-import SingleToneUi from "./_components/SingleToneUi";
-import { deleteTone, getToneData, updateTone } from "../_actions";
-import { getEmbedding, getInstructions, processInstructions, generateSample } from "./_actions";
+import SingleStyleUi from "./_components/SingleStyleUi";
+import { deleteStyle, getStyleData, updateStyle } from "../_actions";
+import { getEmbedding, getInstructions, generateBlueprint, generateSample, generateComparison } from "./_actions";
 
 
 
 /**
- * Renders a page component for a specific tone.
+ * Renders a page component for a specific style.
  * @param {Object} props - The component props.
  * @param {Object} props.params - The parameters object.
- * @param {string} props.params.id - The ID of the tone.
+ * @param {string} props.params.id - The ID of the style.
  * @returns {JSX.Element} The rendered page component.
  */
 async function Page({ params }: { params: { id: string } }) {
 
-    // Get tone data
-    const data = await getToneData(params.id);
-
+    // Get style data
+    const data = await getStyleData(params.id);
 
     return (
-        <SingleToneUi
-            // Tone data
+        <SingleStyleUi
+        // Style data
             id={params.id}
             titleData={data.title || ''}
             examplesData={data.examples || []}
             descriptionData={data.description || ''}
             keywordsData={data.keywords || []}
-            instructionsData={data.instructions || []}
+            bluePrintData={data.bluePrint || []}
             sampleData={data.sample || ''}
+            iterationData={data.iteration || []}
 
             // CRUD functions
-            deleteTone={deleteTone}
-            updateTone={updateTone}
+            deleteStyle={deleteStyle}
+            updateStyle={updateStyle}
 
             // Processing functions
             getEmbedding={getEmbedding}
             getInstructions={getInstructions}
-            processInstructions={processInstructions}
+            generateBlueprint={generateBlueprint}
             generateSample={generateSample}
+            generateComparison={generateComparison}
         />
     )
 }

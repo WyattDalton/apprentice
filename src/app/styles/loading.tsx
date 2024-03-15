@@ -4,11 +4,11 @@ export default function Loading() {
             <section className='w-[90%] mx-auto flex flex-col gap-4 h-full flex-grow' aria-hidden="true">
                 <div className="w-full bg-white p-4">
                     <div className="flex flex-col gap-2 items-center justify-center mb-2 prose mx-auto">
-                        <h2 className="m-0 text-transparent bg-gray-200 rounded-md animate-pulse">Add a Tone</h2>
-                        <p className="text-sm text-transparent bg-gray-200 rounded-md animate-pulse">{`Adding a tone of voice is easy. Just copy and paste a few examples for Apprentice to learn from. We&lsquo;ll take care of the rest.`}</p>
+                        <h2 className="m-0 text-transparent bg-gray-200 rounded-md animate-pulse">Add a Style</h2>
+                        <p className="text-sm text-transparent bg-gray-200 rounded-md animate-pulse">{`Adding a style of voice is easy. Just copy and paste a few examples for Apprentice to learn from. We&lsquo;ll take care of the rest.`}</p>
                         <div className="flex flex-col items-center justify-center w-full h-full">
                             <div className="px-4 py-2 text-transparent bg-gray-200 rounded-md animate-pulse">
-                                Add a tone of voice
+                                Add a style of voice
                             </div>
                         </div>
 
@@ -39,7 +39,7 @@ export default function Loading() {
                                     Thankfulness
                                 </div>
                             </div>
-                            <p className="m-0 text-transparent bg-gray-200 rounded-md animate-pulse">{`The tone of voice in the examples is upbeat, enthusiastic, and optimistic, with an energetic writing style that includes exclamation marks and emojis to convey excitement. There is a sense of urgency in the updates and announcements, while maintaining a friendly and inviting tone that creates a connection with the audience. The use of informal language and a conversational style adds to the overall tone of positivity and anticipation.`}</p>
+                            <p className="m-0 text-transparent bg-gray-200 rounded-md animate-pulse">{`The style of voice in the examples is upbeat, enthusiastic, and optimistic, with an energetic writing style that includes exclamation marks and emojis to convey excitement. There is a sense of urgency in the updates and announcements, while maintaining a friendly and inviting style that creates a connection with the audience. The use of informal language and a conversational style adds to the overall style of positivity and anticipation.`}</p>
                         </div>
                         <div className="flex items-center justify-end gap-4 w-full">
                             <div className="px-4 text-transparent bg-gray-200 rounded-md animate-pulse">Edit</div>
@@ -69,7 +69,7 @@ export default function Loading() {
                                     Thankfulness
                                 </div>
                             </div>
-                            <p className="m-0 text-transparent bg-gray-200 rounded-md animate-pulse">{`The tone of voice in the examples is upbeat, enthusiastic, and optimistic, with an energetic writing style that includes exclamation marks and emojis to convey excitement. There is a sense of urgency in the updates and announcements, while maintaining a friendly and inviting tone that creates a connection with the audience. The use of informal language and a conversational style adds to the overall tone of positivity and anticipation.`}</p>
+                            <p className="m-0 text-transparent bg-gray-200 rounded-md animate-pulse">{`The style of voice in the examples is upbeat, enthusiastic, and optimistic, with an energetic writing style that includes exclamation marks and emojis to convey excitement. There is a sense of urgency in the updates and announcements, while maintaining a friendly and inviting style that creates a connection with the audience. The use of informal language and a conversational style adds to the overall style of positivity and anticipation.`}</p>
                         </div>
                         <div className="flex items-center justify-end gap-4 w-full">
                             <div className="px-4 rounded-md text-transparent bg-gray-200 rounded-md animate-pulse">Edit</div>

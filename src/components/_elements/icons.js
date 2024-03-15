@@ -17,7 +17,28 @@ import {
 	faBullhorn,
 	faBell,
 	faBars,
+	faPlus,
+	faCheck,
+	faEdit,
 } from '@fortawesome/free-solid-svg-icons';
+
+export const EditIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon className={!!className ? className : ''} icon={faEdit} />
+	);
+};
+
+export const CheckIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon className={!!className ? className : ''} icon={faCheck} />
+	);
+};
+
+export const PlusIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon className={!!className ? className : ''} icon={faPlus} />
+	);
+};
 
 export const CloseIcon = ({ className }) => {
 	return (
@@ -49,7 +70,7 @@ export const FormulaIcon = ({ className }) => {
 	);
 };
 
-export const ToneIcon = ({ className }) => {
+export const StyleIcon = ({ className }) => {
 	return (
 		<FontAwesomeIcon
 			className={!!className ? className : ''}

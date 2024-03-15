@@ -2,21 +2,46 @@
 
 import LoadingText from "@/components/_elements/LoadingText";
 import Sidebar from "./Sidebar";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, use } from "react";
 import Content from "./Content";
 import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from 'next/navigation';
 import { Fragment } from "react";
+import { set } from "lodash";
+
 
 
 type FormulaProps = {
     _id: string,
     titleData: string,
     instructionsData: any,
-    formulaData: string,
+    formulaData?: string,
+    thinkAboutData?: string,
+    outlineData?: string,
+    deleteFormula: any,
+    updateFormula: any,
 }
 
-export default function FormulaSingleUi({ _id, titleData, instructionsData, formulaData }: FormulaProps) {
+export default function FormulaSingleUi({
+    _id,
+    titleData,
+    instructionsData,
+    formulaData,
+    thinkAboutData,
+    outlineData,
+    deleteFormula,
+    updateFormula
+}: FormulaProps) {
+
+
+
+    /*
+    It needs to work this way:
+    - Steps can bve one of 3 types: Think about, outline, and generate
+    - Steps follow a first, then, then, finally structure
+    - In the generator, all processing happens first to engeneer a prompt
+    Formulas are meant to generate a very speicifc response like an outline for a blog post or a particular tyope of email
+    */
 
     const router = useRouter();
 
@@ -26,9 +51,12 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
     const [editing, setEditing] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [newFormula, setNewFormula] = useState({});
+
     const [title, setTitle] = useState(titleData || '');
-    const [instructions, setInstructions] = useState(instructionsData || []);
-    const [format, setFormat] = useState(formulaData || '');
+    const [thinkAbout, setThinkAbout] = useState(thinkAboutData || '');
+    const [outline, setOutline] = useState(outlineData || false);
+    const [instructions, setInstructions] = useState<any>(instructionsData || '');
+
 
     const [openModal, setOpenModal] = useState(false);
     const [formulaToDelete, setFormulaToDelete] = useState({ id: '', title: '' });
@@ -41,9 +69,10 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
         setNewFormula({
             title,
             instructions,
-            format,
+            thinkAbout,
+            outline
         });
-    }, [title, instructions, format]);
+    }, [title, instructions, thinkAbout, outline]);
 
     /* * * * * * * * ** * * * * * * *
     /* Delete a formula
@@ -51,17 +80,8 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
     const handleDeleteFormula = async () => {
         try {
             setDeleting(true);
-
-            const payload = {
-                'dataType': 'delete',
-                'data': { _id: _id },
-            }
-            const res = await fetch('/api/formulas', {
-                method: 'POST',
-                body: JSON.stringify(payload),
-            });
-            if (!res.ok) throw new Error('Error deleting formula of voice');
-            const data = await res.json();
+            const data = await deleteFormula(_id);
+            if (!data.success) throw new Error('Error deleting formula');
             setDeleting(false);
             handleCloseModal();
             router.push('/formulas');
@@ -82,105 +102,40 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
         setOpenModal(false);
     }
 
+
+
     /* * * * * * * * * * */
     // Handle Functions
     /* * * * * * * * * * */
     // Hook for handline instruction actions
-    const handleUpdateInstructions = (e: any, index: number) => {
-        const action = e.target.dataset.action;
-        let newInstructions = [...instructions] as any;
-
-        switch (action) {
-            case 'add-instruction':
-                newInstructions = [
-                    ...newInstructions,
-                    { title: '', instruction: '', example: '' },
-                ];
-                break;
-            case 'remove-instruction':
-                newInstructions = [
-                    ...newInstructions.slice(0, index),
-                    ...newInstructions.slice(index + 1),
-                ];
-                break;
-            case 'update-instruction-title':
-                newInstructions = newInstructions.map((instr: any, idx: any) =>
-                    idx === index ? { ...instr, title: e.target.value } : instr
-                );
-                break;
-            case 'update-instruction-text':
-                newInstructions = newInstructions.map((instr: any, idx: any) =>
-                    idx === index ? { ...instr, instruction: e.target.value } : instr
-                );
-                break;
-            case 'update-instruction-example':
-                newInstructions = newInstructions.map((instr: any, idx: any) =>
-                    idx === index ? { ...instr, example: e.target.value } : instr
-                );
-                break;
-            default:
-                break;
+    const handleUpdateInstructions = (data: any) => {
+        try {
+            setInstructions(data);
+        } catch (error) {
+            console.log(error);
         }
-        setInstructions(newInstructions);
     };
-
-    // Handle instruction insert into formula
-    const handleInsertInstruction = (instructionIndex: any) => {
-        setNewFormula((prevFormula: any) => {
-            const updatedInstructions = [...prevFormula.instructions];
-
-            let updatedFormula = prevFormula.formula;
-
-            const instruction = `<${updatedInstructions[instructionIndex].title}>`;
-
-            // Check if the instruction is already present in the formula
-            const isInstructionPresent = updatedFormula.includes(instruction);
-
-            // Add or remove the instruction from the formula based on its presence
-            if (isInstructionPresent) {
-                // Remove the instruction from the formula
-                updatedFormula = updatedFormula.replace(instruction, '');
-            } else {
-                // Add the instruction to the formula at the current cursor position
-                const textarea = document.getElementById('formula') as any;
-                const { selectionStart, selectionEnd } = textarea;
-
-                updatedFormula =
-                    updatedFormula.slice(0, selectionStart) +
-                    instruction +
-                    updatedFormula.slice(selectionEnd);
-            }
-
-            return {
-                ...prevFormula,
-                instructions: updatedInstructions,
-                formula: updatedFormula,
-            };
-        });
-    };
+    const handleUpdateThinkAbout = (data: any) => {
+        try {
+            setThinkAbout(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const handleUpdateOutline = (data: any) => {
+        try {
+            setOutline(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         setUploading(true);
-
-        const payload = {
-            dataType: 'update',
-            data: {
-                _id: _id,
-                update: newFormula,
-            },
-        }
-        const res = await fetch('/api/formulas', {
-            method: 'POST',
-            body: JSON.stringify(payload),
-        });
-
-        if (!res.ok) throw new Error('Error updating formula');
-
-        const data = await res.json();
-
+        const res = await updateFormula(_id, newFormula);
+        if (!res.success) throw new Error('Error updating formula');
         setUploading(false);
-
     };
 
     /* * * * * * * * * * */
@@ -264,16 +219,16 @@ export default function FormulaSingleUi({ _id, titleData, instructionsData, form
         ">
                 <Content
                     className="col-span-6 lg:col-span-4 flex flex-col items-center gap-4 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]"
+                    newFormula={newFormula}
+                    setNewFormula={setNewFormula}
                     title={title}
                     setTitle={setTitle}
                     instructions={instructions}
-                    setInstructions={setInstructions}
-                    newFormula={newFormula}
-                    setNewFormula={setNewFormula}
                     handleUpdateInstructions={handleUpdateInstructions}
-                    format={format}
-                    setFormat={setFormat}
-                    handleInsertInstruction={handleInsertInstruction}
+                    thinkAbout={thinkAbout}
+                    handleUpdateThinkAbout={handleUpdateThinkAbout}
+                    outline={outline}
+                    handleUpdateOutline={handleUpdateOutline}
                 />
                 <Sidebar
                     className="col-span-6 mlg:col-span-2 gap-4 rounded-lg sticky bottom-0 lg:flex lg:flex-col lg:justify-end lg:flex-grow p-0 lg:p-4 bg-transparent lg:bg-neutral-50"

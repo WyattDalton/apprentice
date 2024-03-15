@@ -6,7 +6,7 @@ import { IoSchool } from "react-icons/io5";
 
 import Intention from './settings/Intention';
 import ContentType from './settings/ContentType';
-import Tone from './settings/Tone';
+import Style from './settings/Style';
 import Formula from './settings/Formula';
 import Details from './settings/Details';
 import Length from './settings/Length';
@@ -15,7 +15,7 @@ import Length from './settings/Length';
 type GeneratorSettingsProps = {
 	handleSetGeneratorSettings: (settings: any) => void;
 	generatorSettings: any;
-	toneLibrary: any[];
+	styleLibrary: any[];
 	formulaLibrary: any[];
 	className?: string | '';
 };
@@ -23,14 +23,14 @@ type GeneratorSettingsProps = {
 function GeneratorSettings({
 	handleSetGeneratorSettings,
 	generatorSettings,
-	toneLibrary,
+	styleLibrary,
 	formulaLibrary,
 	className
 }: GeneratorSettingsProps) {
 
 	const [enabled, setEnabled] = useState(generatorSettings.enabled || false);
 	const [contentType, setContentType] = useState(generatorSettings.contentType || '');
-	const [tone, setTone] = useState(generatorSettings.tone || '');
+	const [style, setStyle] = useState(generatorSettings.style || '');
 	const [intention, setIntention] = useState(generatorSettings.intention || '');
 	const [length, setLength] = useState(generatorSettings.length || 0);
 	const [formula, setFormula] = useState(generatorSettings.formula || '');
@@ -41,12 +41,12 @@ function GeneratorSettings({
 
 
 	useEffect(() => {
-		!!contentType || !!tone || !!intention || !!length || !!formula || !!details || !!useSources ? setEnabled(true) : setEnabled(false);
+		!!contentType || !!style || !!intention || !!length || !!formula || !!details || !!useSources ? setEnabled(true) : setEnabled(false);
 
 		handleSetGeneratorSettings({
 			enabled,
 			contentType,
-			tone,
+			style,
 			intention,
 			length,
 			details,
@@ -55,7 +55,7 @@ function GeneratorSettings({
 		});
 	}, [
 		contentType,
-		tone,
+		style,
 		intention,
 		length,
 		details,
@@ -109,10 +109,10 @@ function GeneratorSettings({
 				setSettingFocus={setSettingFocus}
 			/>
 
-			<Tone
-				tone={tone}
-				setTone={setTone}
-				toneLibrary={toneLibrary}
+			<Style
+				style={style}
+				setStyle={setStyle}
+				styleLibrary={styleLibrary}
 				settingFocus={settingFocus}
 				setSettingFocus={setSettingFocus}
 			/>

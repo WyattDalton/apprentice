@@ -1,12 +1,11 @@
 "use server"
 import { getMongoDB } from '@/utils/getMongo';
-import { Configuration, OpenAIApi } from "openai";
 import { ObjectId } from 'mongodb';
-const configuration = new Configuration({
+import OpenAI from "openai";
+const openAIApi = new OpenAI({
 	organization: "org-B0x5nwrSR31e5bkeQuwEKeyY",
 	apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
 
 const mammoth = require("mammoth");
 const pdfParse = require('pdf-parse');
@@ -47,11 +46,11 @@ async function createChunks(text: string) {
 async function getEmbedding(chunk: string, title: string, index: number) {
 	"use server"
 	try {
-		const embeddingResponse = await openai.createEmbedding({
+		const embeddingResponse = await openAIApi.embeddings.create({
 			model: `${process.env.SMALL_EMBEDDING_MODEL}`,
 			input: chunk,
 		});
-		const embedding = embeddingResponse.data.data[0].embedding;
+		const embedding = embeddingResponse.data[0].embedding;
 		return {
 			content: chunk,
 			title: `${title}-${index}`,

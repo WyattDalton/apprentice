@@ -23,10 +23,11 @@ type GeneratorActionsProps = {
     changeActivePanel: any;
     scrollToBottom: any;
     sources: any[];
-    toneLibrary: any[];
+    styleLibrary: any[];
     formulaLibrary: any[];
     saveThread: any;
     getTitle: any;
+    processPrompt: any;
 };
 
 const GeneratorActions = ({
@@ -44,16 +45,17 @@ const GeneratorActions = ({
     changeActivePanel,
     scrollToBottom,
     sources,
-    toneLibrary,
+    styleLibrary,
     formulaLibrary,
     saveThread,
     getTitle,
+    processPrompt
 }: GeneratorActionsProps) => {
 
     /* * * * * * * * * * * * * * * * * * * */
     /* Init state for generator actions
     /* * * * * * * * * * * * * * * * * * * */
-    const searchBarRef = useRef({} as any);
+    const user_prompt_ref = useRef({} as any);
     const [lastUserMessageIndex, setLastUserMessageIndex] = useState<number>(0);
     const [generatorError, setGeneratorError] = useState<any>(false);
 
@@ -63,7 +65,6 @@ const GeneratorActions = ({
     const preserveThread = async (payload: any) => {
         try {
             const data = await saveThread(payload);
-            console.log('save thread data: ', data);
             if (generation != data._id && window.location.pathname !== `/g/${generation}`) {
                 setGeneration(await data._id);
                 window.history.pushState({ page: 1 }, data.initial_prompt, `/g/${data._id}`);
@@ -77,8 +78,6 @@ const GeneratorActions = ({
     const handleGetTitle = async (messages: any, generation: any) => {
         try {
             const data = await getTitle(messages, generation);
-            console.log('title data: ', data);
-
             if (!!data.title) {
                 setMeta({ ...meta, title: data.title });
             }
@@ -90,18 +89,20 @@ const GeneratorActions = ({
     /* * * * * * * * * * * * * * * * * */
     /* Generate a response to the prompt
     /* * * * * * * * * * * * * * * * * */
+    const handleProcessPrompt = async () => {
+        try {
+            await processPrompt(input);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
         api: '/api/generate',
-        onResponse: async (res) => {
-            changeActivePanel('manual', false);
-            scrollToBottom('action');
-        },
-        onFinish: async (res) => {
-        },
         onError: async (err) => {
             setGeneratorError('Something went wrong. Please try again.')
         },
-        body: { settings, sources, toneLibrary, formulaLibrary },
+        body: { settings, sources, styleLibrary, formulaLibrary },
         initialMessages: conversation,
     })
 
@@ -109,13 +110,13 @@ const GeneratorActions = ({
     /* Adjust textarea height and width as user types
     /* * * * * * * * * * * * * * * * * * * */
     useEffect(() => {
-        if (searchBarRef.current) {
-            const field = searchBarRef.current as any;
+        if (user_prompt_ref.current) {
+            const field = user_prompt_ref.current as any;
             field.style.height = '0px';
             const scrollHeight = field.scrollHeight;
             field.style.height = scrollHeight + 'px';
         }
-    }, [searchBarRef, input]);
+    }, [user_prompt_ref, input]);
 
     /* * * * * * * * * * * * * * * * * * * */
     /* Handle conversation change
@@ -127,19 +128,22 @@ const GeneratorActions = ({
         scrollToBottom('content');
     }, [messages])
 
+
+
     /* * * * * * * * * * * * * * * * * * * */
     /* Handle current response change
     /* * * * * * * * * * * * * * * * * * * */
     useEffect(() => {
+
         if (isLoading && !!messages.length) {
             try {
                 const firstUserMessage = messages.find((message) => message.role === 'user');
                 const lastUserMessageIndex = messages.map((message) => message.role).lastIndexOf('user');
                 if (!!settings.enabled) {
 
-                    if (!!settings.tone) {
-                        const tone = toneLibrary.find((tone) => tone._id.toString() === settings.tone);
-                        settings.tone = tone.title;
+                    if (!!settings.style) {
+                        const style = styleLibrary.find((style) => style._id.toString() === settings.style);
+                        settings.style = style.title;
                     }
                     if (!!settings.formula) {
                         const formula = formulaLibrary.find((formula) => formula._id.toString() === settings.formula);
@@ -200,22 +204,6 @@ const GeneratorActions = ({
         }
     }, [isLoading])
 
-    /* * * * * * * * * * * * * * * * * * * */
-    /* Handle save thread to database
-    /* * * * * * * * * * * * * * * * * * * */
-    const handleSaveThread = async () => {
-        try {
-            setSaved(!saved)
-            const firstUserMessage = messages.find((message) => message.role === 'user');
-            const payload = {
-                "_id": generation,
-                "saved": saved.toString(),
-            }
-            saveThread(payload);
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     /* * * * * * * * * * * * * * * * * * * */
     /* Render Generator Actions
@@ -229,6 +217,7 @@ const GeneratorActions = ({
                 onSubmit={(e) => {
                     if (!!input) {
                         handleSubmit(e)
+                        handleProcessPrompt();
                     } else {
                         e.preventDefault();
                         setGeneratorError('Please enter your instructions.')
@@ -243,7 +232,8 @@ const GeneratorActions = ({
                         if (!!input) {
                             // trigger submit
                             e.preventDefault();
-                            handleSubmit(e);
+                            // handleSubmit(e);
+                            handleProcessPrompt();
                         } else {
                             e.preventDefault();
                             setGeneratorError('Please enter your instructions.')
@@ -254,6 +244,8 @@ const GeneratorActions = ({
                     }
                 }}
             >
+
+                {/* Error display */}
                 <Transition
                     show={!!generatorError}
                     enter="transition-opacity duration-300"
@@ -273,55 +265,35 @@ const GeneratorActions = ({
                         </span>
                     </div>
                 </Transition>
-                <textarea
-                    className={`block w-full outline-none break-words p-4 resize-none bg-gray-200 rounded-md transition-all transition-300}`}
-                    placeholder="Enter your instructions..."
-                    name="prompt"
-                    rows={1}
-                    value={input}
-                    ref={searchBarRef}
-                    onChange={
-                        handleInputChange
-                    }
-                ></textarea>
 
-                <div className="flex gap-2">
+
+                <div className="flex gap-2 items-center">
+                    {/* User prompt input */}
+                    <textarea
+                        className={`block w-full outline-none break-words p-4 resize-none bg-gray-200 rounded-md transition-all transition-300}`}
+                        placeholder="Enter your instructions..."
+                        name="prompt"
+                        rows={1}
+                        value={input}
+                        ref={user_prompt_ref}
+                        onChange={handleInputChange}
+                    ></textarea>
+
+                    {/* Submit button */}
                     <button
-                        className={'panel-switch group flex flex-col justify-center items-center gap-2 p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
-                        onClick={(e) => changeActivePanel(e, 'settings')}
-                        data-active="false"
+                        className="ml-auto"
+                        type="submit"
                     >
-                        <span className="icon w-6 aspect-square flex justify-center items-center rounded-xl">
-                            <SettingsIcon className={'h-6 w-6'} />
-                        </span>
-                    </button>
-
-                    {!!generation && (
-                        <button
-                            className={'panel-switch group flex flex-col justify-center items-center gap-2 p-2 rounded-xl text-sm font-bold text-gray-500 data-[active=true]:bg-gray-200 data-[active=true]:text-gray-600'}
-                            onClick={(e) => changeActivePanel(e, 'info')}
-                            data-active="false"
-                        >
-                            <span className="icon w-6 aspect-square flex justify-center items-center rounded-xl">
-                                <InfoIcon className="h-6 w-6" />
+                        {isLoading ? (
+                            <LoadingText text="Loading" className={""} iconClassName={""} />
+                        ) : (
+                            <span className="flex gap-2 items-center border border-gray-700 rounded-md bg-gray-700 text-white p-2 ml-auto lg:px-6 lg:py-2 lg:mt-auto">
+                                <span className="hidden">Generate</span>
+                                <GeneratorArrowIcon className="h-4 w-4 inline-block" />
                             </span>
-                        </button>
-                    )}
+                        )}
+                    </button>
                 </div>
-
-                <button
-                    className="ml-auto"
-                    type="submit"
-                >
-                    {isLoading ? (
-                        <LoadingText text="Loading" className={""} iconClassName={""} />
-                    ) : (
-                        <span className="flex gap-2 items-center border border-gray-700 rounded-md bg-gray-700 text-white p-2 ml-auto lg:px-6 lg:py-2 lg:mt-auto">
-                            <span className="hidden lg:inline-block">Generate</span>
-                            <GeneratorArrowIcon className="h-4 w-4 inline-block" />
-                        </span>
-                    )}
-                </button>
 
             </form >
         </>

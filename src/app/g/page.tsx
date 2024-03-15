@@ -7,24 +7,27 @@ import { fetchThreads } from "@/app/_actions/_threads/fetchThreads";
 import { getTitle } from "@/app/_actions/_threads/getTitle";
 import { saveThread } from "@/app/_actions/_threads/saveThread";
 import { updateThread } from "@/app/_actions/_threads/updatethread";
-import { fetchTones } from "@/app/_actions/_tones/fetchTones";
+import { fetchStyles } from "@/app/_actions/_styles/fetchStyles";
+import { retrieveSources } from "@/app/_actions/_generator/retrieveSources";
+import { retrievePromptEmbedding } from "@/app/_actions/_generator/retrievePromptEmbedding";
 import Generator from "@/app/g/_components/Generator";
 
 /**
  * Renders the Page component.
- * Fetches threads, tones, formulas, and sources asynchronously.
+ * Fetches threads, styles, formulas, and sources asynchronously.
  * Passes the fetched data and other functions as props to the Generator component.
  * @returns The rendered Generator component.
  */
 export default async function Page() {
+
     const threads = await fetchThreads();
-    const tones = await fetchTones();
+    const styles = await fetchStyles();
     const formulas = await fetchFormulas();
     const sources = await fetchSources();
 
     return <Generator
         threadsData={threads || []}
-        tonesData={tones || []}
+        stylesData={styles || []}
         formulasData={formulas || []}
         sources={sources || []}
         fetchMetaData={fetchMetaData}
@@ -32,5 +35,7 @@ export default async function Page() {
         getTitle={getTitle}
         updateThread={updateThread}
         deleteThread={deleteThread}
+        retrieveSources={retrieveSources}
+        retrievePromptEmbedding={retrievePromptEmbedding}
     />
 }

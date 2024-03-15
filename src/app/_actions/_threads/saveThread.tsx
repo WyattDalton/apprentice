@@ -12,14 +12,26 @@ export async function saveThread(data: any) {
     try {
         const db = await getMongoDB() as any;
         const threads = db.collection("threads");
-        const initial_prompt = data.initial_prompt ? data.initial_prompt : null;
+
+        // ### 
+        // ### Dynamic data
         const saved = data.saved ? data.saved : null;
         const messages = data.messages ? data.messages : null;
+        const genThreads = data.threads ? data.threads : null;
+
+        // ###
+        // ### Init setup data
+        const initial_prompt = data.initial_prompt ? data.initial_prompt : null;
         const created = data.created ? data.created : null;
         const _id = !!data._id ? new ObjectId(data._id) : null;
+
+        // ###
+        // ### Init payload
         const payload = {} as any;
         if (!!saved) saved == 'true' ? payload['saved'] = true : payload['saved'] = false;
         if (!!messages) payload['messages'] = messages;
+        if (!!genThreads) payload['threads'] = genThreads;
+
         if (!!_id) {
             const response = await threads.updateOne(
                 { _id: _id }, // filter

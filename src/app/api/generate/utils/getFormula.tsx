@@ -9,7 +9,6 @@ export async function templatize(_id: any, formulaLibrary: any) {
         if (!t) {
             return { "success": false, "message": "Formula not found!" };
         }
-        console.log("Formula found: ", t);
 
         // Get template from formula object
         let formulaString = t.formula;
@@ -43,23 +42,6 @@ export async function templatize(_id: any, formulaLibrary: any) {
 
             returnString += formatted_instruction;
         });
-
-        // for (const instruction of instructions) {
-        //     const instruction_title = instruction.title;
-        //     const instruction_content = instruction.instruction;
-        //     const example_list = instruction.examples || [];
-
-        //     // Format instruction with examples (if available)
-        //     let formatted_instruction = "";
-        //     if (example_list.length) {
-        //         formatted_instruction = `<(${instruction_content} -- ${example_list.map((example: any) => `<example: ${example}>`).join(" ")})>`;
-        //     } else {
-        //         formatted_instruction = `<(${instruction_content})>`;
-        //     }
-
-        //     // Replace template substring with formatted instruction
-        //     formulaString = formulaString.replace(`<${instruction_title}>`, formatted_instruction);
-        // }
 
         return { "templatizedMessage": returnString, "instructions": instructions };
     } catch (error) {

@@ -10,7 +10,7 @@ type ViewTableProps = {
     headerData?: any | [];
 }
 
-export default function ViewTable(
+export default async function ViewTable(
     { viewTitle, addItem, deleteItem, editItem, data, headerData }: ViewTableProps
 ) {
 

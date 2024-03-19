@@ -2,7 +2,7 @@
 
 import ThreadsList from "@/components/_ui/ThreadsList";
 import { fetchThreads } from "../_actions/_threads/fetchThreads";
-import ViewTable from "@/components/_ui/viewTable";
+import ViewTable from "@/components/_ui/ViewTable";
 
 /**
  * Renders the page component for displaying threads.

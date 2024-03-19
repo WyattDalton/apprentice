@@ -22,7 +22,6 @@ import LoadingText from "@/components/_elements/LoadingText";
 import GeneratorContentSkeleton from "../[id]/_components/GeneratorContentSkeleton";
 import { head, set } from "lodash";
 import LoadingSpinner from "@/components/_elements/LoadingSpinner";
-import handleThinkAbout from "./knot_components/handleThinkAbout";
 
 // ### Generator Prop types
 type GeneratorProps = {

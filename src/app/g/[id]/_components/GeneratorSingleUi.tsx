@@ -26,7 +26,6 @@ export default function Page({ messagesData, generationId, savedData, threads, s
         stylesData={styles}
         formulasData={formulas}
         sources={sources}
-        metaData={meta}
         fetchMetaData={fetchMetaData}
         saveThread={saveThread}
     />;

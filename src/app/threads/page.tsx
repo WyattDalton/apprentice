@@ -2,6 +2,7 @@
 
 import ThreadsList from "@/components/_ui/ThreadsList";
 import { fetchThreads } from "../_actions/_threads/fetchThreads";
+import ViewTable from "@/components/_ui/viewTable";
 
 /**
  * Renders the page component for displaying threads.
@@ -10,6 +11,19 @@ import { fetchThreads } from "../_actions/_threads/fetchThreads";
 export default async function Page() {
     const threads = await fetchThreads();
     return (
-        <ThreadsList threads={threads} deleteThread={undefined} />
+
+        <>
+
+
+            <ViewTable
+                viewTitle="Threads"
+                addItem={undefined}
+                deleteItem={undefined}
+                editItem={undefined}
+                data={threads}
+            />
+
+            <ThreadsList threads={threads} deleteThread={undefined} />
+        </>
     )
 }

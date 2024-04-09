@@ -9,17 +9,14 @@ import { ObjectId } from 'mongodb';
 */
 export async function deleteThread(data: any) {
     "use server"
+    const db = await getMongoDB() as any;
     try {
-        const { _id } = data;
-        const db = await getMongoDB('threads') as any;
-        const collection = db.collection('threads');
-        const deleteThread = await collection.deleteOne({ _id: new ObjectId(_id) });
-        const threads = await collection.find({}).sort({ created: -1 }).toArray();
-
-        const cleanThreads = threads.map(({ _id, ...rest }: any) => ({ _id: _id.toString(), ...rest }));
+        const threadToDelete = await db.collection('threads').deleteOne({ _id: new ObjectId(data._id) });
+        const threads = await db.collection('threads').find({}).sort({ created: -1 }).toArray();
+        const cleanThreads = threads.map(({ _id, ...rest }: any) => ({ _id: _id.toString(), ...rest })) as any;
         return {
             'success': true,
-            'threads': cleanThreads,
+            'data': cleanThreads,
         };
     } catch (error) {
         return {

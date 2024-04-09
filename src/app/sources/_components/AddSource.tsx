@@ -1,24 +1,20 @@
 'use client'
 
-import { useState, useRef } from "react";
+import { useState, useRef, Fragment } from "react";
 import Card from "@/components/_ui/Card";
-import { Tab, Transition } from "@headlessui/react";
+import { Dialog, Tab, Transition } from "@headlessui/react";
 import LoadingText from "@/components/_elements/LoadingText";
+import { PlusIcon } from "@/components/_elements/icons";
+
+import { addUrl, processHtmlFromUrl, fetchHtmlFromUrl } from "@/app/_actions/_sources/addUrl";
+import { addRaw } from "@/app/_actions/_sources/addRaw";
+import { addFile } from "@/app/_actions/_sources/addFile";
+import { useRouter } from "next/navigation";
 
 
 
-type AddSourceProps = {
-    setUpdating: any,
-    setSourcesData: any,
-    sourcesData: any,
-    fetchHtmlFromUrl: any,
-    processHtmlFromUrl: any,
-    addUrl: any,
-    addFile: any,
-    addRaw: any
-}
-
-function AddSource({ setUpdating, setSourcesData, sourcesData, addUrl, processHtmlFromUrl, fetchHtmlFromUrl, addFile, addRaw }: AddSourceProps) {
+function AddSource() {
+    const router = useRouter();
 
     const [loading, setLoading] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState("");
@@ -31,7 +27,14 @@ function AddSource({ setUpdating, setSourcesData, sourcesData, addUrl, processHt
     const [rawName, setRawName] = useState("");
     const [rawText, setRawText] = useState("");
 
+    const [openModal, setOpenModal] = useState(false);
 
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    }
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    }
 
 
     /**
@@ -42,7 +45,7 @@ function AddSource({ setUpdating, setSourcesData, sourcesData, addUrl, processHt
         e.preventDefault();
         try {
             setLoading(true);
-            const data = await addRaw({ "name": rawName, "text": rawText });
+            const data = await addRaw({ "name": rawName, "text": rawText }) as any;
             if (!data.success) {
                 setError('Failed to add raw text to sources');
                 setLoading(false);
@@ -57,9 +60,8 @@ function AddSource({ setUpdating, setSourcesData, sourcesData, addUrl, processHt
 
             // ###
             // ### Update sources with new source
-            const newSource = data.source;
-            const newSourcesData = [newSource, ...sourcesData];
-            setSourcesData(newSourcesData);
+            router.refresh();
+            handleCloseModal();
 
         } catch (error) {
             console.error(error);
@@ -139,9 +141,9 @@ function AddSource({ setUpdating, setSourcesData, sourcesData, addUrl, processHt
 
             // ###
             // ### Update sources with new source
-            const newSource = await data.source;
-            const newSourcesData = [newSource, ...sourcesData];
-            setSourcesData(newSourcesData);
+            router.refresh();
+            handleCloseModal();
+
         } catch (error) {
             console.error(error);
         }
@@ -221,8 +223,8 @@ function AddSource({ setUpdating, setSourcesData, sourcesData, addUrl, processHt
 
             // ###
             // ### Update sources with new source
-            const newSourcesData = [newSource.source, ...sourcesData];
-            setSourcesData(newSourcesData);
+            router.refresh();
+            handleCloseModal();
 
         } catch (error) {
             setError("Failed to add url to sources");
@@ -234,125 +236,168 @@ function AddSource({ setUpdating, setSourcesData, sourcesData, addUrl, processHt
 
 
     return (
-        <Card className="w-full">
-            <Tab.Group>
-                <div className="flex flex-col md:flex-row gap-2 items-center justify-between mb-2 mx-auto">
-                    <h2 className="m-0">Add a Source</h2>
-                    <Tab.List className="flex bg-gray-100 px-4 py-2 rounded-full gap-2">
-                        <Tab className="ui-selected:bg-gray-700 px-4 py-2 rounded-full text-gray-500 ui-selected:text-white">Raw Text</Tab>
-                        <Tab className="ui-selected:bg-gray-700 px-4 py-2 rounded-full text-gray-500 ui-selected:text-white">Files</Tab>
-                        <Tab className="ui-selected:bg-gray-700 px-4 py-2 rounded-full text-gray-500 ui-selected:text-white">Urls</Tab>
-                    </Tab.List>
-                </div>
-                <Tab.Panels>
-                    <Tab.Panel>
-                        <div
-                            className="flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 p-4 rounded-md"
-                            onSubmit={(e) => handelRawSubmit(e)}
-                        >
-                            <form className="flex flex-col gap-4 prose w-full">
-                                <input
-                                    className="px-2 py-1 text-2xl font-bold rounded-md bg-neutral-50"
-                                    type="text"
-                                    placeholder="Title"
-                                    value={rawName}
-                                    onChange={(e) => {
-                                        setRawName(e.target.value);
-                                    }}
-                                />
-                                <textarea
-                                    ref={textareaRef}
-                                    className="px-2 py-1 grow rounded-md resize-none  bg-neutral-50"
-                                    placeholder="Content"
-                                    value={rawText}
-                                    onChange={(e) => {
-                                        setRawText(e.target.value);
-
-                                        // Adjust textarea height to fit content
-                                        if (textareaRef.current) {
-                                            const field = textareaRef.current;
-                                            field.style.height = "0px";
-                                            const scrollHeight = field.scrollHeight;
-                                            field.style.height = scrollHeight + "px";
-                                        }
-                                    }}
-                                />
-                                <button type="submit" className="px-4 py-2 text-white bg-gray-700 rounded-md">Add Raw Text to Sources</button>
-                            </form>
-
-                            <Transition
-                                show={loading}
-                                enter="transition-opacity duration-300"
-                                enterFrom="opacity-0"
-                                enterTo="opacity-100"
-                                leave="transition-opacity duration-300"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
+        <>
+            <Transition appear show={openModal} as={Fragment}>
+                <Dialog as="div" className="relative z-50" onClose={handleCloseModal}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-black/25" />
+                    </Transition.Child>
+                    <div className="fixed inset-0 overflow-y-auto">
+                        <div className="flex min-h-full items-center justify-center p-4 text-center">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 scale-95"
+                                enterTo="opacity-100 scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 scale-100"
+                                leaveTo="opacity-0 scale-95"
                             >
-                                <LoadingText text={"Adding content to sources"} className={""} iconClassName={""} />
-                            </Transition>
-                        </div>
-                    </Tab.Panel>
-                    <Tab.Panel>
-                        <div
-                            className="flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 p-4 rounded-md"
-                            onDragOver={handleDragOver}
-                            onDrop={handleDrop}
-                        >
-                            <div className="flex flex-col items-center justify-center w-full h-full">
-                                <p className="text-gray-500">Drag and drop a file here</p>
-                                <p className="text-gray-500">or</p>
-                                <button
-                                    className="px-4 py-2 text-white bg-gray-700 rounded-md"
-                                    onClick={() => fileInputRef.current!.click()}
-                                >
-                                    Select a file
-                                </button>
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    style={{ display: "none" }}
-                                    onChange={handleFileChange}
-                                    multiple
-                                />
-                            </div>
+                                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                                    <Dialog.Title
+                                        as="h3"
+                                        className="text-lg font-medium leading-6 text-gray-900"
+                                    >
+                                        Add a source
+                                    </Dialog.Title>
 
-                            <Transition
-                                show={loading}
-                                enter="transition-opacity duration-300"
-                                enterFrom="opacity-0"
-                                enterTo="opacity-100"
-                                leave="transition-opacity duration-300"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
-                            >
-                                <LoadingText text="Adding content to sources" className={""} iconClassName={""} />
-                            </Transition>
-                        </div>
-                    </Tab.Panel>
-                    <Tab.Panel>
-                        <div
-                            className="flex flex-col gap-4 p-4 items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 p-4 rounded-md"
-                        >
-                            <input type="text" className="w-full rounded-md bg-gray-100 px-4 py-2" value={url} onChange={(e) => setUrl(e.target.value)} />
 
-                            <button onClick={() => onSubmitUrl(url)} className="px-4 py-2 text-white bg-gray-700 rounded-md">Add URL to Sources</button>
-                            <Transition
-                                show={loading}
-                                enter="transition-opacity duration-300"
-                                enterFrom="opacity-0"
-                                enterTo="opacity-100"
-                                leave="transition-opacity duration-300"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
-                            >
-                                {!!error ? (<span>{error}</span>) : <LoadingText text={loadingMessage} className={""} iconClassName={""} />}
-                            </Transition>
+                                    <Tab.Group>
+                                        <div className="flex flex-col md:flex-row gap-2 items-center justify-between mb-2 mx-auto">
+                                            <h2 className="m-0">Add a Source</h2>
+                                            <Tab.List className="flex bg-gray-100 px-4 py-2 rounded-full gap-2">
+                                                <Tab className="ui-selected:bg-gray-700 px-4 py-2 rounded-full text-gray-500 ui-selected:text-white">Raw Text</Tab>
+                                                <Tab className="ui-selected:bg-gray-700 px-4 py-2 rounded-full text-gray-500 ui-selected:text-white">Files</Tab>
+                                                <Tab className="ui-selected:bg-gray-700 px-4 py-2 rounded-full text-gray-500 ui-selected:text-white">Urls</Tab>
+                                            </Tab.List>
+                                        </div>
+                                        <Tab.Panels>
+                                            <Tab.Panel>
+                                                <div
+                                                    className="flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 p-4 rounded-md"
+                                                    onSubmit={(e) => handelRawSubmit(e)}
+                                                >
+                                                    <form className="flex flex-col gap-4 prose w-full">
+                                                        <input
+                                                            className="px-2 py-1 text-2xl font-bold rounded-md bg-neutral-50"
+                                                            type="text"
+                                                            placeholder="Title"
+                                                            value={rawName}
+                                                            onChange={(e) => {
+                                                                setRawName(e.target.value);
+                                                            }}
+                                                        />
+                                                        <textarea
+                                                            ref={textareaRef}
+                                                            className="px-2 py-1 grow rounded-md resize-none  bg-neutral-50"
+                                                            placeholder="Content"
+                                                            value={rawText}
+                                                            onChange={(e) => {
+                                                                setRawText(e.target.value);
+
+                                                                // Adjust textarea height to fit content
+                                                                if (textareaRef.current) {
+                                                                    const field = textareaRef.current;
+                                                                    field.style.height = "0px";
+                                                                    const scrollHeight = field.scrollHeight;
+                                                                    field.style.height = scrollHeight + "px";
+                                                                }
+                                                            }}
+                                                        />
+                                                        <button type="submit" className="px-4 py-2 text-white bg-gray-700 rounded-md">Add Raw Text to Sources</button>
+                                                    </form>
+
+                                                    <Transition
+                                                        show={loading}
+                                                        enter="transition-opacity duration-300"
+                                                        enterFrom="opacity-0"
+                                                        enterTo="opacity-100"
+                                                        leave="transition-opacity duration-300"
+                                                        leaveFrom="opacity-100"
+                                                        leaveTo="opacity-0"
+                                                    >
+                                                        <LoadingText text={"Adding content to sources"} className={""} iconClassName={""} />
+                                                    </Transition>
+                                                </div>
+                                            </Tab.Panel>
+                                            <Tab.Panel>
+                                                <div
+                                                    className="flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 p-4 rounded-md"
+                                                    onDragOver={handleDragOver}
+                                                    onDrop={handleDrop}
+                                                >
+                                                    <div className="flex flex-col items-center justify-center w-full h-full">
+                                                        <p className="text-gray-500">Drag and drop a file here</p>
+                                                        <p className="text-gray-500">or</p>
+                                                        <button
+                                                            className="px-4 py-2 text-white bg-gray-700 rounded-md"
+                                                            onClick={() => fileInputRef.current!.click()}
+                                                        >
+                                                            Select a file
+                                                        </button>
+                                                        <input
+                                                            type="file"
+                                                            ref={fileInputRef}
+                                                            style={{ display: "none" }}
+                                                            onChange={handleFileChange}
+                                                            multiple
+                                                        />
+                                                    </div>
+
+                                                    <Transition
+                                                        show={loading}
+                                                        enter="transition-opacity duration-300"
+                                                        enterFrom="opacity-0"
+                                                        enterTo="opacity-100"
+                                                        leave="transition-opacity duration-300"
+                                                        leaveFrom="opacity-100"
+                                                        leaveTo="opacity-0"
+                                                    >
+                                                        <LoadingText text="Adding content to sources" className={""} iconClassName={""} />
+                                                    </Transition>
+                                                </div>
+                                            </Tab.Panel>
+                                            <Tab.Panel>
+                                                <div
+                                                    className="flex flex-col gap-4 p-4 items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 p-4 rounded-md"
+                                                >
+                                                    <input type="text" className="w-full rounded-md bg-gray-100 px-4 py-2" value={url} onChange={(e) => setUrl(e.target.value)} />
+
+                                                    <button onClick={() => onSubmitUrl(url)} className="px-4 py-2 text-white bg-gray-700 rounded-md">Add URL to Sources</button>
+                                                    <Transition
+                                                        show={loading}
+                                                        enter="transition-opacity duration-300"
+                                                        enterFrom="opacity-0"
+                                                        enterTo="opacity-100"
+                                                        leave="transition-opacity duration-300"
+                                                        leaveFrom="opacity-100"
+                                                        leaveTo="opacity-0"
+                                                    >
+                                                        {!!error ? (<span>{error}</span>) : <LoadingText text={loadingMessage} className={""} iconClassName={""} />}
+                                                    </Transition>
+                                                </div>
+                                            </Tab.Panel>
+                                        </Tab.Panels>
+                                    </Tab.Group>
+
+
+                                </Dialog.Panel>
+                            </Transition.Child>
                         </div>
-                    </Tab.Panel>
-                </Tab.Panels>
-            </Tab.Group>
-        </Card>
+                    </div>
+                </Dialog>
+            </Transition>
+            <button onClick={handleOpenModal} className="px-4 py-1 text-gray-700 border border-gray-700 rounded-full flex gap-2 justify-center items-center"><PlusIcon className={'w-4 h-4 text-gray-700'} /> Add</button>
+        </>
+
     );
 }
 

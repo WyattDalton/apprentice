@@ -1,32 +1,26 @@
 'use client'
 
-import Card from "@/components/_ui/Card";
-import { type } from "os";
+import createFormula from '@/app/_actions/_formulas/createFormula';
+import { PlusIcon } from '@/components/_elements/icons';
+import { useRouter } from 'next/navigation'
 
-type Props = {
-    handleAddFormula: any;
-    type: string;
-}
 
-function AddFormula({ handleAddFormula, type }: Props) {
+export default async function AddFormula() {
+    const router = useRouter();
+
+    const handleAddFormula = async () => {
+        const rawNewFormula = {
+            title: '',
+            instructions: [],
+            formula: '',
+        }
+        const newFormula = await createFormula(rawNewFormula);
+        if (newFormula.success) {
+            router.push(`/formulas/${newFormula.formula}`);
+        }
+    }
 
     return (
-        <Card className="w-full">
-
-            <div className="flex flex-col gap-2 items-center justify-center mb-2 prose mx-auto">
-                <h2 className="m-0">Add a Formula</h2>
-                <div className="flex flex-col items-center justify-center w-full h-full">
-                    <button
-                        className="px-4 py-2 text-white bg-gray-700 rounded-md"
-                        onClick={handleAddFormula}
-                    >
-                        Add a formula
-                    </button>
-                </div>
-
-            </div>
-        </Card>
+        <button onClick={(e) => handleAddFormula()} className="px-4 py-1 text-gray-700 border border-gray-700 rounded-full flex gap-2 justify-center items-center"><PlusIcon className={'w-4 h-4 text-gray-700'} /> Add</button>
     );
 }
-
-export default AddFormula;

@@ -2,31 +2,32 @@
 
 import { getMongoDB } from '@/utils/getMongo';
 import FormulasUi from './_components/FormulasUi';
+import ViewTable from '@/components/_ui/ViewTable';
+import { deleteFormula } from '@/app/_actions/_formulas/deleteFormula';
+import { fetchFormulas } from '@/app/_actions/_formulas/fetchFormulas';
+import structureTheData from './_structureTheData';
+import AddFormula from './_components/AddFormula';
 
 
 export default async function FormulaLibrary() {
-    /* * * * * * * * ** * * * * * * *
-    /* Get all formulas on load
-    /* * * * * * * * ** * * * * * * */
-    const fetchFormulas = async () => {
-        'use server'
-        try {
-            const db = await getMongoDB() as any;
-            const formulas = await db.collection("formulas").find({}).toArray();
-            const cleanFormulas = formulas.map(({ _id, ...rest }: any) => ({ _id: _id.toString(), ...rest }));
-            return cleanFormulas;
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }
 
     const formulas = await fetchFormulas();
+    const tableData = await structureTheData(formulas);
 
     /* * * * * * * * ** * * * * * * *
     /* Render
     /* * * * * * * * ** * * * * * * */
     return (
-        <FormulasUi formulasData={formulas} />
+        <>
+            <ViewTable
+                viewTitle={'Formulas'}
+                addItem={<AddFormula />}
+                deleteItem={deleteFormula}
+                data={tableData.body}
+                headers={tableData.headers}
+                viewItemRoutePrefix={'/formulas'}
+                structureTheData={structureTheData}
+            />
+        </>
     );
 }

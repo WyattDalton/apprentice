@@ -392,17 +392,17 @@ export async function fetchSources() {
  */
 export async function deleteSource(id: any) {
 	"use server"
+	const db = await getMongoDB() as any;
 	try {
 		const _id = new ObjectId(id);
-		const db = await getMongoDB() as any;
 
 		// delete source by id
-		const deleted = await db.collection("sources").deleteOne({ "_id": _id });
+		const sourceToDelete = await db.collection("sources").deleteOne({ "_id": new ObjectId(id) });
 		const sources = await db.collection("sources").find({}).toArray();
 		const cleanSources = sources.map(({ _id, embeddings, ...rest }: any) => {
 			return { ...rest, _id: _id.toString() };
 		});
-		return { sources: cleanSources, success: true };
+		return { data: cleanSources, success: true };
 	} catch (err) {
 		return { success: false, message: err };
 	}

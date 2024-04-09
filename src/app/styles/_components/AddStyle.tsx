@@ -1,31 +1,35 @@
 'use client'
 
-import Card from "@/components/_ui/Card";
+import { createStyle } from "@/app/_actions/_styles/createStyle";
+import { PlusIcon } from "@/components/_elements/icons";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-type Props = {
-    handleAddStyle: any;
+
+
+/* * * * * * * * ** * * * * * * *
+    /* Add a new style
+    /* * * * * * * * ** * * * * * * */
+const handleAddNewStyle = async (newStyle: any, router: any) => {
+    try {
+        const style = await createStyle(newStyle) as any;
+        router.push(`/styles/${style.insertedId}`);
+    }
+    catch (error) {
+        console.log(error);
+    }
 }
 
-function AddStyle({ handleAddStyle }: Props) {
+function AddStyle() {
+    const router = useRouter();
+    const [newStyle, setNewStyle] = useState({
+        title: '',
+        examples: [],
+        summary: '',
+    });
 
     return (
-        <Card className="w-full">
-
-            <div className="flex flex-col gap-2 items-center justify-center mb-2 prose mx-auto">
-
-                <h2 className="m-0">Add a Style</h2>
-                <p className="text-sm text-gray-500">Adding a style of voice is easy. Just copy and paste a few examples for Apprentice to learn from. We&lsquo;ll take care of the rest.</p>
-                <div className="flex flex-col items-center justify-center w-full h-full">
-                    <button
-                        className="px-4 py-2 text-white bg-gray-700 rounded-md"
-                        onClick={handleAddStyle}
-                    >
-                        Add a Style
-                    </button>
-                </div>
-
-            </div>
-        </Card>
+        <><button onClick={(e) => handleAddNewStyle(newStyle, router)} className="px-4 py-1 text-gray-700 border border-gray-700 rounded-full flex gap-2 justify-center items-center"><PlusIcon className={'w-4 h-4 text-gray-700'} /> Add</button></>
     );
 }
 

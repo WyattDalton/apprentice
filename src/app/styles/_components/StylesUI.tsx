@@ -6,7 +6,7 @@ import AddStyle from './AddStyle';
 import { useRouter } from 'next/navigation';
 import { Dialog, Transition } from '@headlessui/react';
 import LoadingText from '@/components/_elements/LoadingText';
-import { createStyle } from '../_actions';
+import { createStyle } from '@/app/_actions/_styles/createStyle';
 
 type StylesUiProps = {
     stylesSource: any;

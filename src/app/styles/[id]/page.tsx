@@ -1,7 +1,9 @@
 'use server';
 
 import SingleStyleUi from "./_components/SingleStyleUi";
-import { deleteStyle, getStyleData, updateStyle } from "../_actions";
+import { getStyleData } from "@/app/_actions/_styles/getStyleData";
+import { deleteStyle } from "@/app/_actions/_styles/deleteStyle";
+import { updateStyle } from "@/app/_actions/_styles/updateStyle";
 import { getEmbedding, getInstructions, generateBlueprint, generateSample, generateComparison } from "./_actions";
 
 

@@ -1,5 +1,7 @@
 "use server";
+
 import { getMongoDB } from "@/utils/getMongo";
+
 /**
  * Fetches sources from the database.
  * @returns {Promise<Array<Object>>} The array of clean sources.

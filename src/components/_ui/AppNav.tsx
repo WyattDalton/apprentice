@@ -83,12 +83,25 @@ const AppNavigation = ({ views }: AppNavigationProps) => {
 
     return (
         <>
-            <div className='text-dark flex justify-between items-center py-2 px-4 flex-none'>
+
+            <div className='text-dark flex justify-between items-center py-2 px-4 flex-none py-4'>
+                <Transition
+                    show={!mainOpen}
+                    as={"div"}
+                    enter='transition-opacity duration-300'
+                    enterFrom='opacity-0'
+                    enterTo='opacity-100'
+                    leave='transition-opacity duration-300'
+                    leaveFrom='opacity-100'
+                    leaveTo='opacity-0'
+                    unmount={false}
+                >
                 <button onClick={() => {
                     setMainOpen(true)
                 }}>
                     <NavMenuIcon className={'w-6 h-6'} />
                 </button>
+                </Transition>
                 <div className='flex items-center gap-2 ml-auto'>
                     <NotificationIcon className={'w-6 h-6'} />
                     <UserIcon className={'w-6 h-6'} />
@@ -126,10 +139,18 @@ const AppNavigation = ({ views }: AppNavigationProps) => {
             >
                 <div className="w-full min-h-[calc(100%-2rem)] transform overflow-hidden rounded-2xl bg-white p-6 text-left align-start shadow-xl transition-all col-span-12 lg:col-span-3 pointer-events-auto">
                     <AppLogo />
-                    <ThreadsNavItem />
-                    <SourcesNavItem />
-                    <StylesNavItem />
-                    <FormulasNavItem />
+                    <Link href="/threads" prefetch={true} onClick={() => setMainOpen(false)} className="text-shade-500 hover:text-shade-700 flex gap-2 items-center py-3">
+                        <span>Threads</span>
+                    </Link>
+                    <Link href="/sources" prefetch={true} onClick={() => setMainOpen(false)} className="text-shade-500 hover:text-shade-700 flex gap-2 items-center py-3">
+                        <span>Sources</span>
+                    </Link>
+                    <Link href="/styles" prefetch={true} onClick={() => setMainOpen(false)} className="text-shade-500 hover:text-shade-700 flex gap-2 items-center py-3">
+                        <span>Styles</span>
+                    </Link>
+                    <Link href="/formulas" prefetch={true} onClick={() => setMainOpen(false)} className="text-shade-500 hover:text-shade-700 flex gap-2 items-center py-3">
+                        <span>Formulas</span>
+                    </Link>
                 </div>
             </Transition>
         </>

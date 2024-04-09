@@ -1,7 +1,6 @@
 'use server'
 
 import { getMongoDB } from '@/utils/getMongo';
-import FormulasUi from './_components/FormulasUi';
 import ViewTable from '@/components/_ui/ViewTable';
 import { deleteFormula } from '@/app/_actions/_formulas/deleteFormula';
 import { fetchFormulas } from '@/app/_actions/_formulas/fetchFormulas';

@@ -17,26 +17,16 @@ const TextareaAutosize = ({ className, value, onChange, placeholder }: TextareaA
         }
     };
 
-    const handleChange = (e: any) => {
-        onChange(e);
-        handleInput();
-    }
-
     useEffect(() => {
         handleInput();
     }, [value]);
-
-    useEffect(() => {
-        handleInput();
-    }, []);
-
 
     return (
         <textarea
             ref={textareaRef}
             className={className}
             value={value}
-            onChange={handleChange}
+            onChange={(e) => onChange(e.target.value)}
             onInput={handleInput}
             placeholder={placeholder}
             style={{ overflow: 'hidden' }}

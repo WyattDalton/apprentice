@@ -13,15 +13,15 @@ import { Transition } from "@headlessui/react";
 import { useChat } from 'ai/react';
 
 // ### App imports
+import LoadingText from "@/components/_elements/LoadingText";
+import GeneratorInformation from "./GeneratorInformation";
 import GeneratorActions from "./GeneratorActions";
+import { GeneratorGrid } from "@/components/_ui/GeneratorGrid";
 import GeneratorContent from "./GeneratorContent";
 import GeneratorSettings from "./GeneratorSettings";
-import GeneratorInformation from "./GeneratorInformation";
 import { GeneratorArrowIcon, InfoIcon, PlusIcon, SettingsIcon } from "@/components/_elements/icons";
-import LoadingText from "@/components/_elements/LoadingText";
-import GeneratorContentSkeleton from "../[id]/_components/GeneratorContentSkeleton";
-import { head, set } from "lodash";
 import LoadingSpinner from "@/components/_elements/LoadingSpinner";
+import GeneratorGridSkeleton from "@/components/_skeletons/GeneratorGridSkeleton";
 
 // ### Generator Prop types
 type GeneratorProps = {
@@ -159,7 +159,7 @@ export default function Generator({
             // Get sources if sources are requested
             if (!!settings.useSources) {
                 setProgress('Retrieving sources...')
-                const raw_sources = await retrieveSources(promptEmbedding, 0.70, 5);
+                const raw_sources = await retrieveSources(promptEmbedding, 0.50, 5);
                 let knot_sources = !!raw_sources ? raw_sources : null;
                 knotPayload['sources'] = knot_sources;
                 currentThread[knotIndex] = knotPayload;
@@ -507,8 +507,10 @@ export default function Generator({
         <>
             <section className={` relative flex-grow flex flex-col gap-4 p-4`}>
                 <div className="inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:16px_16px] flex flex-col flex-grow px-[5%]">
-                    <div className="flex-grow w-full max-w-[800px] p-4 mx-auto !overflow-visible !mb-0">
-                        <GeneratorContent thread={headThread} className="" />
+                    <div className={`flex-grow w-full max-w-[800px] p-4 mx-auto !overflow-visible !mb-0 flex flex-col${!!threadsData?.headThread || !!headThread.length ? '' : ' place-content-center'}`}>
+                        {!threadsData?.headThread ? (
+                            !headThread.length ? (<GeneratorGrid />) : (<GeneratorContent thread={headThread} className="" />)
+                        ) : (<GeneratorContent thread={headThread} className="" />)}
                     </div>
                 </div>
                 <div className="w-full max-w-[800px] mx-auto flex flex-col gap-4 sticky bottom-0 p-4 z-30">

@@ -1,6 +1,7 @@
+import ViewTableSkeleton from "@/components/_skeletons/ViewTableSkeleton";
 
 export default function Loading() {
     return (
-        <div></div>
+        <ViewTableSkeleton />
     )
 }

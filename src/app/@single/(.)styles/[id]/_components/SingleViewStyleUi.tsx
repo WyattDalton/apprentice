@@ -1,12 +1,9 @@
 'use client';
 
-import { Fragment, useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from 'next/navigation';
-import { Disclosure, Transition } from '@headlessui/react';
 import Examples from "./Examples";
-import LoadingSpinner from "@/components/_elements/LoadingSpinner";
-import Card from "@/components/_ui/Card";
-import { CheckIcon, EditIcon, GeneratorArrowIcon, RefreshIcon } from "@/components/_elements/icons";
+import { CloseIcon, GeneratorArrowIcon, RefreshIcon } from "@/components/_elements/icons";
 import TextareaAutosize from "./TextAreaAutosize";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -27,10 +24,11 @@ type UiProps = {
     generateBlueprint: any,
     generateSample: any,
     updateStyle: any,
-    generateComparison: any
+    generateComparison: any,
+    handleCloseViewModal: any
 }
 
-function SingleStyleUi({
+function SingleViewStyleUi({
     titleData,
     examplesData,
     descriptionData,
@@ -45,10 +43,10 @@ function SingleStyleUi({
     generateBlueprint,
     generateSample,
     updateStyle,
-    generateComparison
+    generateComparison,
+    handleCloseViewModal
 }: UiProps) {
     const router = useRouter();
-    const updateEmbedding = useRef<NodeJS.Timeout | null>(null);
 
     // Style data
     const [title, setTitle] = useState(titleData || 'Default title');
@@ -328,81 +326,8 @@ function SingleStyleUi({
         }
     }
 
-
-    /**
-     * Handles the refinement of a style.
-     * 
-     * @param refinement - The refinement to be applied to the style.
-     * @returns {Promise<void>} - A promise that resolves when the refinement is complete.
-     */
-    const handleRefineSample = async (): Promise<void> => {
-        try {
-
-            setLoading(true);
-            setProgress('Refining style...');
-            if (!refinedSample || refinedSample === sample) {
-                setProgress('No refinement submitted. Change the sample and resubmit.');
-                setTimeout(() => {
-                    setProgress('');
-                    setLoading(false);
-                }, 3000);
-                return;
-            }
-
-            const iterationMessages = iteration;
-            const refinement = refinedSample;
-
-            // ###
-            // ### If an iteration refinement is submitted, have the AI analyze the differences between the sample and the refinement...
-            const comparisionMessage = {
-                "role": "user",
-                "content": `This is how the sample should look in order to mimic the correct style: ${refinement} \n\n Compare the sample you provided to the refinement and describe the differences. How would you change the sample to make it more like the refinement?`
-            }
-            iterationMessages.push(comparisionMessage);
-
-            // ###
-            // ### Then get the comparison
-            const comparisionResponse = await generateComparison(iterationMessages);
-            setStyleRefinementSubmitted(true);
-
-            // ###
-            // ### Set the comparison in the state
-            setRefinedSampleComparison(comparisionResponse);
-
-            // ###
-            // ### Add the comparison to the iteration
-            iterationMessages.push({
-                "role": "assistant",
-                "content": comparisionResponse
-            });
-
-            // ###
-            // ### Generate a new sample
-            setProgress('Generating new sample...');
-            const newSample = await generateSample(
-                { "examples": examples, "bluePrint": bluePrint },
-                'Generate a sample of the style that matches the other examples'
-            );
-
-            setProgress('Done!');
-            setSample(newSample);
-
-            const payload = { "sample": newSample, "iteration": iterationMessages };
-            const data = await updateStyle(id, payload);
-            if (!data.success) throw new Error('Error updating style');
-
-            setLoading(false);
-            setProgress('');
-            setRefinedSample('');
-            setEditStyleRefinement(false);
-
-        } catch (error) {
-            console.log('error in handleStyleIteration: ', error);
-        }
-    }
-
+    const bluePrintTimerRef = useRef<NodeJS.Timeout | undefined>();
     const handleUpdateBluePrint = async (newBluePrint: any) => {
-        let updateTimeout: NodeJS.Timeout | undefined;
         try {
             setLoading(true);
             setProgress('Updating blueprint...');
@@ -410,12 +335,12 @@ function SingleStyleUi({
             setBluePrint(newBluePrint);
 
             // Clear the previous timeout
-            if (updateTimeout) {
-                clearTimeout(updateTimeout);
+            if (bluePrintTimerRef.current) {
+                clearTimeout(bluePrintTimerRef.current);
             }
 
             // Set a new timeout
-            updateTimeout = setTimeout(async () => {
+            bluePrintTimerRef.current = setTimeout(async () => {
                 const payload = { "bluePrint": newBluePrint };
                 const data = await updateStyle(id, payload);
 
@@ -428,31 +353,6 @@ function SingleStyleUi({
             console.log('error in handleRefineBlueprint: ', error);
         }
     }
-
-
-    /* * * * * * * * ** * * * * * * *
-   /* Open and close modal
-   /* * * * * * * * ** * * * * * * */
-    const handleOpenModal = () => {
-        try {
-            setOpenModal(true);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    const handleOpenRegenModal = () => {
-        try {
-            setOpenRegenModal(true);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const handleCloseModal = () => {
-        setOpenModal(false);
-        setOpenRegenModal(false);
-    }
-
 
     /* * * * * * * * * * * * * * * * *
     /* Delete the style
@@ -470,24 +370,27 @@ function SingleStyleUi({
         }
     }
 
+    const titleTimerRef = useRef<NodeJS.Timeout | undefined>();
     const handleUpdateTitle = async (title: string) => {
-        let timer: NodeJS.Timeout | undefined;
         try {
-            if (!title) return;
             setLoading(true);
+
             setProgress('Updating title...');
             setTitle(title);
+
             const previousTitle = titleData;
-            if (timer) {
-                clearTimeout(timer);
+
+            if (titleTimerRef.current) {
+                clearTimeout(titleTimerRef.current);
             }
-            timer = setTimeout(async () => {
+
+            titleTimerRef.current = setTimeout(async () => {
                 if (titleData === previousTitle) {
                     const data = await updateStyle(id, { 'title': title });
                 }
+                setProgress('');
+                setLoading(false);
             }, 1000);
-            setProgress('');
-            setLoading(false);
         } catch (err) {
             setProgress('Error updating title');
             console.log(err);
@@ -523,6 +426,7 @@ function SingleStyleUi({
     /* * * * * * * * * * * * * * * * * */
     /* Update an example
     /* * * * * * * * * * * * * * * * * */
+    const exampleTimerRef = useRef<NodeJS.Timeout | undefined>();
     const handleUpdateExample = async (index: number, example: any) => {
         try {
             if (!example) return;
@@ -537,10 +441,10 @@ function SingleStyleUi({
             setExamples(newExamples);
 
             // If the example has not changed in 500ms, get the embedding and update the example
-            if (updateEmbedding.current) {
-                clearTimeout(updateEmbedding.current);
+            if (exampleTimerRef.current) {
+                clearTimeout(exampleTimerRef.current);
             }
-            updateEmbedding.current = setTimeout(async () => {
+            exampleTimerRef.current = setTimeout(async () => {
 
                 payload.embedding = await getEmbedding(example);
                 newExamples[index] = payload;
@@ -579,80 +483,76 @@ function SingleStyleUi({
         }
     }
 
+
+
     /* * * * * * * * * * * * * * * * * */
     /* Render
     /* * * * * * * * * * * * * * * * * */
     return (
-        <section className="inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:16px_16px] flex flex-col flex-grow px-[5%]">
-            <div className="w-full max-w-[800px] mx-auto bg-white rounded-lg p-4 flex flex-col gap-4">
-                <div className="flex justify-between gap-4 mb-4">
-                    <input type="text" className="text-gray-800 text-2xl font-bold p-2 bg-transparent border-b border-b-gray-800 border-dashed	" value={title === 'Default title a.' ? '' : title} placeholder="Click here to edit the title" onChange={(e) => {
-                        setTitle(e.target.value)
-                        handleUpdateTitle(e.target.value)
-                    }} />
-                    <DeleteModal title={title} deleting={deleting} handleDeleteStyle={handleDeleteStyle} />
-                </div>
-                {!!sample.length && (
-                    <div className="flex flex-col gap-4 text-lg p-4 mb-4 inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:16px_16px] text-gray-500">
-                        <h2 className="text-xl font-semibold">Sample</h2>
-                        <ReactMarkdown
-                            rehypePlugins={[rehypeRaw]}
-                            children={sample}
-                        />
+        <>
+            <section className="flex flex-col flex-grow p-4 max-h-full overflow-y-scroll">
+                <div className="w-full max-w-[800px] mx-auto bg-white rounded-lg p-4 flex flex-col gap-4 shadow-lg relative z-10">
+
+                    <button className="ml-auto flex justify-center items-center gap-2 border border-gray-500 px-2 rounded-md" onClick={() => handleCloseViewModal()}>Close <CloseIcon className="w-4 h-4" /></button>
+
+                    <div className="flex justify-between gap-4 mb-4">
+                        <input type="text" className="text-gray-800 text-2xl font-bold p-2 bg-transparent border-b border-b-gray-800 border-dashed	" value={title === 'Default title a.' ? '' : title} placeholder="Click here to edit the title" onChange={(e) => {
+                            handleUpdateTitle(e.target.value)
+                        }} />
+                        <DeleteModal title={title} deleting={deleting} handleDeleteStyle={handleDeleteStyle} />
                     </div>
-                )}
-                {!!bluePrint && (
-                    <div className="flex flex-col gap-4 p-4 mb-4 text-gray-500">
-                        <div className="flex justify-between items-center gap-4">
-                            <h2 className="text-xl font-semibold">Blueprint</h2>
-                            <button className="flex items-center gap-2" onClick={() => handleUpdateStyle()}>
-                                <span>Regenerate style blueprint</span>
-                                <RefreshIcon className="w-4 h-4" />
+                    {!!sample.length && (
+                        <div className="flex flex-col gap-4 text-lg p-4 mb-4 inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:16px_16px] text-gray-500">
+                            <h2 className="text-xl font-semibold">Sample</h2>
+                            <ReactMarkdown rehypePlugins={[rehypeRaw]}>{sample}</ReactMarkdown>
+                        </div>
+                    )}
+                    {!!bluePrint && (
+                        <div className="flex flex-col gap-4 p-4 mb-4 text-gray-500">
+                            <div className="flex justify-between items-center gap-4">
+                                <h2 className="text-xl font-semibold">Blueprint</h2>
+                                <button className="flex items-center gap-2" onClick={() => handleUpdateStyle()}>
+                                    <span>Regenerate style blueprint</span>
+                                    <RefreshIcon className="w-4 h-4" />
+                                </button>
+                            </div>
+                            <TextareaAutosize
+                                className="text-gray-800 bg-transparent text-lg pb-4 border-b border-gray-800 border-dashed resize-none transition-all duration-300 ease-in-out focus:border-gray-300 focus:ring-0"
+                                value={refinedBlueprint || bluePrint}
+                                onChange={(e: any) => handleUpdateBluePrint(e.target.value)}
+                                placeholder="Type here to change the blueprint..."
+                            />
+                        </div>
+                    )}
+                    {(!!examples.length && !bluePrint) && (
+                        <div className="flex flex-col gap-4 p-4 bg-neutral-100 rounded-lg justify-center items-center text-gray-500">
+                            <h2 className="text-xl font-semibold">Generate the style blueprint</h2>
+                            <p>Now that you've given Apprentice some examples, it has everything it needs to do a deep stylistic analysis and generate a style blueprint. The style blueprint makes it possible for apprentice to replicate the desired style when generating content!</p>
+                            <button className="flex justify-center items-center gap-2 border border-gray-500 rounded-lg text-lg px-4 py-2" onClick={() => handleUpdateStyle()}>
+                                <span>Generate style blueprint</span>
+                                <GeneratorArrowIcon className={'h-4 w-4'} />
                             </button>
                         </div>
-                        <TextareaAutosize
-                            className="text-gray-800 bg-transparent text-lg pb-4 border-b border-gray-800 border-dashed resize-none transition-all duration-300 ease-in-out focus:border-gray-300 focus:ring-0"
-                            value={refinedBlueprint || bluePrint}
-                            onChange={(e: any) => handleUpdateBluePrint(e.target.value)}
-                            placeholder="Type here to change the blueprint..."
-                        />
-                    </div>
-                )}
-                {(!!examples.length && !bluePrint) && (
-                    <div className="flex flex-col gap-4 p-4 bg-neutral-100 rounded-lg justify-center items-center text-gray-500">
-                        <h2 className="text-xl font-semibold">Generate the style blueprint</h2>
-                        <p>Now that you've given Apprentice some examples, it has everything it needs to do a deep stylistic analysis and generate a style blueprint. The style blueprint makes it possible for apprentice to replicate the desired style when generating content!</p>
-                        <button className="flex justify-center items-center gap-2 border border-gray-500 rounded-lg text-lg px-4 py-2" onClick={() => handleUpdateStyle()}>
-                            <span>Generate style blueprint</span>
-                            <GeneratorArrowIcon className={'h-4 w-4'} />
-                        </button>
-                    </div>
-                )}
-                <Examples
-                    className="flex-grow w-full !overflow-visible !mb-0"
-                    title={title}
-                    setTitle={setTitle}
-                    sample={sample}
-                    examples={examples}
-                    setExamples={setExamples}
-                    newExample={newExample}
-                    setNewExample={setNewExample}
-                    displayAddExample={displayAddExample}
-                    setDisplayAddExample={setDisplayAddExample}
-                    handleAddExample={handleAddExample}
-                    handleUpdateExample={handleUpdateExample}
-                    handleDeleteExample={handleDeleteExample}
-                />
+                    )}
+                    <Examples
+                        examples={examples}
+                        newExample={newExample}
+                        setNewExample={setNewExample}
+                        handleAddExample={handleAddExample}
+                        handleUpdateExample={handleUpdateExample}
+                        handleDeleteExample={handleDeleteExample}
+                    />
 
-                {!!loading ? (
-                    <div className="sticky bottom-4 w-full max-w-max bg-white mx-auto rounded-lg flex flex-col justify-between items-center gap-4 p-4 shadow-lg z-30">
-                        <span className="w-full text-center text-gray-500">{progress}</span>
-                    </div>
-                ) : ''}
-            </div>
-        </section>
+                    {!!loading ? (
+                        <div className="sticky bottom-4 w-full max-w-max bg-white mx-auto rounded-lg flex flex-col justify-between items-center gap-4 p-4 shadow-lg z-30">
+                            <span className="w-full text-center text-gray-500">{progress}</span>
+                        </div>
+                    ) : ''}
 
+                </div>
+            </section>
+        </>
     )
 }
 
-export default SingleStyleUi;
+export default SingleViewStyleUi;

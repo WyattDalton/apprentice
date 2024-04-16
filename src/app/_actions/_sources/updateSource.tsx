@@ -25,21 +25,28 @@ export async function updateSource(id: any, update: any) {
 
         const sourceDocument = await sourcesCollection.findOne({ _id: _id });
         if (!sourceDocument) throw new Error('source not found');
-        const sourcePayload = {} as any;
 
-        const title = source.title !== sourceDocument.title ? source.title : null;
-        const text = source.text !== sourceDocument.text ? source.text : null;
-
+        let title = sourceDocument.title;
+        let text = sourceDocument.text;
         let chunks, embeddings;
 
-        if (!!text && text !== sourceDocument.text) {
+        if (!!source.title && source.title !== sourceDocument.title) {
+            title = source.title;
+        } else {
+            title = null;
+        }
+
+        if (!!source.text && source.text !== sourceDocument.text) {
+            text = source.text;
             chunks = await createChunks(text) || [];
             embeddings = await Promise.all(chunks.map((chunk, index) => getEmbedding(chunk, title, index)));
         } else {
+            text = null;
             chunks = null;
             embeddings = null;
         }
 
+        const sourcePayload = {} as any;
         if (!!title) sourcePayload.title = title;
         if (!!text) sourcePayload.text = text;
         if (!!embeddings) sourcePayload.embeddings = embeddings;

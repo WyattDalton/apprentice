@@ -127,7 +127,7 @@ export async function POST(req: NextRequest) {
 			// ###
 			// ### format use sources
 			if (!!useSources) {
-				responseSources = await getResponseSources(sources, promptEmbeddingVectors, 10, 0.70, 'general');
+				responseSources = await getResponseSources(sources, promptEmbeddingVectors, 10, 0.50, 'general');
 
 				settingsString += `
 				### Use the following sources as factual information for the response ###\n`;

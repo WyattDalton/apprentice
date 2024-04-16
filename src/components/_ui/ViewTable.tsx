@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog, Transition } from "@headlessui/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import LoadingText from "../_elements/LoadingText";
 import { PlusIcon } from "../_elements/icons";
@@ -20,6 +20,7 @@ export default function ViewTable(
     { viewTitle, addItem, deleteItem, data, headers, viewItemRoutePrefix, structureTheData }: ViewTableProps
 ) {
     const router = useRouter();
+    const path = usePathname();
     const [allItems, setAllItems] = useState<any>(data || []);
     const [openModal, setOpenModal] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<any>({
@@ -182,13 +183,10 @@ export default function ViewTable(
 
                                                 return (
                                                     <td
+                                                        onClick={(e) => handleOpenItem(item._id)}
                                                         key={index}
                                                         className={styles}>
-                                                        {valueKey == 'id' || 'title' ? (
-                                                            <button onClick={(e) => handleOpenItem(item._id)}>{content}</button>
-                                                        ) : (
-                                                            content
-                                                        )}
+                                                        {content}
                                                     </td>
                                                 )
                                             })}

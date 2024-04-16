@@ -1,12 +1,12 @@
 'use server';
 
-import SingleStyleUi from "./_components/SingleStyleUi";
+import SingleStyleUi from "./_components/SingleViewStyleUi";
 import { getStyleData } from "@/app/_actions/_styles/getStyleData";
 import { deleteStyle } from "@/app/_actions/_styles/deleteStyle";
 import { updateStyle } from "@/app/_actions/_styles/updateStyle";
 import { getEmbedding, getInstructions, generateBlueprint, generateSample, generateComparison } from "./_actions";
-
-
+import { Disclosure, Transition } from "@headlessui/react";
+import Modal from "./_components/Modal";
 
 /**
  * Renders a page component for a specific style.
@@ -21,30 +21,17 @@ async function Page({ params }: { params: { id: string } }) {
     const data = await getStyleData(params.id);
 
     return (
-        <>
-            <SingleStyleUi
-        // Style data
-            id={params.id}
-            titleData={data.title || ''}
-            examplesData={data.examples || []}
-            descriptionData={data.description || ''}
-            keywordsData={data.keywords || []}
-            bluePrintData={data.bluePrint || []}
-            sampleData={data.sample || ''}
-            iterationData={data.iteration || []}
-
-            // CRUD functions
+        <Modal
+            params={params}
+            data={data}
             deleteStyle={deleteStyle}
             updateStyle={updateStyle}
-
-            // Processing functions
             getEmbedding={getEmbedding}
             getInstructions={getInstructions}
             generateBlueprint={generateBlueprint}
             generateSample={generateSample}
             generateComparison={generateComparison}
-            />
-        </>
+        />
     )
 }
 

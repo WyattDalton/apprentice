@@ -14,9 +14,11 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
   view_navigation,
+  single,
 }: {
     children: React.ReactNode,
     view_navigation: React.ReactNode,
+    single: React.ReactNode,
   }) {
 
   return (
@@ -26,6 +28,7 @@ export default function RootLayout({
           <div className=" flex flex-col gap-4 min-h-screen">
             <AppNavigation views={view_navigation} />
             <div className="flex flex-col grow-1 w-full flex-grow">
+              {single}
               {children}
             </div>
           </div>

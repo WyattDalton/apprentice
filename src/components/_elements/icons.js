@@ -20,7 +20,17 @@ import {
 	faPlus,
 	faCheck,
 	faEdit,
+	faRefresh,
 } from '@fortawesome/free-solid-svg-icons';
+
+export const RefreshIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon
+			className={!!className ? className : ''}
+			icon={faRefresh}
+		/>
+	);
+};
 
 export const EditIcon = ({ className }) => {
 	return (

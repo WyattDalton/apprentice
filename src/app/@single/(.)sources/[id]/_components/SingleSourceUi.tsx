@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { CloseIcon } from '@/components/_elements/icons';
 import DeleteModal from './DeleteModal';
-import { Transition } from '@headlessui/react';
 
 type SourceData = {
     _id: string,

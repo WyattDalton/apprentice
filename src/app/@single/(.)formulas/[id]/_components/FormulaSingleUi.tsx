@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from "react";
-import { Switch, Transition } from "@headlessui/react";
+import { Switch } from "@headlessui/react";
 import { useRouter } from 'next/navigation';
 import { CloseIcon } from "@/components/_elements/icons";
 import DeleteModal from "./DeleteModal";

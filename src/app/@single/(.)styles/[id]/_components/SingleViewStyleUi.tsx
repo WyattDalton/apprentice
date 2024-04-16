@@ -527,7 +527,7 @@ function SingleViewStyleUi({
                     {(!!examples.length && !bluePrint) && (
                         <div className="flex flex-col gap-4 p-4 bg-neutral-100 rounded-lg justify-center items-center text-gray-500">
                             <h2 className="text-xl font-semibold">Generate the style blueprint</h2>
-                            <p>Now that you've given Apprentice some examples, it has everything it needs to do a deep stylistic analysis and generate a style blueprint. The style blueprint makes it possible for apprentice to replicate the desired style when generating content!</p>
+                            <p>Now that you&rsquo;ve given Apprentice some examples, it has everything it needs to do a deep stylistic analysis and generate a style blueprint. The style blueprint makes it possible for apprentice to replicate the desired style when generating content!</p>
                             <button className="flex justify-center items-center gap-2 border border-gray-500 rounded-lg text-lg px-4 py-2" onClick={() => handleUpdateStyle()}>
                                 <span>Generate style blueprint</span>
                                 <GeneratorArrowIcon className={'h-4 w-4'} />

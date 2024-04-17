@@ -1,12 +1,9 @@
 'use client';
 
-import { Fragment, useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from 'next/navigation';
-import { Disclosure, Transition } from '@headlessui/react';
 import Examples from "./Examples";
-import LoadingSpinner from "@/components/_elements/LoadingSpinner";
-import Card from "@/components/_ui/Card";
-import { CheckIcon, EditIcon, GeneratorArrowIcon, RefreshIcon } from "@/components/_elements/icons";
+import { GeneratorArrowIcon, RefreshIcon } from "@/components/_elements/icons";
 import TextareaAutosize from "./TextAreaAutosize";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -48,7 +45,6 @@ function SingleStyleUi({
     generateComparison
 }: UiProps) {
     const router = useRouter();
-    const updateEmbedding = useRef<NodeJS.Timeout | null>(null);
 
     // Style data
     const [title, setTitle] = useState(titleData || 'Default title');
@@ -401,8 +397,8 @@ function SingleStyleUi({
         }
     }
 
+    const bluePrintTimerRef = useRef<NodeJS.Timeout | undefined>();
     const handleUpdateBluePrint = async (newBluePrint: any) => {
-        let updateTimeout: NodeJS.Timeout | undefined;
         try {
             setLoading(true);
             setProgress('Updating blueprint...');
@@ -410,12 +406,12 @@ function SingleStyleUi({
             setBluePrint(newBluePrint);
 
             // Clear the previous timeout
-            if (updateTimeout) {
-                clearTimeout(updateTimeout);
+            if (bluePrintTimerRef.current) {
+                clearTimeout(bluePrintTimerRef.current);
             }
 
             // Set a new timeout
-            updateTimeout = setTimeout(async () => {
+            bluePrintTimerRef.current = setTimeout(async () => {
                 const payload = { "bluePrint": newBluePrint };
                 const data = await updateStyle(id, payload);
 
@@ -427,30 +423,6 @@ function SingleStyleUi({
         } catch (error) {
             console.log('error in handleRefineBlueprint: ', error);
         }
-    }
-
-
-    /* * * * * * * * ** * * * * * * *
-   /* Open and close modal
-   /* * * * * * * * ** * * * * * * */
-    const handleOpenModal = () => {
-        try {
-            setOpenModal(true);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    const handleOpenRegenModal = () => {
-        try {
-            setOpenRegenModal(true);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const handleCloseModal = () => {
-        setOpenModal(false);
-        setOpenRegenModal(false);
     }
 
 
@@ -470,24 +442,28 @@ function SingleStyleUi({
         }
     }
 
+    const titleTimerRef = useRef<NodeJS.Timeout | undefined>();
     const handleUpdateTitle = async (title: string) => {
-        let timer: NodeJS.Timeout | undefined;
         try {
-            if (!title) return;
+
             setLoading(true);
             setProgress('Updating title...');
             setTitle(title);
+
             const previousTitle = titleData;
-            if (timer) {
-                clearTimeout(timer);
+
+            if (titleTimerRef.current) {
+                clearTimeout(titleTimerRef.current);
             }
-            timer = setTimeout(async () => {
+
+            titleTimerRef.current = setTimeout(async () => {
                 if (titleData === previousTitle) {
                     const data = await updateStyle(id, { 'title': title });
                 }
+                setProgress('');
+                setLoading(false);
             }, 1000);
-            setProgress('');
-            setLoading(false);
+
         } catch (err) {
             setProgress('Error updating title');
             console.log(err);
@@ -523,6 +499,7 @@ function SingleStyleUi({
     /* * * * * * * * * * * * * * * * * */
     /* Update an example
     /* * * * * * * * * * * * * * * * * */
+    const exampleTimerRef = useRef<NodeJS.Timeout | undefined>();
     const handleUpdateExample = async (index: number, example: any) => {
         try {
             if (!example) return;
@@ -536,20 +513,28 @@ function SingleStyleUi({
             newExamples[index] = payload;
             setExamples(newExamples);
 
+            const test = await getEmbedding(example);
+
             // If the example has not changed in 500ms, get the embedding and update the example
-            if (updateEmbedding.current) {
-                clearTimeout(updateEmbedding.current);
+            if (exampleTimerRef.current) {
+                clearTimeout(exampleTimerRef.current);
             }
-            updateEmbedding.current = setTimeout(async () => {
+            exampleTimerRef.current = setTimeout(async () => {
+                try {
+                    const embedding = await getEmbedding(example);
+                    payload.embedding = embedding;
+                    console.log('payload: ', payload);
+                    newExamples[index] = payload;
 
-                payload.embedding = await getEmbedding(example);
-                newExamples[index] = payload;
-                setExamples(newExamples);
+                    setExamples(newExamples);
 
-                const data = await updateStyle(id, { 'examples': newExamples });
+                    const data = await updateStyle(id, { 'examples': newExamples });
 
-                setProgress('');
-                setLoading(false);
+                    setProgress('');
+                    setLoading(false);
+                } catch (error) {
+                    console.log('error saving example to db: ', error);
+                }
             }, 1000);
         } catch (err) {
             setProgress('Error updating example');
@@ -584,10 +569,9 @@ function SingleStyleUi({
     /* * * * * * * * * * * * * * * * * */
     return (
         <section className="inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:16px_16px] flex flex-col flex-grow px-[5%]">
-            <div className="w-full max-w-[800px] mx-auto bg-white rounded-lg p-4 flex flex-col gap-4">
+            <div className="w-full max-w-[800px] mx-auto bg-white rounded-lg p-4 my-4 flex flex-col gap-4">
                 <div className="flex justify-between gap-4 mb-4">
                     <input type="text" className="text-gray-800 text-2xl font-bold p-2 bg-transparent border-b border-b-gray-800 border-dashed	" value={title === 'Default title a.' ? '' : title} placeholder="Click here to edit the title" onChange={(e) => {
-                        setTitle(e.target.value)
                         handleUpdateTitle(e.target.value)
                     }} />
                     <DeleteModal title={title} deleting={deleting} handleDeleteStyle={handleDeleteStyle} />
@@ -628,16 +612,9 @@ function SingleStyleUi({
                     </div>
                 )}
                 <Examples
-                    className="flex-grow w-full !overflow-visible !mb-0"
-                    title={title}
-                    setTitle={setTitle}
-                    sample={sample}
                     examples={examples}
-                    setExamples={setExamples}
                     newExample={newExample}
                     setNewExample={setNewExample}
-                    displayAddExample={displayAddExample}
-                    setDisplayAddExample={setDisplayAddExample}
                     handleAddExample={handleAddExample}
                     handleUpdateExample={handleUpdateExample}
                     handleDeleteExample={handleDeleteExample}

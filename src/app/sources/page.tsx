@@ -12,14 +12,16 @@ export default async function Page() {
     let tableData = await structureTheData(sources);
 
     return (
-        <ViewTable
-            viewTitle="Sources"
-            addItem={<AddSource />}
-            deleteItem={deleteSource}
-            headers={tableData.headers}
-            data={tableData.body}
-            viewItemRoutePrefix={'/sources'}
-            structureTheData={structureTheData}
-        />
+        <section className="flex-grow inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:16px_16px] px-[5%]">
+            <ViewTable
+                viewTitle="Sources"
+                addItem={<AddSource />}
+                deleteItem={deleteSource}
+                headers={tableData.headers}
+                data={tableData.body}
+                viewItemRoutePrefix={'/sources'}
+                structureTheData={structureTheData}
+            />
+        </section>
     )
 }

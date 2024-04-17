@@ -94,8 +94,8 @@ function SingleSourceUi({ _id, sourceData, deleteSource, updateSource, handleClo
 
     return (
         <>
-            <section className="flex flex-col flex-grow p-4 h-screen overflow-y-scroll">
-                <div className="w-full max-w-[800px] mx-auto bg-white rounded-lg p-4 flex flex-col gap-4 shadow-lg relative z-10">
+            <section className="flex flex-col flex-grow p-4 overflow-y-scroll">
+                <div className="w-full max-w-[800px] mx-auto bg-white rounded-lg p-4 flex flex-col flex-grow gap-4 shadow-lg relative z-10">
 
                     <button className="ml-auto flex justify-center items-center gap-2 border border-gray-500 px-2 rounded-md" onClick={() => handleCloseViewModal()}>Close <CloseIcon className="w-4 h-4" /></button>
 

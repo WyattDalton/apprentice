@@ -1,11 +1,8 @@
 'use client'
 
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import DeleteModal from './DeleteModal';
 import { useRouter } from 'next/navigation';
-import { Dialog, Transition } from '@headlessui/react';
-import LoadingText from '@/components/_elements/LoadingText';
-import Content from './Content';
-import Sidebar from './Sidebar';
 
 type SourceData = {
     _id: string,
@@ -15,153 +12,122 @@ type SourceData = {
 }
 
 function SingleSourceUi({ _id, sourceData, deleteSource, updateSource }: SourceData) {
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
     const router = useRouter();
 
-    const [updating, setUpdating] = useState(false);
-    const [openModal, setOpenModal] = useState(false);
-    const [deleting, setDeleting] = useState(false);
-    const [source, setSource] = useState({
-        _id: _id || "",
-        name: sourceData?.name || "",
-        title: sourceData?.title || "",
-        type: sourceData?.type || "",
-        text: sourceData?.text || "",
-    });
+    const [loading, setLoading] = useState(false);
+    const [progress, setProgress] = useState("");
 
-    const handleUpdate = async () => {
+    const [title, setTitle] = useState(sourceData.title || "Default title");
+    const [text, setText] = useState(sourceData.text || "");
+
+    const handleCloseViewModal = () => {
+        router.push('/sources')
+    }
+
+    useEffect(() => {
+        // Adjust textarea height to fit content
+        if (textareaRef.current) {
+            const field = textareaRef.current;
+            field.style.height = "0px";
+            const scrollHeight = field.scrollHeight;
+            field.style.height = scrollHeight + "px";
+        }
+    }, [text]);
+
+    const titleTimerRef = useRef<NodeJS.Timeout | undefined>();
+    const handleChangeTitle = async (updated: any) => {
         try {
-            setUpdating(true)
-            const res = await updateSource(_id, source);
-            setUpdating(false);
-            return;
 
-        } catch (error) {
-            console.log(error);
+            setLoading(true);
+            setProgress('Updating title...');
+            setTitle(updated);
+
+            const payload = {
+                title: updated,
+            };
+
+            if (titleTimerRef.current) {
+                clearTimeout(titleTimerRef.current);
+            }
+
+            titleTimerRef.current = setTimeout(async () => {
+                console.log('updating title... ', payload);
+                await updateSource(_id, payload)
+                setProgress('');
+                setLoading(false);
+            }, 1000);
+
+        } catch (err) {
+            setProgress('Error updating title');
+            console.log(err);
         }
-    }
+    };
 
-    /* * * * * * * * ** * * * * * * *
-    /* Delete the source
-    /* * * * * * * * ** * * * * * * */
-    const handleDeleteSource = async () => {
+    const textTimerRef = useRef<NodeJS.Timeout | undefined>();
+    const handleChangeText = async (updated: any) => {
         try {
-            setDeleting(true)
-            const res = await deleteSource(_id);
-            setOpenModal(false);
-            setDeleting(false);
-            router.push('/sources');
 
-        }
-        catch (error) {
-            console.log(error);
+            setLoading(true);
+            setProgress('Updating source text...');
+            setText(updated);
+
+            const payload = {
+                text: updated,
+            };
+
+            if (textTimerRef.current) {
+                clearTimeout(textTimerRef.current);
+            }
+
+            textTimerRef.current = setTimeout(async () => {
+                await updateSource(_id, payload)
+                setProgress('');
+                setLoading(false);
+            }, 1000);
+
+        } catch (err) {
+            setProgress('Error updating source text');
+            console.log(err);
         }
     }
 
-    /* * * * * * * * ** * * * * * * *
-    /* Open and close modal
-    /* * * * * * * * ** * * * * * * */
-    const handleOpenModal = () => {
-        try {
-            setOpenModal(true);
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
-    const handleCloseModal = () => {
-        setOpenModal(false);
-    }
+
 
     return (
         <>
-            {/* <button onClick={() => { handleOpenModal() }}>Open</button> */}
-            <Transition appear show={openModal} as={Fragment}>
-                <Dialog as="div" className="relative z-50" onClose={handleCloseModal}>
-                    <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                    >
-                        <div className="fixed inset-0 bg-black/25" />
-                    </Transition.Child>
+            <section className="flex flex-col flex-grow p-4 overflow-y-scroll">
+                <div className="w-full max-w-[800px] mx-auto bg-white rounded-lg p-4 flex flex-col flex-grow gap-4 shadow-lg relative z-10">
 
-                    <div className="fixed inset-0 overflow-y-auto">
-                        <div className="flex min-h-full items-center justify-center p-4 text-center">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 scale-95"
-                                enterTo="opacity-100 scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 scale-100"
-                                leaveTo="opacity-0 scale-95"
-                            >
-                                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                                    <Dialog.Title
-                                        as="h3"
-                                        className="text-lg font-medium leading-6 text-gray-900"
-                                    >
-                                        Permanently Delete
-                                    </Dialog.Title>
-                                    <div className="mt-2">
-                                        <p className="text-sm text-gray-500">
-                                            Are you sure you want to delete <span className="font-semibold">{!!source?.title ? source?.title : ('this source')}</span>? This cannot be undone.
-                                        </p>
-                                    </div>
-
-                                    <div className="mt-4">
-                                        {!deleting && (
-                                            <button
-                                                type="button"
-                                                className="inline-flex justify-center rounded-md border border-transparent bg-gray-700 px-4 py-2 text-sm font-medium text-white hover:bg-shade-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                                onClick={handleCloseModal}
-                                            >
-                                                Cancel
-                                            </button>
-                                        )}
-                                        <button
-                                            type="button"
-                                            className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 ml-2"
-                                            onClick={handleDeleteSource}
-                                        >
-                                            {!deleting ? ('Delete') : (<LoadingText text={'Deleting...'} className={''} iconClassName={''} />)}
-                                        </button>
-                                    </div>
-                                </Dialog.Panel>
-                            </Transition.Child>
-                        </div>
+                    <div className="flex gap-4 justify-between items-center p-4">
+                        <span className='flex-grow'>
+                            <input
+                                className="text-gray-800 text-2xl font-bold p-2 bg-transparent border-b border-b-gray-800 border-dashed truncate w-full flex-grow"
+                                type="text"
+                                value={title === 'Default title' ? '' : title}
+                                placeholder="Click here to edit the title"
+                                onChange={(e) => handleChangeTitle(e.target.value)}
+                            />
+                        </span>
+                        <DeleteModal title={title} _id={_id} deleteSource={deleteSource} handleCloseViewModal={handleCloseViewModal} />
                     </div>
-                </Dialog>
-            </Transition>
 
-            <section className="
-            relative 
-            grow 
-            h-full 
-            grid 
-            grid-cols-6
-            w-[90%] 
-            mx-auto
-            gap-4 
-        ">
+                    <textarea
+                        ref={textareaRef}
+                        className="w-full text-gray-800 bg-neutral-50 text-lg p-4 border-b border-gray-800 border-dashed resize-none transition-all duration-300 ease-in-out focus:border-gray-300 focus:ring-0 overflow-hidden"
+                        placeholder="Content"
+                        value={text}
+                        onChange={(e) => handleChangeText(e.target.value)}
+                    />
 
-                <Content
-                    className={'col-span-6 lg:col-span-4 min-h-full flex flex-col items-center gap-4 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]'}
-                    source={source}
-                    setSource={setSource} />
+                    {!!loading ? (
+                        <div className="sticky bottom-4 w-full max-w-max bg-white mx-auto rounded-lg flex flex-col justify-between items-center gap-4 p-4 shadow-lg z-30">
+                            <span className="w-full text-center text-gray-500">{progress}</span>
+                        </div>
+                    ) : ''}
 
-                <Sidebar
-                    className={'col-span-6 lg:col-span-2 gap-4 rounded-lg sticky bottom-0 lg:flex lg:flex-col lg:justify-end lg:flex-grow p-0 lg:p-4 bg-transparent lg:bg-neutral-50'}
-                    handleUpdate={handleUpdate}
-                    source={source}
-                    updating={updating}
-                    handleOpenModal={handleOpenModal}
-                />
-
+                </div>
             </section>
         </>
     )

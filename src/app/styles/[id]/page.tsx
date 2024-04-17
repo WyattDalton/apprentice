@@ -4,9 +4,11 @@ import SingleStyleUi from "./_components/SingleStyleUi";
 import { getStyleData } from "@/app/_actions/_styles/getStyleData";
 import { deleteStyle } from "@/app/_actions/_styles/deleteStyle";
 import { updateStyle } from "@/app/_actions/_styles/updateStyle";
-import { getEmbedding, getInstructions, generateBlueprint, generateSample, generateComparison } from "./_actions";
-
-
+import { getEmbedding } from "@/app/_actions/_styles/getEmbedding";
+import { getInstructions } from "@/app/_actions/_styles/getInstructions";
+import { generateBlueprint } from "@/app/_actions/_styles/generateBlueprint";
+import { generateSample } from "@/app/_actions/_styles/generateSample";
+import { generateComparison } from "@/app/_actions/_styles/generateComparison";
 
 /**
  * Renders a page component for a specific style.
@@ -21,8 +23,8 @@ async function Page({ params }: { params: { id: string } }) {
     const data = await getStyleData(params.id);
 
     return (
-        <>
-            <SingleStyleUi
+
+        <SingleStyleUi
         // Style data
             id={params.id}
             titleData={data.title || ''}
@@ -43,8 +45,8 @@ async function Page({ params }: { params: { id: string } }) {
             generateBlueprint={generateBlueprint}
             generateSample={generateSample}
             generateComparison={generateComparison}
-            />
-        </>
+        />
+
     )
 }
 

@@ -373,8 +373,8 @@ function SingleViewStyleUi({
     const titleTimerRef = useRef<NodeJS.Timeout | undefined>();
     const handleUpdateTitle = async (title: string) => {
         try {
-            setLoading(true);
 
+            setLoading(true);
             setProgress('Updating title...');
             setTitle(title);
 
@@ -445,15 +445,20 @@ function SingleViewStyleUi({
                 clearTimeout(exampleTimerRef.current);
             }
             exampleTimerRef.current = setTimeout(async () => {
+                try {
+                    const embedding = await getEmbedding(example);
+                    payload.embedding = embedding;
+                    newExamples[index] = payload;
 
-                payload.embedding = await getEmbedding(example);
-                newExamples[index] = payload;
-                setExamples(newExamples);
+                    setExamples(newExamples);
 
-                const data = await updateStyle(id, { 'examples': newExamples });
+                    const data = await updateStyle(id, { 'examples': newExamples });
 
-                setProgress('');
-                setLoading(false);
+                    setProgress('');
+                    setLoading(false);
+                } catch (error) {
+                    console.log('error saving example to db: ', error);
+                }
             }, 1000);
         } catch (err) {
             setProgress('Error updating example');

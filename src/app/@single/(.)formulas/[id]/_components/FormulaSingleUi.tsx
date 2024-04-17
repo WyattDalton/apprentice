@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from "react";
-import { Switch } from "@headlessui/react";
+import { Switch, Transition } from "@headlessui/react";
 import { useRouter } from 'next/navigation';
 import { CloseIcon } from "@/components/_elements/icons";
 import DeleteModal from "./DeleteModal";
@@ -36,7 +36,7 @@ export default function FormulaSingleUi({
     /* * * * * * * * * * */
     // Use State
     /* * * * * * * * * * */
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState('');
 
     const [title, setTitle] = useState(titleData || '');
@@ -44,16 +44,14 @@ export default function FormulaSingleUi({
     const [outline, setOutline] = useState(outlineData || false);
     const [instructions, setInstructions] = useState<any>(instructionsData || '');
 
-
     const handleCloseViewModal = () => {
         router.back();
     }
 
-
     const titleTimerRef = useRef<NodeJS.Timeout | undefined>();
     const handleUpdateTitle = async (titleData: string) => {
         try {
-            setLoading(false);
+            setLoading(true);
             setProgress('Updating title...');
             setTitle(titleData);
 

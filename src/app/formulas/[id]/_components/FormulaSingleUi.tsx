@@ -1,15 +1,9 @@
 'use client'
 
-import LoadingText from "@/components/_elements/LoadingText";
-import Sidebar from "./Sidebar";
-import { useState, useEffect, useMemo, use } from "react";
-import Content from "./Content";
-import { Dialog, Transition } from "@headlessui/react";
-import { useRouter } from 'next/navigation';
-import { Fragment } from "react";
-import { set } from "lodash";
-
-
+import { useState, useRef, Fragment } from "react";
+import { Switch, Transition } from "@headlessui/react";
+import DeleteModal from "./DeleteModal";
+import TextareaAutosize from "./TextAreaAutosize";
 
 type FormulaProps = {
     _id: string,
@@ -33,24 +27,11 @@ export default function FormulaSingleUi({
     updateFormula
 }: FormulaProps) {
 
-
-
-    /*
-    It needs to work this way:
-    - Steps can bve one of 3 types: Think about, outline, and generate
-    - Steps follow a first, then, then, finally structure
-    - In the generator, all processing happens first to engeneer a prompt
-    Formulas are meant to generate a very speicifc response like an outline for a blog post or a particular tyope of email
-    */
-
-    const router = useRouter();
-
     /* * * * * * * * * * */
     // Use State
     /* * * * * * * * * * */
-    const [editing, setEditing] = useState(false);
-    const [uploading, setUploading] = useState(false);
-    const [newFormula, setNewFormula] = useState({});
+    const [loading, setLoading] = useState(false);
+    const [progress, setProgress] = useState('');
 
     const [title, setTitle] = useState(titleData || '');
     const [thinkAbout, setThinkAbout] = useState(thinkAboutData || '');
@@ -58,185 +39,195 @@ export default function FormulaSingleUi({
     const [instructions, setInstructions] = useState<any>(instructionsData || '');
 
 
-    const [openModal, setOpenModal] = useState(false);
-    const [formulaToDelete, setFormulaToDelete] = useState({ id: '', title: '' });
-    const [deleting, setDeleting] = useState(false);
-
-    /* * * * * * * * * * */
-    // Update Formula on data change
-    /* * * * * * * * * * */
-    useEffect(() => {
-        setNewFormula({
-            title,
-            instructions,
-            thinkAbout,
-            outline
-        });
-    }, [title, instructions, thinkAbout, outline]);
-
-    /* * * * * * * * ** * * * * * * *
-    /* Delete a formula
-    /* * * * * * * * ** * * * * * * */
-    const handleDeleteFormula = async () => {
+    const titleTimerRef = useRef<NodeJS.Timeout | undefined>();
+    const handleUpdateTitle = async (titleData: string) => {
         try {
-            setDeleting(true);
-            const data = await deleteFormula(_id);
-            if (!data.success) throw new Error('Error deleting formula');
-            setDeleting(false);
-            handleCloseModal();
-            router.push('/formulas');
+            setLoading(true);
+            setProgress('Updating title...');
+            setTitle(titleData);
+
+            const payload = {
+                title: titleData,
+            };
+
+            if (titleTimerRef.current) {
+                clearTimeout(titleTimerRef.current);
+            }
+
+            titleTimerRef.current = setTimeout(async () => {
+                await updateFormula(_id, payload);
+                setProgress('');
+                setLoading(false);
+            }, 1000);
+
+        } catch (err) {
+            setProgress('Error updating title');
+            console.log(err);
         }
-        catch (error) {
-            console.log(error);
-        }
     }
 
-    /* * * * * * * * ** * * * * * * *
-    /* Open and close modal
-    /* * * * * * * * ** * * * * * * */
-    const handleOpenModal = (id: any, title: any) => {
-        setOpenModal(true);
-    }
-
-    const handleCloseModal = () => {
-        setOpenModal(false);
-    }
-
-
-
-    /* * * * * * * * * * */
-    // Handle Functions
-    /* * * * * * * * * * */
-    // Hook for handline instruction actions
-    const handleUpdateInstructions = (data: any) => {
+    const thinkAboutTimerRef = useRef<NodeJS.Timeout | undefined>();
+    const handleUpdateThinkAbout = async (thinkAboutData: string) => {
         try {
-            setInstructions(data);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-    const handleUpdateThinkAbout = (data: any) => {
-        try {
-            setThinkAbout(data);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    const handleUpdateOutline = (data: any) => {
-        try {
-            setOutline(data);
-        } catch (error) {
-            console.log(error);
+            setLoading(true);
+            setProgress('Updating think about...');
+            setThinkAbout(thinkAboutData);
+
+            const payload = {
+                thinkAbout: thinkAboutData,
+            };
+
+            if (thinkAboutTimerRef.current) {
+                clearTimeout(thinkAboutTimerRef.current);
+            }
+
+            thinkAboutTimerRef.current = setTimeout(async () => {
+                await updateFormula(_id, payload);
+                setProgress('');
+                setLoading(false);
+            }, 1000);
+
+        } catch (err) {
+            setProgress('Error updating think about');
+            console.log(err);
         }
     }
 
-    const handleSubmit = async (e: any) => {
-        e.preventDefault();
-        setUploading(true);
-        const res = await updateFormula(_id, newFormula);
-        if (!res.success) throw new Error('Error updating formula');
-        setUploading(false);
-    };
+    const outlineTimerRef = useRef<NodeJS.Timeout | undefined>();
+    const handleUpdateOutline = async (updated: any) => {
+        try {
+
+            setLoading(true);
+            setProgress('Updating outline...');
+            setOutline(!!updated);
+
+            const payload = {
+                outline: !!updated,
+            };
+
+            if (outlineTimerRef.current) {
+                clearTimeout(outlineTimerRef.current);
+            }
+
+            outlineTimerRef.current = setTimeout(async () => {
+                await updateFormula(_id, payload);
+                setProgress('');
+                setLoading(false);
+            }, 500);
+
+        } catch (err) {
+            setProgress('Error updating think about');
+            console.log(err);
+        }
+    }
+
+    const instructionsTimerRef = useRef<NodeJS.Timeout | undefined>();
+    const handleUpdateInstructions = async (updatedInstructions: any) => {
+        try {
+            setLoading(true);
+            setProgress('Updating instructions...');
+            setInstructions(updatedInstructions);
+
+            const payload = {
+                instructions: updatedInstructions,
+            };
+
+            if (instructionsTimerRef.current) {
+                clearTimeout(instructionsTimerRef.current);
+            }
+
+            instructionsTimerRef.current = setTimeout(async () => {
+                await updateFormula(_id, payload);
+                setProgress('');
+                setLoading(false);
+            }, 1000);
+
+        } catch (err) {
+            setProgress('Error updating instructions');
+            console.log(err);
+        }
+    }
+
 
     /* * * * * * * * * * */
     // Render
     /* * * * * * * * * * */
     return (
         <>
+            <section className="flex flex-col flex-grow inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:16px_16px] px-[5%]">
+                <div className="w-full max-w-[800px] mx-auto bg-white rounded-lg p-4 my-4 flex flex-col gap-4 shadow-lg relative z-10">
 
-            <Transition appear show={openModal} as={Fragment}>
-                <Dialog as="div" className="relative z-50" onClose={handleCloseModal}>
-                    <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                    >
-                        <div className="fixed inset-0 bg-black/25" />
-                    </Transition.Child>
-
-                    <div className="fixed inset-0 overflow-y-auto">
-                        <div className="flex min-h-full items-center justify-center p-4 text-center">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 scale-95"
-                                enterTo="opacity-100 scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 scale-100"
-                                leaveTo="opacity-0 scale-95"
-                            >
-                                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                                    <Dialog.Title
-                                        as="h3"
-                                        className="text-lg font-medium leading-6 text-gray-900"
-                                    >
-                                        Permanently Delete
-                                    </Dialog.Title>
-                                    <div className="mt-2">
-                                        <p className="text-sm text-gray-500">
-                                            Are you sure you want to delete <span className="font-semibold">{!!title ? title : ('this formula')}</span>? This cannot be undone.
-                                        </p>
-                                    </div>
-
-                                    <div className="mt-4">
-                                        {!deleting && (
-                                            <button
-                                                type="button"
-                                                className="inline-flex justify-center rounded-md border border-transparent bg-gray-700 px-4 py-2 text-sm font-medium text-white hover:bg-shade-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                                onClick={handleCloseModal}
-                                            >
-                                                Cancel
-                                            </button>
-                                        )}
-                                        <button
-                                            type="button"
-                                            className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 ml-2"
-                                            onClick={handleDeleteFormula}
-                                        >
-                                            {!deleting ? ('Delete') : (<LoadingText text={'Deleting...'} className={''} iconClassName={''} />)}
-                                        </button>
-                                    </div>
-                                </Dialog.Panel>
-                            </Transition.Child>
-                        </div>
+                    <div className="flex gap-4 justify-between items-center p-4">
+                        <input type="text" className="text-gray-800 text-2xl font-bold p-2 bg-transparent border-b border-b-gray-800 border-dashed	" value={title === 'Default title' ? '' : title} placeholder="Click here to edit the title" onChange={(e) => {
+                            handleUpdateTitle(e.target.value)
+                        }} />
+                        <DeleteModal _id={_id} title={title} deleteFormula={deleteFormula} />
                     </div>
-                </Dialog>
-            </Transition>
 
-            <section className="
-            relative 
-            flex-grow 
-            h-full 
-            grid 
-            grid-cols-6
-            w-[90%] 
-            mx-auto
-            gap-4 
-        ">
-                <Content
-                    className="col-span-6 lg:col-span-4 flex flex-col items-center gap-4 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:13px_13px] py-[5%] px-[2.5%]"
-                    newFormula={newFormula}
-                    setNewFormula={setNewFormula}
-                    title={title}
-                    setTitle={setTitle}
-                    instructions={instructions}
-                    handleUpdateInstructions={handleUpdateInstructions}
-                    thinkAbout={thinkAbout}
-                    handleUpdateThinkAbout={handleUpdateThinkAbout}
-                    outline={outline}
-                    handleUpdateOutline={handleUpdateOutline}
-                />
-                <Sidebar
-                    className="col-span-6 mlg:col-span-2 gap-4 rounded-lg sticky bottom-0 lg:flex lg:flex-col lg:justify-end lg:flex-grow p-0 lg:p-4 bg-transparent lg:bg-neutral-50"
-                    title={title}
-                    handleSubmit={handleSubmit}
-                    handleOpenModal={handleOpenModal}
-                    uploading={uploading}
-                />
+                    <div className="flex flex-col gap-2 mb-6 p-4 bg-neutral-100 rounded-lg">
+                        <h3 className="text-gray-500 text-lg font-bold !m-0 prose">Think about</h3>
+                        <p className="prose">What should Apprentice think about before generating a response?</p>
+                        <TextareaAutosize
+                            className="w-full text-gray-800 bg-white text-lg p-4 border-b border-gray-800 border-dashed resize-none transition-all duration-300 ease-in-out focus:border-gray-300 focus:ring-0"
+                            value={thinkAbout}
+                            onChange={(data: any) => {
+                                handleUpdateThinkAbout(data)
+                            }}
+                            placeholder="Tell Apprentice what it should think through before generating a response..."
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-2 mb-6 p-4 bg-neutral-100 rounded-lg">
+
+                        <h3 className="text-gray-500 text-lg font-bold !m-0 prose">Outline</h3>
+                        <p className="prose">Should Apprentice work from an outline to draft a response?</p>
+
+                        {/* I want to enable dynamic outlines generated by the AI and manual outlines provided by the user */}
+
+                        <span className="flex gap-2 justify-center items-center max-w-max">
+                            <Switch
+                                checked={!!outline}
+                                onChange={(e) => handleUpdateOutline(e)}
+                                className={`${!!outline ? 'bg-blue-600' : 'bg-gray-200'
+                                    } relative inline-flex h-6 w-11 items-center rounded-full`}
+                            >
+                                <span className="sr-only">Enable outline</span>
+                                <span
+                                    className={`${!!outline ? 'translate-x-6' : 'translate-x-1'
+                                        } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                                />
+                            </Switch>
+                        </span>
+                    </div>
+
+                    {/* Input fields for instructions */}
+                    <div className="flex flex-col gap-2 mb-6 p-4 bg-neutral-100 rounded-lg">
+                        <h2 className="text-gray-500 text-lg font-bold !m-0 prose">Instructions</h2>
+                        <p className="prose">Provide the instructions that Apprentice should follow in order to compplete the response.</p>
+                        <TextareaAutosize
+                            className="w-full text-gray-800 bg-white text-lg p-4 border-b border-gray-800 border-dashed resize-none transition-all duration-300 ease-in-out focus:border-gray-300 focus:ring-0"
+                            value={instructions}
+                            onChange={handleUpdateInstructions}
+                            placeholder={"Add your instructions here..."}
+                        />
+                    </div>
+
+                    <Transition
+                        as={Fragment}
+                        show={loading}
+                        enter="transition-opacity duration-300 transform"
+                        enterFrom="opacity-0 translate-y-full"
+                        enterTo="opacity-100 translate-y-0"
+                        leave="transition-opacity duration-300 transform"
+                        leaveFrom="opacity-100 translate-y-0"
+                        leaveTo="opacity-0 translate-y-full"
+                    >
+                        <div className="sticky bottom-4 w-full max-w-max bg-white mx-auto rounded-lg flex flex-col justify-between items-center gap-4 p-4 shadow-lg z-30">
+                            <span className="w-full text-center text-gray-500">{progress}</span>
+                        </div>
+                    </Transition>
+
+                </div>
             </section>
         </>
     );

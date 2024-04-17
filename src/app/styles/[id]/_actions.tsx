@@ -1,4 +1,3 @@
-import { getMongoDB } from "@/utils/getMongo";
 import OpenAI from "openai";
 const openAIApi = new OpenAI({
     organization: "org-B0x5nwrSR31e5bkeQuwEKeyY",
@@ -149,15 +148,15 @@ export async function generateComparison(messages: any, openai = openAIApi as an
  * @param openai - The OpenAI instance.
  * @returns The embedding for the given text chunk, or null if an error occurs.
  */
-export async function getEmbedding(chunk: string, openai = openAIApi as any) {
+export async function getEmbedding(chunk: string) {
     'use server'
     try {
 
-        const embeddingResponse = await openai.embeddings.create({
+        const embeddingResponse = await openAIApi.embeddings.create({
             model: `${process.env.SMALL_EMBEDDING_MODEL}`,
             input: chunk,
         });
-        const embedding = await embeddingResponse.data[0].embedding;
+        const embedding = embeddingResponse.data[0].embedding;
         return embedding;
     } catch (error) {
         console.error("Error getting embedding:", error);

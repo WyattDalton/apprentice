@@ -1,5 +1,7 @@
 import SingleSourceUi from './_components/SingleSourceUi';
-import { fetchSource, deleteSource, updateSource } from '../_actions';
+import { fetchSource } from '@/app/_actions/_sources/fetchSource';
+import { deleteSource } from '@/app/_actions/_sources/deleteSource';
+import { updateSource } from '@/app/_actions/_sources/updateSource';
 
 async function page({ params }: { params: { id: string } }) {
 

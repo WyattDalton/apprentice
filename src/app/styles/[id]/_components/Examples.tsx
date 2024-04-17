@@ -7,33 +7,20 @@ import { ArrowDownIcon, ArrowUpIcon, CloseIcon, EditIcon, PlusIcon } from "@/com
 import { useEffect } from "react";
 
 type ExamplesProps = {
-    className: string,
-    title: string,
-    setTitle: any,
-    sample: string,
     examples: any,
     newExample: any,
     setNewExample: any,
-    setExamples: any,
-    displayAddExample: boolean,
-    setDisplayAddExample: any,
     handleAddExample: any,
     handleUpdateExample: any,
     handleDeleteExample: any
 };
 
 function Examples({
-    className,
-    title,
-    setTitle,
-    sample,
     examples,
-    setExamples,
     newExample,
     setNewExample,
-    displayAddExample,
-    setDisplayAddExample,
-    handleAddExample, handleUpdateExample,
+    handleAddExample,
+    handleUpdateExample,
     handleDeleteExample
 }: ExamplesProps) {
 

@@ -1,11 +1,15 @@
 'use server';
 
-import SingleStyleUi from "./_components/SingleViewStyleUi";
 import { getStyleData } from "@/app/_actions/_styles/getStyleData";
 import { deleteStyle } from "@/app/_actions/_styles/deleteStyle";
 import { updateStyle } from "@/app/_actions/_styles/updateStyle";
-import { getEmbedding, getInstructions, generateBlueprint, generateSample, generateComparison } from "./_actions";
-import { Disclosure, Transition } from "@headlessui/react";
+
+import { getEmbedding } from "@/app/_actions/_styles/getEmbedding";
+import { getInstructions } from "@/app/_actions/_styles/getInstructions";
+import { generateBlueprint } from "@/app/_actions/_styles/generateBlueprint";
+import { generateSample } from "@/app/_actions/_styles/generateSample";
+import { generateComparison } from "@/app/_actions/_styles/generateComparison";
+
 import Modal from "./_components/Modal";
 
 /**

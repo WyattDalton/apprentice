@@ -23,7 +23,7 @@ export default function Modal({ _id, sourceData, deleteSource, updateSource }: S
         <>
             <div className="fixed block w-screen h-screen top-0 left-0 z-10 backdrop-blur-sm cursor-pointer" onClick={() => handleCloseViewModal()}></div>
             <Transition
-                className={'z-50 fixed left-0 top-0 h-screen w-full max-w-[800px] overflow-y-scroll'}
+                className={'z-50 fixed flex flex-col left-0 top-0 min-h-screen w-full max-w-[800px] overflow-y-scroll'}
                 as={'div'}
                 appear={true}
                 show={true}

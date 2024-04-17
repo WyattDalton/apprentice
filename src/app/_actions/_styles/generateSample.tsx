@@ -24,17 +24,12 @@ export async function generateSample(style: any, prompt = 'Generate a sample of 
         }
         styleString += `### End of style ###\n\n`;
 
-        const messages = [
-            {
-                "role": "user",
-                "content": `${styleString}\n\n ${prompt}`
-            }
-        ];
+        const contentString = `${styleString}\n\n ${prompt}` as string;
 
         // Create the chat completion
         const sample = await openai.chat.completions.create({
             model: `${process.env.PROCESSING_MODEL}`,
-            messages: messages,
+            messages: [{ role: "user", content: contentString }],
         });
 
         // Return the combined instructions

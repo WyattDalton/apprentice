@@ -500,13 +500,13 @@ function SingleViewStyleUi({
     /* * * * * * * * * * * * * * * * * */
     return (
         <>
-            <section className="flex flex-col flex-grow p-4 max-h-full overflow-y-scroll">
+            <section className="flex flex-col flex-grow p-4 h-screen overflow-y-scroll">
                 <div className="w-full max-w-[800px] mx-auto bg-white rounded-lg p-4 flex flex-col gap-4 shadow-lg relative z-10">
 
                     <button className="ml-auto flex justify-center items-center gap-2 border border-gray-500 px-2 rounded-md" onClick={() => handleCloseViewModal()}>Close <CloseIcon className="w-4 h-4" /></button>
 
-                    <div className="flex justify-between gap-4 mb-4">
-                        <input type="text" className="text-gray-800 text-2xl font-bold p-2 bg-transparent border-b border-b-gray-800 border-dashed	" value={title === 'Default title a.' ? '' : title} placeholder="Click here to edit the title" onChange={(e) => {
+                    <div className="flex flex-col-reverse md:flex-row justify-between gap-4 mb-4">
+                        <input type="text" className="text-gray-800 text-2xl font-bold p-2 bg-transparent border-b border-b-gray-800 border-dashed w-full max-w-max truncate" value={title === 'Default title a.' ? '' : title} placeholder="Click here to edit the title" onChange={(e) => {
                             handleUpdateTitle(e.target.value)
                         }} />
                         <DeleteModal title={title} deleting={deleting} handleDeleteStyle={handleDeleteStyle} />

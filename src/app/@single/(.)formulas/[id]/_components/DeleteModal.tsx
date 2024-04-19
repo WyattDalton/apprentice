@@ -97,7 +97,7 @@ export default function DeleteModal({ _id, title, deleteFormula }: DeleteModalPr
                     </div>
                 </Dialog>
             </Transition>
-            <button className="text-red-700" onClick={handleOpenModal}>Delete formula</button>
+            <button className="ml-auto text-red-700" onClick={handleOpenModal}>Delete formula</button>
         </>
     )
 }

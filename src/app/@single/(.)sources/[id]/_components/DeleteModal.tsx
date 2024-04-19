@@ -96,7 +96,7 @@ export default function DeleteModal({ _id, title, handleCloseViewModal, deleteSo
                     </div>
                 </Dialog>
             </Transition>
-            <button className="text-red-700" onClick={handleOpenModal}>Delete source</button>
+            <button className="text-red-700 ml-auto" onClick={handleOpenModal}>Delete source</button>
         </>
     )
 }

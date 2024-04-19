@@ -104,21 +104,20 @@ function SingleSourceUi({ _id, sourceData, deleteSource, updateSource, handleClo
 
     return (
         <>
-            <section className="flex flex-col flex-grow p-4 overflow-y-scroll">
+            <section className="flex flex-col flex-grow p-4 overflow-y-scroll h-screen">
                 <div className="w-full max-w-[800px] mx-auto bg-white rounded-lg p-4 flex flex-col flex-grow gap-4 shadow-lg relative z-10">
 
                     <button className="ml-auto flex justify-center items-center gap-2 border border-gray-500 px-2 rounded-md" onClick={() => handleCloseViewModal()}>Close <CloseIcon className="w-4 h-4" /></button>
 
-                    <div className="flex gap-4 justify-between items-center p-4">
-                        <span className='flex-grow'>
+                    <div className="flex flex-col-reverse md:flex-row gap-4 justify-between items-center p-4 ">
+
                             <input
-                                className="text-gray-800 text-2xl font-bold p-2 bg-transparent border-b border-b-gray-800 border-dashed truncate w-full flex-grow"
+                            className="text-gray-800 text-2xl font-bold p-2 bg-transparent border-b border-b-gray-800 border-dashed w-full max-w-max truncate"
                                 type="text"
                                 value={title === 'Default title' ? '' : title}
                                 placeholder="Click here to edit the title"
                                 onChange={(e) => handleChangeTitle(e.target.value)}
-                            />
-                        </span>
+                        />
                         <DeleteModal title={title} _id={_id} deleteSource={deleteSource} handleCloseViewModal={handleCloseViewModal} />
                     </div>
 

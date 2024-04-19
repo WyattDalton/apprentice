@@ -174,8 +174,8 @@ export default function FormulaSingleUi({
 
                     <button className="ml-auto flex justify-center items-center gap-2 border border-gray-500 px-2 rounded-md" onClick={() => handleViewCloseModal()}>Close <CloseIcon className="w-4 h-4" /></button>
 
-                    <div className="flex gap-4 justify-between items-center p-4">
-                        <input type="text" className="text-gray-800 text-2xl font-bold p-2 bg-transparent border-b border-b-gray-800 border-dashed	" value={title === 'Default title' ? '' : title} placeholder="Click here to edit the title" onChange={(e) => {
+                    <div className="flex gap-4 justify-between items-center p-4 flex-col-reverse md:flex-row">
+                        <input type="text" className="text-gray-800 text-2xl font-bold p-2 bg-transparent border-b border-b-gray-800 border-dashed w-full max-w-max truncate" value={title === 'Default title' ? '' : title} placeholder="Click here to edit the title" onChange={(e) => {
                             handleUpdateTitle(e.target.value)
                         }} />
                         <DeleteModal _id={_id} title={title} deleteFormula={deleteFormula} />

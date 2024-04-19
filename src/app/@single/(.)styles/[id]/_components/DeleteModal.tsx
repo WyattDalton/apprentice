@@ -78,7 +78,7 @@ export const DeleteModal = ({ title, deleting, handleDeleteStyle }: DeleteModalP
                 </Dialog>
             </Transition>
 
-            <button className="text-red-700" onClick={handleOpenModal}>Delete style</button>
+            <button className="text-red-700 ml-auto" onClick={handleOpenModal}>Delete style</button>
         </>
     )
 }

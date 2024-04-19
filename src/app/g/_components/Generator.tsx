@@ -572,7 +572,7 @@ export default function Generator({
                         <Transition
                             className="text-2xl font-bold text-gray-800 p-2 mb-4 border-b border-b-gray-800 border-dashed w-full max-w-max truncate"
                             as="h1"
-                            show={!!meta.title}
+                            show={!!meta?.title}
                             enter="transition-opacity transition-transform duration-300"
                             enterFrom="opacity-0 transform -translate-y-4"
                             enterTo="opacity-100 transform translate-y-0"
@@ -582,7 +582,7 @@ export default function Generator({
                             unmount={true}
                             appear={true}
                         >
-                            {meta.title}
+                            {meta?.title}
                         </Transition>
 
                         {!threadsData?.headThread ? (

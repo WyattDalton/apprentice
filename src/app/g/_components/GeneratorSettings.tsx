@@ -72,8 +72,11 @@ function GeneratorSettings({
 					onClick={() => setUseSources(!useSources)}
 					className="flex gap-2 items-center bg-white rounded-full py-2 px-4 border-gray-700 border">
 					<IoSchool className="w-6 h-6 text-gray" />
+
 					<span className="block font-semibold lg:mr-auto">Use Sources</span>
+
 					<Switch
+						as="span"
 						checked={useSources}
 						className={`${useSources ? 'bg-gray-700' : 'bg-gray-500'
 							} relative inline-flex h-6 w-11 items-center rounded-full`}
@@ -85,8 +88,6 @@ function GeneratorSettings({
 						/>
 					</Switch>
 				</button>
-
-
 			</div>
 
 			<Style

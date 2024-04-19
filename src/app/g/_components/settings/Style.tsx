@@ -27,17 +27,19 @@ function Style({ style, setStyle, settingFocus, setSettingFocus, styleLibrary, c
                                 setSettingFocus(true);
                                 setActive(true);
                             }}
-                            className="flex gap-2 items-center bg-white rounded-full py-2 px-4 border-gray-700 border text-gray-700">
+                            className="flex gap-2 items-center bg-white rounded-full py-2 px-4 border-gray-700 border text-gray-700"
+                        >
                             <MegaphoneIcon className="w-6 h-6 " />
                             <span className="block font-semibold flex gap-2 items-center">Add style <PlusIcon className="w-5 h-5" /></span>
-                            </button>
+                        </button>
                     ) : (
                             <button
                                 onClick={() => {
                                     setStyleSetting('');
                                     setStyle('');
                                 }}
-                                className="flex gap-2 items-center bg-gray-700 rounded-full py-2 px-4 border-white border text-white">
+                                className="flex gap-2 items-center bg-gray-700 rounded-full py-2 px-4 border-white border text-white"
+                            >
                                 <MegaphoneIcon className="w-6 h-6" />
                                 <span className="block font-semibold flex gap-2 items-center"><span className="truncate">{styleSetting}</span><PlusIcon className="w-5 h-5 transform rotate-45" /></span>
                             </button>

@@ -9,9 +9,9 @@ export function GeneratorGrid() {
             <Link href="/formulas" prefetch={true} className="w-full aspect-[3/2] bg-white rounded-md flex justify-center items-center">
                 <h2>Add formulas</h2>
             </Link>
-            <Link href="/guides" prefetch={true} className="w-full aspect-[6/2] col-span-full bg-white rounded-md flex justify-center items-center">
+            {/* <Link href="/guides" prefetch={true} className="w-full aspect-[6/2] col-span-full bg-white rounded-md flex justify-center items-center">
                 <h2>Get help</h2>
-            </Link>
+            </Link> */}
         </div>
     )
 }

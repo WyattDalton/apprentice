@@ -2,15 +2,13 @@
 
 import ViewTable from "@/components/_ui/ViewTable";
 import AddStyle from "./_components/AddStyle";
-import { fetchStyles } from "@/app/_actions/_styles/fetchStyles";
 import { deleteStyle } from "@/app/_actions/_styles/deleteStyle";
 import structureTheData from "./_structureTheData";
+import loadData from "../_actions/_utilities/loadViewTableData";
 
 export default async function StyleOfVoiceLibrary() {
 
-
-    const stylesSource = await fetchStyles();
-    const tableData = await structureTheData(stylesSource);
+    const tableData = await loadData('styles');
 
     /* * * * * * * * ** * * * * * * *
     /* Render

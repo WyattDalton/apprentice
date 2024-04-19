@@ -2,7 +2,6 @@
 
 import { Transition } from "@headlessui/react"
 import SingleViewStyleUi from "./SingleViewStyleUi"
-import { useState } from "react"
 import { useRouter } from "next/navigation"
 
 type ModalProps = {
@@ -20,8 +19,7 @@ type ModalProps = {
 export default function Modal({ params, data, deleteStyle, updateStyle, getEmbedding, getInstructions, generateBlueprint, generateSample, generateComparison }: ModalProps) {
 
     const router = useRouter()
-
-    const handleCloseViewModal = () => {
+    const handleCloseViewModal = async () => {
         router.back();
     }
 

@@ -1,8 +1,7 @@
-import Card from '@/components/_ui/Card';
+import { BackChevronIcon, PlusIcon } from '@/components/_elements/icons';
 import { Transition } from '@headlessui/react';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 import React, { useState } from 'react'
-import { IoAddCircleOutline, IoCloseOutline, IoCloseCircleOutline } from 'react-icons/io5';
 
 type Props = {
     formula: string;
@@ -17,62 +16,46 @@ function Formula({ formula, setFormula, formulaLibrary, settingFocus, setSetting
     const [formulaSetting, setFormulaSetting] = useState('');
 
     return (
-        <Card className="!mb-0 col-span-2" >
-
-            <div className="flex flex-col lg:flex-row justify-center items-center gap-2 mb-2">
-                <SparklesIcon className="w-6 h-6 text-gray-700" />
-                <span className="block font-semibold lg:mr-auto">Formula</span>
-
-                <div className='flex gap-2'>
-                {!formula && (
+        <>
+            <div className="flex gap-4 justify-between items-center w-full flex-row">
+                {!formula ? (
                     <button
                         onClick={() => {
                             setSettingFocus(true);
                             setActive(true);
                         }}
-                            className=" flex justify-center items-center gap-2 text-sm text-gray-500 hover:text-gray-700 bg-transparent rounded-full border border-gray-700 px-2 py-1"
-                    >
-                        Add <IoAddCircleOutline className="w-6 h-6 text-gray-700" />
+                        className="flex gap-2 items-center bg-white rounded-full py-2 px-4 border-gray-700 border text-gray-700">
+                        <SparklesIcon className="w-6 h-6 " />
+                        <span className="block font-semibold flex gap-2 items-center">Add formula <PlusIcon className="w-5 h-5" /></span>
                     </button>
-                )}
-
-                {!!formula && (
-                    <span
-                            className=" inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white"
-                    >
-                        {formulaSetting}
-                    </span>
-                )}
-
-                {!!formula && (
+                ) : (
                     <button
                         onClick={() => {
                             setFormula('');
                         }}
-                        className="text-sm text-gray-500 hover:text-gray-700 bg-transparent"
-                    >
-                        <IoCloseOutline className="w-6 h-6 text-gray-700" />
+                            className="flex gap-2 items-center bg-gray-700 rounded-full py-2 px-4 border-white border text-white">
+                            <SparklesIcon className="w-6 h-6" />
+                            <span className="block font-semibold flex gap-2 items-center"><span className="truncate">{formulaSetting}</span><PlusIcon className="w-5 h-5 transform rotate-45" /></span>
                     </button>
-                    )}
-                </div>
 
+                )}
             </div>
 
             <Transition
                 as="div"
-                className={`flex flex-wrap w-full`}
+                className={`flex flex-col gap-4 w-full absolute top-0 left-0 w-full h-full bg-white rounded-lg p-4 shadow-lg z-30`}
                 show={active}
-                enter="transition ease-out duration-100 transform"
-                enterFrom="opacity-0 -translate-y-1"
-                enterTo="opacity-100 translate-y-0"
-                leave="transition ease-in duration-75 transform"
-                leaveFrom="opacity-100 translate-y-0"
-                leaveTo="opacity-0 -translate-y-1"
+                enter="transition ease-out duration-150 transform"
+                enterFrom="opacity-0 -translate-x-5"
+                enterTo="opacity-100 translate-x-0"
+                leave="transition ease-in duration-150 transform"
+                leaveFrom="opacity-100 translate-x-0"
+                leaveTo="opacity-0 -translate-x-5"
                 appear={true}
                 unmount={true}
             >
-
-                <div className="flex flex-wrap">
+                <button className='block mr-auto' onClick={() => setActive(false)}><BackChevronIcon className={'h-4 w-4å'} /> Back</button>
+                <div className="flex flex-wrap w-full">
                     {formulaLibrary &&
                         formulaLibrary.map(
                             ({ _id, examples, instructions, summary, title }) => (
@@ -103,7 +86,7 @@ function Formula({ formula, setFormula, formulaLibrary, settingFocus, setSetting
 
                 </div>
             </Transition>
-        </Card >
+        </>
 
     )
 }

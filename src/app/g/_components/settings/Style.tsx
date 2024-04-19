@@ -1,8 +1,7 @@
-import Card from '@/components/_ui/Card';
 import { Transition } from '@headlessui/react';
 import { MegaphoneIcon } from '@heroicons/react/24/outline';
-import { IoAddCircleOutline, IoCloseOutline } from 'react-icons/io5';
 import React, { useState } from 'react'
+import { BackChevronIcon, PlusIcon } from '@/components/_elements/icons';
 
 type Props = {
     style: string;
@@ -20,60 +19,47 @@ function Style({ style, setStyle, settingFocus, setSettingFocus, styleLibrary, c
 
     return (
         <>
-            <Card className="!mb-0 relative overflow-visible">
-                <div className="!mb-0 flex flex-col lg:flex-row justify-center items-center gap-2 w-full flex-wrap">
-
-                    <MegaphoneIcon className="w-6 h-6 text-gray-700" />
-                    <span className="block font-semibold lg:mr-auto w-max">Style</span>
-
-
-
-                    <div className="flex gap-2">
-                        {!styleSetting && (
-                            <button
-                                onClick={() => {
-                                    setSettingFocus(true);
-                                    setActive(true);
-                                }}
-                                className="flex justify-center items-center gap-2 text-sm text-gray-500 hover:text-gray-700 bg-transparent rounded-full border border-gray-700 px-2 py-1"
-                            >
-                                Add <IoAddCircleOutline className="w-6 h-6 text-gray-700" />
+            <div className={`gap-4 flex flex-col ${!!className ? ` ${className}` : ''}`}>
+                <div className="flex gap-4 justify-between items-center w-full flex-row">
+                    {!styleSetting ? (
+                        <button
+                            onClick={() => {
+                                setSettingFocus(true);
+                                setActive(true);
+                            }}
+                            className="flex gap-2 items-center bg-white rounded-full py-2 px-4 border-gray-700 border text-gray-700">
+                            <MegaphoneIcon className="w-6 h-6 " />
+                            <span className="block font-semibold flex gap-2 items-center">Add style <PlusIcon className="w-5 h-5" /></span>
                             </button>
-                        )}
-                        {!!styleSetting && (
-                            <span
-                                className="truncate inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-700 text-white truncate"
-                            >
-                                {styleSetting}
-                            </span>
-                        )}
-                        {!!styleSetting && (
+                    ) : (
                             <button
                                 onClick={() => {
                                     setStyleSetting('');
                                     setStyle('');
                                 }}
-                                className="text-sm text-gray-500 hover:text-gray-700 bg-transparent"
-                            >
-                                <IoCloseOutline className="w-6 h-6 text-dark" />
+                                className="flex gap-2 items-center bg-gray-700 rounded-full py-2 px-4 border-white border text-white">
+                                <MegaphoneIcon className="w-6 h-6" />
+                                <span className="block font-semibold flex gap-2 items-center"><span className="truncate">{styleSetting}</span><PlusIcon className="w-5 h-5 transform rotate-45" /></span>
                             </button>
-                        )}
-                    </div>
+
+                    )}
                 </div>
 
 
                 <Transition
                     as="div"
+                    className={`flex flex-col gap-2 w-full absolute top-0 left-0 w-full h-full overflow-y-scroll bg-white rounded-lg p-4 shadow-lg z-30`}
                     show={active}
-                    enter="transition ease-out duration-100 transform"
-                    enterFrom="opacity-0 -translate-y-1"
-                    enterTo="opacity-100 translate-y-0"
-                    leave="transition ease-in duration-75 transform"
-                    leaveFrom="opacity-100 translate-y-0"
-                    leaveTo="opacity-0 -translate-y-1"
+                    enter="transition ease-out duration-150 transform"
+                    enterFrom="opacity-0 -translate-x-5"
+                    enterTo="opacity-100 translate-x-0"
+                    leave="transition ease-in duration-150 transform"
+                    leaveFrom="opacity-100 translate-x-0"
+                    leaveTo="opacity-0 -translate-x-5"
                     appear={true}
                     unmount={true}
                 >
+                    <button className='block mr-auto' onClick={() => setActive(false)}><BackChevronIcon className={'h-4 w-4å'} /> Back</button>
 
                     {!!styleLibrary ? (
                         styleLibrary.map((styleOption) => (
@@ -102,7 +88,7 @@ function Style({ style, setStyle, settingFocus, setSettingFocus, styleLibrary, c
                         ))
                     ) : ''}
                 </Transition>
-            </Card>
+            </div >
         </>
     )
 }

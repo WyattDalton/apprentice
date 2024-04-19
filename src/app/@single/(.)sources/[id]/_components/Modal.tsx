@@ -14,8 +14,7 @@ type SourceData = {
 export default function Modal({ _id, sourceData, deleteSource, updateSource }: SourceData) {
 
     const router = useRouter()
-
-    const handleCloseViewModal = () => {
+    const handleCloseViewModal = async () => {
         router.back();
     }
 

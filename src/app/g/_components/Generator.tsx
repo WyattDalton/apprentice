@@ -1,7 +1,7 @@
 "use client"
 
 // ### React imports
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 // ### Next imports
 import { useRouter } from "next/navigation";
@@ -13,15 +13,12 @@ import { Transition } from "@headlessui/react";
 import { useChat } from 'ai/react';
 
 // ### App imports
-import LoadingText from "@/components/_elements/LoadingText";
-import GeneratorInformation from "./GeneratorInformation";
-import GeneratorActions from "./GeneratorActions";
 import { GeneratorGrid } from "@/components/_ui/GeneratorGrid";
 import GeneratorContent from "./GeneratorContent";
 import GeneratorSettings from "./GeneratorSettings";
 import { GeneratorArrowIcon, InfoIcon, PlusIcon, SettingsIcon } from "@/components/_elements/icons";
 import LoadingSpinner from "@/components/_elements/LoadingSpinner";
-import GeneratorGridSkeleton from "@/components/_skeletons/GeneratorGridSkeleton";
+
 
 // ### Generator Prop types
 type GeneratorProps = {
@@ -32,6 +29,7 @@ type GeneratorProps = {
     // Initial data props
     initConversation?: any;
     threadsData?: any;
+    metaData?: any;
     stylesData?: any;
     formulasData?: any;
     generationId?: any;
@@ -60,6 +58,7 @@ export default function Generator({
     // Initial data props
     initConversation,
     threadsData,
+    metaData,
     stylesData,
     formulasData,
     generationId,
@@ -86,6 +85,7 @@ export default function Generator({
     // ###
     // ### Generator state
     const [generation, setGeneration] = useState<any>(generationId || '');
+    const [meta, setMeta] = useState<any>(threadsData || []);
     const [conversation, setConversation] = useState<any[]>([]);
     const [styleLibrary, setStyleLibrary] = useState<any>(stylesData || []);
     const [formulaLibrary, setFormulaLibrary] = useState<any>(formulasData || []);
@@ -113,6 +113,11 @@ export default function Generator({
     const [outline, setOutline] = useState<any>(null);
     const [formulaInstructions, setFormulaInstructions] = useState<any>(null);
 
+
+    useEffect(() => {
+        setMeta(metaData);
+    }, [metaData])
+
     useEffect(() => {
         !!initConversation ? setConversation(initConversation) : setConversation([]);
     }, [initConversation])
@@ -120,6 +125,21 @@ export default function Generator({
     useEffect(() => {
         !!threadsData?.headThread ? setHeadThread(threadsData.headThread) : setHeadThread([]);
     }, [threadsData])
+
+    // Disable scroll when panel is open
+    useEffect(() => {
+        if (activePanel === 'settings') {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+    }, [activePanel]);
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, []);
 
     /**
      * Generate step 1: Process the prompt
@@ -285,6 +305,7 @@ export default function Generator({
     const triggerSubmitPrompt = async (e: any, input: string) => {
         if (!!input) {
             e.preventDefault();
+            setActivePanel(false);
             const promptData = await handleProcessPrompt(e, input);
             handleSubmit(e);
         } else {
@@ -293,6 +314,17 @@ export default function Generator({
             setTimeout(() => {
                 setGeneratorError(false);
             }, 3000)
+        }
+    }
+
+    const handleGetTitle = async (messages: any, generation: any) => {
+        try {
+            const data = await getTitle(messages, generation);
+            if (!!data.title) {
+                setMeta({ ...meta, title: data.title });
+            }
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -307,6 +339,11 @@ export default function Generator({
         onFinish: async (res) => {
             setProgress('')
             setLoading(false);
+            console.log('Finished generating response')
+            if (messages.length > 4 && !meta.title) {
+                console.log('Getting title')
+                await handleGetTitle(messages, generation);
+            }
         },
         body: { settings, sources, styleLibrary, formulaLibrary, outline, thinkAbout, formulaInstructions },
         initialMessages: conversation,
@@ -409,14 +446,37 @@ export default function Generator({
     /**
      * Adjusts the height of the dynamic prompt field based on its content.
      */
+    useEffect(() => {
+        const field = user_prompt_ref.current;
+        if (field) {
+            const handleInput = () => {
+                handleDynamicPromptFieldHeight();
+            };
+
+            field.addEventListener('input', handleInput);
+
+            // Clean up the event listener when the component unmounts
+            return () => {
+                field.removeEventListener('input', handleInput);
+            };
+        }
+    }, [user_prompt_ref]);
+
     const handleDynamicPromptFieldHeight = () => {
         if (user_prompt_ref.current) {
             const field = user_prompt_ref.current as any;
             field.style.height = '0px';
-            const scrollHeight = field.scrollHeight;
-            field.style.height = scrollHeight + 'px';
+
+            if (input === '') {
+                // Set the height to 'unset' when the input is empty
+                field.style.height = 'unset';
+            } else {
+                const scrollHeight = field.scrollHeight;
+                field.style.height = `${scrollHeight}px`;
+            }
         }
     }
+
     useEffect(() => {
         handleDynamicPromptFieldHeight();
     }, [user_prompt_ref, input]);
@@ -507,15 +567,48 @@ export default function Generator({
         <>
             <section className={` relative flex-grow flex flex-col gap-4 p-4`}>
                 <div className="inset-0 bg-[radial-gradient(#e2e2e2_1px,transparent_1px)] [background-size:16px_16px] flex flex-col flex-grow px-[5%]">
-                    <div className={`flex-grow w-full max-w-[800px] p-4 mx-auto !overflow-visible !mb-0 flex flex-col${!!threadsData?.headThread || !!headThread.length ? '' : ' place-content-center'}`}>
+                    <div className={`flex-grow w-full max-w-[800px] lg:p-4 mx-auto !overflow-visible !mb-0 flex flex-col${!!threadsData?.headThread || !!headThread.length ? '' : ' place-content-center'}`}>
+
+                        <Transition
+                            className="text-2xl font-bold text-gray-800 p-2 mb-4 border-b border-b-gray-800 border-dashed w-full max-w-max truncate"
+                            as="h1"
+                            show={!!meta.title}
+                            enter="transition-opacity transition-transform duration-300"
+                            enterFrom="opacity-0 transform -translate-y-4"
+                            enterTo="opacity-100 transform translate-y-0"
+                            leave="transition-opacity transition-transform duration-300"
+                            leaveFrom="opacity-100 transform translate-y-0"
+                            leaveTo="opacity-0 transform -translate-y-4"
+                            unmount={true}
+                            appear={true}
+                        >
+                            {meta.title}
+                        </Transition>
+
                         {!threadsData?.headThread ? (
                             !headThread.length ? (<GeneratorGrid />) : (<GeneratorContent thread={headThread} className="" />)
                         ) : (<GeneratorContent thread={headThread} className="" />)}
                     </div>
                 </div>
-                <div className="w-full max-w-[800px] mx-auto flex flex-col gap-4 sticky bottom-0 p-4 z-30">
+
+                <div className="w-full max-w-[800px] mx-auto flex flex-col gap-4 sticky bottom-0 lg:p-4 z-30">
+
                     <Transition
-                        className={'flex flex-col p-4 bg-gray-700 rounded-lg'}
+                        as={Fragment}
+                        show={activePanel === 'settings'}
+                        enter="transition duration-200 ease-out"
+                        enterFrom="transform opacity-0"
+                        enterTo="transform opacity-100"
+                        leave="transition duration-200 ease-out"
+                        leaveFrom="transform opacity-100"
+                        leaveTo="transform opacity-0"
+                        unmount={false}
+                    >
+                        <div className="block fixed w-screen h-screen top-0 left-0 bg-white bg-opacity-20 backdrop-blur-sm cursor-pointer" onClick={(e) => setActivePanel(false)}></div>
+                    </Transition>
+
+                    <Transition
+                        className={'flex flex-col p-4 bg-white bg-opacity-50 backdrop-blur-sm rounded-lg w-full max-w-max'}
                         show={activePanel === 'settings'}
                         enter="transition duration-200 ease-out"
                         enterFrom="transform translate-y-10 opacity-0"
@@ -526,7 +619,7 @@ export default function Generator({
                         unmount={false}
                     >
                         <GeneratorSettings
-                            className={`flex flex-wrap w-full gap-4 transition-all duration-300`}
+                            className={``}
                             handleSetGeneratorSettings={setSettings}
                             generatorSettings={settings}
                             styleLibrary={styleLibrary}
@@ -575,7 +668,7 @@ export default function Generator({
 
                     {/* Form display */}
                     <form
-                        className={`${className} bg-white rounded-lg shadow-lg p-4`}
+                        className={`${className} bg-white rounded-lg shadow-lg p-2 lg:p-4 z-30`}
                         onSubmit={(e) => {
                             triggerSubmitPrompt(e, input);
                         }}

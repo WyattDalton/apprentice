@@ -65,6 +65,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     const styles = await fetchStyles();
     const formulas = await fetchFormulas();
     const sources = await fetchSources();
+    const meta = await fetchMetaData(params.id);
     const conversation = await getMessages(params.id);
 
     return <Generator
@@ -72,6 +73,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         initConversation={conversation?.messages}
         savedData={false}
         threadsData={threads}
+        metaData={meta}
         stylesData={styles}
         formulasData={formulas}
         sources={sources}

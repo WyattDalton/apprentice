@@ -8,6 +8,7 @@ import {
 	faAngleDoubleRight,
 	faChevronDown,
 	faChevronUp,
+	faChevronLeft,
 	faFile,
 	faLink,
 	faClose,
@@ -22,6 +23,15 @@ import {
 	faEdit,
 	faRefresh,
 } from '@fortawesome/free-solid-svg-icons';
+
+export const BackChevronIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon
+			className={!!className ? className : ''}
+			icon={faChevronLeft}
+		/>
+	);
+};
 
 export const RefreshIcon = ({ className }) => {
 	return (

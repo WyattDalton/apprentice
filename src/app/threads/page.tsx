@@ -1,11 +1,11 @@
 'use server';
 
-import ThreadsList from "@/components/_ui/ThreadsList";
-import { fetchThreads } from "../_actions/_threads/fetchThreads";
 import { deleteThread } from "../_actions/_threads/deleteThread";
 import ViewTable from "@/components/_ui/ViewTable";
 import AddThread from "./AddThread"
 import structureTheData from "./_structureTheData";
+import loadData from '../_actions/_utilities/loadViewTableData';
+
 
 
 /**
@@ -14,8 +14,7 @@ import structureTheData from "./_structureTheData";
  */
 export default async function Page() {
 
-    const threads = await fetchThreads();
-    const tableData = await structureTheData(threads);
+    const tableData = await loadData('threads');
 
     return (
         <ViewTable

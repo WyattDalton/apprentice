@@ -4,7 +4,6 @@ import { Dialog, Transition } from "@headlessui/react";
 import { usePathname, useRouter } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import LoadingText from "../_elements/LoadingText";
-import { PlusIcon } from "../_elements/icons";
 
 type ViewTableProps = {
     viewTitle: string | "View Table";
@@ -34,6 +33,44 @@ export default function ViewTable(
             setAllItems(data);
         }
     }, [data]);
+
+    useEffect(() => {
+        try {
+            const handleBackToViewTable = async (update: any) => {
+
+                const rawUpdateData = update.detail as any || null as any;
+
+                if (!rawUpdateData) {
+                    console.error('No update data found!');
+                    return;
+                }
+
+                const target = rawUpdateData._id;
+                const dataToUpdate = rawUpdateData.data;
+
+                const newAllItems = allItems.map((item: any) => {
+                    if (item._id === target) {
+                        Object.keys(dataToUpdate).forEach((key: any) => {
+                            item[key] = dataToUpdate[key];
+                        });
+                    }
+                    return item;
+                });
+
+                setAllItems(newAllItems);
+
+            };
+
+            window.addEventListener('updateViewTable', (e) => handleBackToViewTable(e));
+
+            // Clean up the event listener when the component unmounts
+            return () => {
+                window.removeEventListener('updateViewTable', handleBackToViewTable);
+            };
+        } catch (error) {
+            console.error(error);
+        }
+    }, []);
 
     const handleOpenItem = async (itemId: string) => {
         let route = !!viewItemRoutePrefix ? viewItemRoutePrefix : '';
@@ -142,7 +179,7 @@ export default function ViewTable(
 
                 {!!allItems.length ? (
                     <>
-                        <div className="flex justify-between items-center p-6 bg-white dark:bg-gray-800 dark:text-white">
+                        <div className="flex justify-between items-center p-6 bg-white">
                             <h1 className="text-2xl font-bold mr-auto">{viewTitle}</h1>
                             {addItem}
                         </div>
@@ -184,6 +221,7 @@ export default function ViewTable(
                                                 return (
                                                     <td
                                                         onClick={(e) => handleOpenItem(item._id)}
+                                                        data-targeting={valueKey}
                                                         key={index}
                                                         className={styles}>
                                                         {content}

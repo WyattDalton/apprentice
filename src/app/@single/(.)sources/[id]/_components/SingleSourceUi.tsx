@@ -51,6 +51,16 @@ function SingleSourceUi({ _id, sourceData, deleteSource, updateSource, handleClo
             titleTimerRef.current = setTimeout(async () => {
                 console.log('updating title... ', payload);
                 await updateSource(_id, payload)
+
+                window.dispatchEvent(new CustomEvent("updateViewTable", {
+                    detail: {
+                        _id: _id,
+                        data: {
+                            "title": updated
+                        }
+                    }
+                }));
+
                 setProgress('');
                 setLoading(false);
             }, 1000);

@@ -18,6 +18,7 @@ type FormulaProps = {
     outlineData?: string,
     deleteFormula: any,
     updateFormula: any,
+    handleViewCloseModal: any,
 }
 
 export default function FormulaSingleUi({
@@ -28,10 +29,9 @@ export default function FormulaSingleUi({
     thinkAboutData,
     outlineData,
     deleteFormula,
-    updateFormula
+    updateFormula,
+    handleViewCloseModal
 }: FormulaProps) {
-
-    const router = useRouter();
 
     /* * * * * * * * * * */
     // Use State
@@ -43,10 +43,6 @@ export default function FormulaSingleUi({
     const [thinkAbout, setThinkAbout] = useState(thinkAboutData || '');
     const [outline, setOutline] = useState(outlineData || false);
     const [instructions, setInstructions] = useState<any>(instructionsData || '');
-
-    const handleCloseViewModal = () => {
-        router.back();
-    }
 
     const titleTimerRef = useRef<NodeJS.Timeout | undefined>();
     const handleUpdateTitle = async (titleData: string) => {
@@ -65,6 +61,16 @@ export default function FormulaSingleUi({
 
             titleTimerRef.current = setTimeout(async () => {
                 await updateFormula(_id, payload);
+
+                window.dispatchEvent(new CustomEvent("updateViewTable", {
+                    detail: {
+                        _id: _id,
+                        data: {
+                            "title": titleData
+                        }
+                    }
+                }));
+
                 setProgress('');
                 setLoading(false);
             }, 1000);
@@ -166,7 +172,7 @@ export default function FormulaSingleUi({
             <section className="flex flex-col flex-grow p-4 h-screen overflow-y-scroll">
                 <div className="w-full max-w-[800px] mx-auto bg-white rounded-lg p-4 flex flex-col gap-4 shadow-lg relative z-10">
 
-                    <button className="ml-auto flex justify-center items-center gap-2 border border-gray-500 px-2 rounded-md" onClick={() => handleCloseViewModal()}>Close <CloseIcon className="w-4 h-4" /></button>
+                    <button className="ml-auto flex justify-center items-center gap-2 border border-gray-500 px-2 rounded-md" onClick={() => handleViewCloseModal()}>Close <CloseIcon className="w-4 h-4" /></button>
 
                     <div className="flex gap-4 justify-between items-center p-4">
                         <input type="text" className="text-gray-800 text-2xl font-bold p-2 bg-transparent border-b border-b-gray-800 border-dashed	" value={title === 'Default title' ? '' : title} placeholder="Click here to edit the title" onChange={(e) => {

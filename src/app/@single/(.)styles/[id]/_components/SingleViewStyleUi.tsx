@@ -320,7 +320,6 @@ function SingleViewStyleUi({
             const data = await updateStyle(id, payload);
             setLoading(false);
             setProgress('');
-
         } catch (error) {
             console.log('error in handleUpdate: ', error);
         }
@@ -378,16 +377,22 @@ function SingleViewStyleUi({
             setProgress('Updating title...');
             setTitle(title);
 
-            const previousTitle = titleData;
-
             if (titleTimerRef.current) {
                 clearTimeout(titleTimerRef.current);
             }
 
             titleTimerRef.current = setTimeout(async () => {
-                if (titleData === previousTitle) {
-                    const data = await updateStyle(id, { 'title': title });
-                }
+                const data = await updateStyle(id, { 'title': title });
+
+                window.dispatchEvent(new CustomEvent("updateViewTable", {
+                    detail: {
+                        _id: id,
+                        data: {
+                            "title": title
+                        }
+                    }
+                }));
+
                 setProgress('');
                 setLoading(false);
             }, 1000);

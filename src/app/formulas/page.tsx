@@ -1,17 +1,16 @@
 'use server'
 
-import { getMongoDB } from '@/utils/getMongo';
 import ViewTable from '@/components/_ui/ViewTable';
 import { deleteFormula } from '@/app/_actions/_formulas/deleteFormula';
-import { fetchFormulas } from '@/app/_actions/_formulas/fetchFormulas';
 import structureTheData from './_structureTheData';
 import AddFormula from './_components/AddFormula';
+import loadData from '../_actions/_utilities/loadViewTableData';
+
 
 
 export default async function FormulaLibrary() {
 
-    const formulas = await fetchFormulas();
-    const tableData = await structureTheData(formulas);
+    const tableData = await loadData('formulas');
 
     /* * * * * * * * ** * * * * * * *
     /* Render

@@ -19,8 +19,7 @@ export default function Modal({ titleData, instructionsData, formulaData, _id, d
 }: ModalProps) {
 
     const router = useRouter()
-
-    const handleCloseViewModal = () => {
+    const handleCloseViewModal = async () => {
         router.back();
     }
 
@@ -48,6 +47,7 @@ export default function Modal({ titleData, instructionsData, formulaData, _id, d
                     updateFormula={updateFormula}
                     thinkAboutData={thinkAboutData}
                     outlineData={outlineData}
+                    handleViewCloseModal={handleCloseViewModal}
                 />
             </Transition>
         </>

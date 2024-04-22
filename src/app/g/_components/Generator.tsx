@@ -184,7 +184,6 @@ export default function Generator({
                 setProgress('Retrieving sources...')
 
                 const raw_sources = await retrieveSources(promptEmbedding, 0.3, 5);
-
                 let knot_sources = !!raw_sources ? raw_sources : null;
 
                 knotPayload['sources'] = knot_sources;
@@ -316,6 +315,7 @@ export default function Generator({
     const triggerSubmitPrompt = async (e: any, input: string) => {
         if (!!input) {
             e.preventDefault();
+
             setActivePanel(false);
             const promptData = await handleProcessPrompt(e, input);
             handleSubmit(e);
@@ -350,36 +350,40 @@ export default function Generator({
         onFinish: async (res) => {
             setProgress('')
             setLoading(false);
-            if (messages.length > 4 && !meta.title) {
+            if (messages.length > 4 && !meta?.title) {
                 await handleGetTitle(messages, generation);
             }
         },
-        body: { settings, sources, styleLibrary, formulaLibrary, outline, thinkAbout, formulaInstructions },
+        body: { settings, sources, styleLibrary, outline, thinkAbout, formulaInstructions },
         initialMessages: conversation,
     })
 
     // Update the conversation state when the messages change
     useEffect(() => {
-        if (JSON.stringify(messages) !== JSON.stringify(conversation)) {
-            setProgress('Generating response...')
-            setConversation(messages)
+        try {
+            if (JSON.stringify(messages) !== JSON.stringify(conversation)) {
+                setProgress('Generating response...')
+                setConversation(messages)
 
 
-            const currentThread = [...headThread];
-            const knotIndex = currentThread.length - 1;
-            const knotPayload = !!currentThread[knotIndex] ? currentThread[knotIndex] : {} as any;
+                const currentThread = [...headThread];
+                const knotIndex = currentThread.length - 1;
+                const knotPayload = !!currentThread[knotIndex] ? currentThread[knotIndex] : {} as any;
 
-            if (messages[messages.length - 1].role === 'assistant') {
-                knotPayload['response'] = messages[messages.length - 1].content;
-                currentThread[knotIndex] = knotPayload;
-                setHeadThread(currentThread);
+                if (messages[messages.length - 1]?.role === 'assistant') {
+                    knotPayload['response'] = messages[messages.length - 1].content;
+                    currentThread[knotIndex] = knotPayload;
+                    setHeadThread(currentThread);
+                }
+
+                // const payload = {
+                //     "threads": { headThread, splitThreads }
+                // } as any;
+                // !!generation ? payload['generation'] = generation : null;
+                // preserveThread(payload);
             }
-
-            // const payload = {
-            //     "threads": { headThread, splitThreads }
-            // } as any;
-            // !!generation ? payload['generation'] = generation : null;
-            // preserveThread(payload);
+        } catch (error) {
+            console.log('Error in conversation update: ', error)
         }
     }, [messages])
 

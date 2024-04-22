@@ -523,7 +523,6 @@ function SingleStyleUi({
                 try {
                     const embedding = await getEmbedding(example);
                     payload.embedding = embedding;
-                    console.log('payload: ', payload);
                     newExamples[index] = payload;
 
                     setExamples(newExamples);

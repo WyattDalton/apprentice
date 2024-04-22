@@ -1,8 +1,6 @@
 import { Configuration, OpenAIApi } from 'openai-edge'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
-import { getResponseSources } from './utils/getResponseSources'
 import { getStyle } from './utils/getStyle'
-import { templatize } from './utils/getFormula'
 import { NextRequest, NextResponse } from 'next/server'
 
 // Optional, but recommended: run on the edge runtime.
@@ -29,7 +27,6 @@ export async function POST(req: NextRequest) {
 		const sources = data.sources;
 
 		const styles = data.styleLibrary;
-		const formulas = data.formulaLibrary;
 		const outline = data.outline;
 		const thinkAbout = data.thinkAbout;
 		const formulaInstructions = data.formulaInstructions;
@@ -39,7 +36,7 @@ export async function POST(req: NextRequest) {
 		const formatSettings = async (settings: any) => {
 			// ###
 			// ### destructure settings
-			const { enabled, details, contentType, formula, intention, length, style, useSources } = settings;
+			const { enabled, formula, length, style, useSources } = settings;
 
 			// ###
 			// ### get prompt embedding
@@ -57,33 +54,6 @@ export async function POST(req: NextRequest) {
 			// ###
 			// ### format settings start
 			let settingsString = "### Settings start ###\n\n";
-
-			// ###
-			// ### format details
-			if (!!details) {
-				settingsString += `
-				### Include the below details in the response ###\n
-				Details: ${details}\n
-				### End of details ###\n\n`;
-			}
-
-			// ###
-			// ### format content type
-			if (!!contentType) {
-				settingsString += `
-				### Format your response as the following content type ###\n
-				Format your response to be useful as a: ${contentType}\n
-				### End of content type ###\n\n`;
-			}
-
-			// ###
-			// ### format intention
-			if (!!intention) {
-				settingsString += `
-				### The intention of the response the following ###\n
-				This is the intended use of the response you'll generate: ${intention}\n
-				### End of intention ###\n\n`;
-			}
 
 			// ###
 			// ### format length
@@ -126,14 +96,13 @@ export async function POST(req: NextRequest) {
 
 			// ###
 			// ### format use sources
-			if (!!useSources) {
+			if (!!useSources && !!sources) {
 				// responseSources = await getResponseSources(sources, promptEmbeddingVectors, 5, 0.30, 'general');
 
 				settingsString += `
 				### Use the following sources as factual information for the response ###\n`;
 
 				await sources.forEach((source: any) => {
-					console.log('using source: ', source.title);
 					settingsString += `#${source.title}#\n${source.content}\n\n`;
 				})
 
@@ -149,6 +118,8 @@ export async function POST(req: NextRequest) {
 			`;
 			return settingsString;
 		}
+
+
 
 
 		/// ###

@@ -52,7 +52,6 @@ function SingleSourceUi({ _id, sourceData, deleteSource, updateSource }: SourceD
             }
 
             titleTimerRef.current = setTimeout(async () => {
-                console.log('updating title... ', payload);
                 await updateSource(_id, payload)
                 setProgress('');
                 setLoading(false);

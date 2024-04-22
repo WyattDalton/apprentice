@@ -45,7 +45,7 @@ function AddSource() {
         e.preventDefault();
         try {
             setLoading(true);
-            const data = await addRaw({ "name": rawName, "text": rawText }) as any;
+            const data = await addRaw({ "name": rawName, "title": rawName, "text": rawText }) as any;
             if (!data.success) {
                 setError('Failed to add raw text to sources');
                 setLoading(false);

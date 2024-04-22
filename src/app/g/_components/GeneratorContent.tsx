@@ -26,7 +26,9 @@ const GeneratorContent = ({ thread, className }: GeneratorContentProps) => {
 
                     {!!item.sources?.length ? (
                         <KnotSources index={index} sources={item.sources} />
-                    ) : ('')}
+                    ) : (
+                        ''
+                    )}
 
                     {!!item.thinkAbout?.length ? (
                         <KnotThinkAbout thinking={item.thinkAbout} index={index} />

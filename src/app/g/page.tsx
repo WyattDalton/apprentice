@@ -29,7 +29,7 @@ export default async function Page() {
         threadsData={threads || []}
         stylesData={styles || []}
         formulasData={formulas || []}
-        sources={sources || []}
+        sourcesData={sources || []}
         fetchMetaData={fetchMetaData}
         saveThread={saveThread}
         getTitle={getTitle}

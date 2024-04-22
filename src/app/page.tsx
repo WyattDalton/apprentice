@@ -31,7 +31,7 @@ export default async function Page() {
     threadsData={threads || []}
     stylesData={styles || []}
     formulasData={formulas || []}
-    sources={sources || []}
+    sourcesData={sources || []}
     saveThread={saveThread}
     getTitle={getTitle}
     updateThread={updateThread}

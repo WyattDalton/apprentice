@@ -16,12 +16,13 @@ export async function addRaw(source: any) {
     const sourcePayload = {} as any;
 
     const text = source.text;
+    const title = source.title;
     const name = source.name;
     const chunks = await createChunks(text) as any;
     const embeddings = await Promise.all(chunks.map((chunk: any, index: number) => getEmbedding(chunk, name, index)));
 
     sourcePayload.name = name;
-    sourcePayload.title = name;
+    sourcePayload.title = title;
     sourcePayload.type = 'raw';
     sourcePayload.text = text;
     sourcePayload.embeddings = embeddings;

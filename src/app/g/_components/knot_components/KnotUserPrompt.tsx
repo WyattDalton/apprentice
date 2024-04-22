@@ -19,7 +19,7 @@ export default function KnotUserPrompt({ item, index }: KnotUserPromptProps) {
                             </Disclosure.Button>
 
                             <Transition
-                                className={'bg-gray-700 text-white p-6 rounded-xl w-full prose shadow-lg'}
+                                className={'bg-gray-700 text-white p-6 rounded-xl w-full prose shadow-lg mt-4'}
                                 show={open}
                                 enter="transition duration-100 ease-out"
                                 enterFrom="transform -translate-y-6 opacity-0"
@@ -30,11 +30,13 @@ export default function KnotUserPrompt({ item, index }: KnotUserPromptProps) {
                             >
                                 <Disclosure.Panel static>
                                     <div className="flex flex-row flex-wrap items-center justify-start gap-2">
-                                        <h3 className="text-lg font-bold w-full">Settings used for this generation</h3>
+
+                                        <h3 className="text-xl text-white font-bold w-full my-0">Settings used for this response</h3>
 
                                         <span className="block text-xs font-semibold text-white border-t border-b border-white/20 py-2 my-2 w-full">
                                             {item.user_prompt}
                                         </span>
+
                                         {!!item.settings.contentType && (
                                             <span className="text-xs font-semibold text-gray-400 flex gap-1 bg-gray-200 transition duration-300 text-gray-500 group-hover:bg-gray-500 group-hover:text-white rounded-full px-3 py-1 truncate">
                                                 <span>Type</span>

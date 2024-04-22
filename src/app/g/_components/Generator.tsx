@@ -18,6 +18,7 @@ import GeneratorContent from "./GeneratorContent";
 import GeneratorSettings from "./GeneratorSettings";
 import { GeneratorArrowIcon, InfoIcon, PlusIcon, SettingsIcon } from "@/components/_elements/icons";
 import LoadingSpinner from "@/components/_elements/LoadingSpinner";
+import { set } from "lodash";
 
 
 // ### Generator Prop types
@@ -34,7 +35,7 @@ type GeneratorProps = {
     formulasData?: any;
     generationId?: any;
     savedData?: any;
-    sources?: any;
+    sourcesData?: any;
 
     // Action props
     fetchMetaData?: any;
@@ -63,7 +64,7 @@ export default function Generator({
     formulasData,
     generationId,
     savedData,
-    sources,
+    sourcesData,
 
     // Action props
     fetchMetaData,
@@ -109,6 +110,7 @@ export default function Generator({
     const [progress, setProgress] = useState<any>('');
     const [generatorError, setGeneratorError] = useState<any>(false);
 
+    const [sources, setSources] = useState<any>(null);
     const [thinkAbout, setThinkAbout] = useState<any>(null);
     const [outline, setOutline] = useState<any>(null);
     const [formulaInstructions, setFormulaInstructions] = useState<any>(null);
@@ -178,12 +180,21 @@ export default function Generator({
 
             // Get sources if sources are requested
             if (!!settings.useSources) {
+
                 setProgress('Retrieving sources...')
-                const raw_sources = await retrieveSources(promptEmbedding, 0.50, 5);
+
+                const raw_sources = await retrieveSources(promptEmbedding, 0.3, 5);
+
                 let knot_sources = !!raw_sources ? raw_sources : null;
+
                 knotPayload['sources'] = knot_sources;
+
                 currentThread[knotIndex] = knotPayload;
+
                 setHeadThread(currentThread);
+
+                setSources(knot_sources);
+
             } else {
                 let knot_sources = null;
                 knotPayload['sources'] = knot_sources;
@@ -339,9 +350,7 @@ export default function Generator({
         onFinish: async (res) => {
             setProgress('')
             setLoading(false);
-            console.log('Finished generating response')
             if (messages.length > 4 && !meta.title) {
-                console.log('Getting title')
                 await handleGetTitle(messages, generation);
             }
         },

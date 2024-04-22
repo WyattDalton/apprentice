@@ -13,10 +13,10 @@ export default async function structureTheData(data: any) {
         payload['_id'] = !!thread._id ? thread._id : false;
         payload['id'] = !!thread._id ? thread._id.slice(-5).toUpperCase() : false;
         payload['created'] = !!thread.created ? new Date(thread.created).toLocaleDateString() : false;
+        payload['title'] = !!thread.title ? thread.title : false;
 
-        const meta = !!thread.metadata ? thread.metadata : false;
+        const meta = !!thread.meta ? thread.meta : false;
         if (!!meta) {
-            payload['title'] = !!meta.title ? meta.title : false;
             payload['tags'] = !!meta.tags ? meta.tags : false;
         }
         return payload;

@@ -24,8 +24,6 @@ export async function addFile(data: any) {
             const name = source.name;
             const title = name.split('.').slice(0, -1).join('.');
 
-            console.log(name)
-
             let content = '';
             switch (type) {
                 case 'text/plain':

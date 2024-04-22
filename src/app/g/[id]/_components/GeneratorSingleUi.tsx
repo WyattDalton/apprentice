@@ -10,13 +10,13 @@ type Props = {
     threads: any,
     styles: any,
     formulas: any,
-    sources: any,
+    sourcesData: any,
     meta: any
     fetchMetaData: any;
     saveThread: any;
 }
 
-export default function Page({ messagesData, generationId, savedData, threads, styles, formulas, sources, meta, fetchMetaData, saveThread }: Props) {
+export default function Page({ messagesData, generationId, savedData, threads, styles, formulas, sourcesData, meta, fetchMetaData, saveThread }: Props) {
     const [messages, setMessages] = useState(messagesData || []);
     return <Generator
         initConversation={messages}
@@ -25,7 +25,7 @@ export default function Page({ messagesData, generationId, savedData, threads, s
         threadsData={threads}
         stylesData={styles}
         formulasData={formulas}
-        sources={sources}
+        sourcesData={sourcesData}
         fetchMetaData={fetchMetaData}
         saveThread={saveThread}
     />;

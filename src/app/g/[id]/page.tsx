@@ -76,7 +76,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         metaData={meta}
         stylesData={styles}
         formulasData={formulas}
-        sources={sources}
+        sourcesData={sources}
         fetchMetaData={fetchMetaData}
         saveThread={saveThread}
         getTitle={getTitle}

@@ -25,14 +25,14 @@ export async function POST(req: NextRequest) {
 		const messages = data.messages;
 		const settings = data.settings;
 		const prompt = messages[messages.length - 1].content;
+
 		const sources = data.sources;
+
 		const styles = data.styleLibrary;
 		const formulas = data.formulaLibrary;
 		const outline = data.outline;
 		const thinkAbout = data.thinkAbout;
 		const formulaInstructions = data.formulaInstructions;
-
-		let responseSources: any = [];
 
 		// ###
 		// ### format settings for prompt
@@ -127,19 +127,18 @@ export async function POST(req: NextRequest) {
 			// ###
 			// ### format use sources
 			if (!!useSources) {
-				responseSources = await getResponseSources(sources, promptEmbeddingVectors, 10, 0.50, 'general');
+				// responseSources = await getResponseSources(sources, promptEmbeddingVectors, 5, 0.30, 'general');
 
 				settingsString += `
 				### Use the following sources as factual information for the response ###\n`;
 
-				await responseSources.forEach((source: any) => {
+				await sources.forEach((source: any) => {
+					console.log('using source: ', source.title);
 					settingsString += `#${source.title}#\n${source.content}\n\n`;
 				})
 
 				settingsString += `### End of sources ###\n\n
-				### If there are no sources, start your response with a variation of the following ###\n
-				WARNING: I do not have enough information to respond to your request factually. I will do my best to respond, but you may need to edit my response for accuracy.\n
-				### End of warning ###\n\n`;
+			\n\n`;
 			}
 
 			// ###

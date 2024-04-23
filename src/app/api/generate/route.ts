@@ -2,6 +2,7 @@ import { Configuration, OpenAIApi } from 'openai-edge'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 import { getStyle } from './utils/getStyle'
 import { NextRequest, NextResponse } from 'next/server'
+import { getResponseSources } from './utils/getResponseSources'
 
 // Optional, but recommended: run on the edge runtime.
 // See https://vercel.com/docs/concepts/functions/edge-functions
@@ -97,12 +98,11 @@ export async function POST(req: NextRequest) {
 			// ###
 			// ### format use sources
 			if (!!useSources && !!sources) {
-				// responseSources = await getResponseSources(sources, promptEmbeddingVectors, 5, 0.30, 'general');
-
+				const responseSources = await getResponseSources(sources, promptEmbeddingVectors, 5, 0.30, 'general');
 				settingsString += `
 				### Use the following sources as factual information for the response ###\n`;
 
-				await sources.forEach((source: any) => {
+				await responseSources.forEach((source: any) => {
 					settingsString += `#${source.title}#\n${source.content}\n\n`;
 				})
 

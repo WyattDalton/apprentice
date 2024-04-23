@@ -111,10 +111,13 @@ export default function Generator({
     const [generatorError, setGeneratorError] = useState<any>(false);
 
     const [sources, setSources] = useState<any>(null);
+    let inputSources = [] as any;
     const [thinkAbout, setThinkAbout] = useState<any>(null);
     const [outline, setOutline] = useState<any>(null);
     const [formulaInstructions, setFormulaInstructions] = useState<any>(null);
 
+    const [submitPrompt, setSubmitPrompt] = useState<any>(false);
+    const [processing, setProcessing] = useState<any>(false);
 
     useEffect(() => {
         setMeta(metaData);
@@ -159,6 +162,7 @@ export default function Generator({
         try {
             setLoading(true);
 
+
             const currentThread = [...headThread];
             const knotIndex = currentThread.length;
             const knotPayload = {} as any;
@@ -183,7 +187,9 @@ export default function Generator({
 
                 setProgress('Retrieving sources...')
 
-                const raw_sources = await retrieveSources(promptEmbedding, 0.3, 5);
+                const raw_sources = await retrieveSources(sourcesData, promptEmbedding, 0.3, 5);
+                setSources(raw_sources);
+
                 let knot_sources = !!raw_sources ? raw_sources : null;
 
                 knotPayload['sources'] = knot_sources;
@@ -192,13 +198,15 @@ export default function Generator({
 
                 setHeadThread(currentThread);
 
-                setSources(knot_sources);
+                inputSources = knot_sources;
+
 
             } else {
                 let knot_sources = null;
                 knotPayload['sources'] = knot_sources;
                 currentThread[knotIndex] = knotPayload;
                 setHeadThread(currentThread);
+                inputSources = knot_sources;
             }
 
             // Get formula from formula library
@@ -210,6 +218,7 @@ export default function Generator({
             // ### 
             // ### Perform thinking action if requested
             if (!!thinkAbout) {
+
                 setProgress('Thinking...')
                 const thinkData = await fetch('/api/think_about', {
                     method: 'POST',
@@ -239,6 +248,7 @@ export default function Generator({
                     setHeadThread(currentThread);
                 }
 
+
             } else {
                 const thinkAboutResponse = null;
                 knotPayload['thinkAbout'] = thinkAboutResponse;
@@ -250,6 +260,7 @@ export default function Generator({
             // ### 
             // ### Perform outlining action if requested
             if (!!outline) {
+
                 setProgress('Outlining the response...')
                 let outlinePrompt = `create an outline for your response for the following prompt: ${input} `;
 
@@ -290,6 +301,8 @@ export default function Generator({
                     setHeadThread(currentThread);
                 }
 
+
+
             } else {
                 const outline = null;
                 knotPayload['outline'] = outline;
@@ -297,6 +310,12 @@ export default function Generator({
                 setHeadThread(currentThread);
             }
 
+            return {
+                "sources": knotPayload.sources,
+                "outline": knotPayload.outline,
+                "formulaInstructions": !!formula?.instructions ? formula.instructions : null,
+                "thinkAbout": knotPayload.thinkAbout,
+            };
         } catch (error) {
             console.log(error);
         }
@@ -312,13 +331,22 @@ export default function Generator({
      * @param e - The event object.
      * @param input - The input string.
      */
+    let responseSources, responseThinkAbout, responseOutline, responseFormulaInstructions;
     const triggerSubmitPrompt = async (e: any, input: string) => {
         if (!!input) {
             e.preventDefault();
 
             setActivePanel(false);
-            const promptData = await handleProcessPrompt(e, input);
+
+            const promptData = await handleProcessPrompt(e, input) as any;
+
+            responseSources = promptData.sources;
+            responseThinkAbout = promptData.thinkAbout;
+            responseOutline = promptData.outline;
+            responseFormulaInstructions = promptData.formulaInstructions;
+
             handleSubmit(e);
+
         } else {
             e.preventDefault();
             setGeneratorError('Please enter your instructions.')
@@ -327,6 +355,7 @@ export default function Generator({
             }, 3000)
         }
     }
+
 
     const handleGetTitle = async (messages: any, generation: any) => {
         try {
@@ -354,7 +383,14 @@ export default function Generator({
                 await handleGetTitle(messages, generation);
             }
         },
-        body: { settings, sources, styleLibrary, outline, thinkAbout, formulaInstructions },
+        body: {
+            settings,
+            styleLibrary,
+            "sources": sourcesData,
+            outline,
+            thinkAbout,
+            formulaInstructions
+        },
         initialMessages: conversation,
     })
 

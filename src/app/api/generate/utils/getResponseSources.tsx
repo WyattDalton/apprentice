@@ -1,8 +1,6 @@
 
 
-export async function getResponseSources(sources: any, promptEmbeddingVectors: string, numReturn: number, minCosine: any, category: string) {
-
-    const sourcesToReturn = [] as any;
+export async function getResponseSources(sources: any, embedding: string, numReturn: number, percentageSimilarity: any, category: string) {
 
     function dotProduct(vecA: any, vecB: any) {
         return vecA.reduce((acc: any, val: any, i: any) => acc + val * vecB[i], 0);
@@ -16,21 +14,29 @@ export async function getResponseSources(sources: any, promptEmbeddingVectors: s
         return dotProduct(vecA, vecB) / (magnitude(vecA) * magnitude(vecB));
     }
 
-    sources.forEach((obj: { embeddings: any; }) => {
-        const embeddings = obj.embeddings;
-        embeddings.forEach((chunk: { embedding: any; title: any; content: any; }) => {
-            const cosine = cosineSimilarity(chunk.embedding, promptEmbeddingVectors);
-            if (cosine > minCosine) {
-                sourcesToReturn.push({
-                    "title": chunk.title,
-                    "content": chunk.content,
-                    "score": cosine,
-                });
-                sourcesToReturn.sort((a: { score: number; }, b: { score: number; }) => (a.score < b.score) ? 1 : -1);
-            }
-        });
-    });
+    try {
+        const sourcesToReturn = [] as any;
 
-    return sourcesToReturn.slice(0, numReturn);
+        await Promise.all(sources.map(async (obj: { embeddings: any; }) => {
+            const embeddings = obj.embeddings;
+            await Promise.all(embeddings.map(async (chunk: { embedding: any; title: any; content: any; }) => {
+                const cosine = cosineSimilarity(chunk.embedding, embedding);
+                if (cosine > percentageSimilarity) {
+                    sourcesToReturn.push({
+                        "title": chunk.title,
+                        "content": chunk.content,
+                        "score": cosine,
+                    });
+                    sourcesToReturn.sort((a: { score: number; }, b: { score: number; }) => (a.score < b.score) ? 1 : -1);
+                }
+            }));
+        }));
+
+        const returnSources = sourcesToReturn.slice(0, numReturn);
+
+        return returnSources;
+    } catch (error) {
+        console.error(error);
+    }
 
 }

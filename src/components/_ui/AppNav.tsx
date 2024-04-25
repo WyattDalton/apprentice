@@ -95,7 +95,6 @@ const AppNavigation = ({ views }: AppNavigationProps) => {
                     leave='transition-opacity duration-300'
                     leaveFrom='opacity-100'
                     leaveTo='opacity-0'
-                    unmount={false}
                 >
                 <button onClick={() => {
                     setMainOpen(true)

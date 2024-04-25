@@ -173,7 +173,7 @@ export default function ViewTable(
                 </Dialog>
             </Transition>
 
-            <div className="relative overflow-x-auto shadow-md rounded-lg m-4 bg-white">
+            <div className="relative overflow-x-auto shadow-md rounded-lg m-4 pb-4 bg-white">
 
 
 

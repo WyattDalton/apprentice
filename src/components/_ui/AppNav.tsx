@@ -1,14 +1,16 @@
 'use client';
 
-import { Dialog, Transition } from '@headlessui/react';
-import { NavMenuIcon, NotificationIcon, UserIcon } from '../_elements/icons';
-import { Fragment, useEffect, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { Transition } from '@headlessui/react';
+import { NavMenuIcon } from '../_elements/icons';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 
 import Link from "next/link";
 import Image from 'next/image'
 import logo from '../_elements/makerdigital-logo-dark.png';
 import { FormulaIcon, SourceIcon, StyleIcon } from "../_elements/icons";
+
 
 const AppLogo = () => {
     'use client'
@@ -80,7 +82,6 @@ const AppNavigation = ({ views }: AppNavigationProps) => {
     const [mainOpen, setMainOpen] = useState<any>(false);
     const [openPanel, setOpenPanel] = useState<any>('');
 
-
     return (
         <>
 
@@ -127,7 +128,7 @@ const AppNavigation = ({ views }: AppNavigationProps) => {
             <Transition
                 show={mainOpen}
                 as={"section"}
-                className='fixed top-0 left-0 min-h-screen w-screen inset-0 overflow-y-auto z-50 grid grid-cols-12 gap-4 p-4 pointer-events-none'
+                className='fixed top-0 left-0 min-h-screen w-screen lg:max-w-[350px] inset-0 overflow-y-auto z-50 grid grid-cols-12 gap-4 p-4 pointer-events-none'
                 enter="ease-out duration-300 transform"
                 enterFrom="opacity-0 -translate-x-4"
                 enterTo="opacity-100 translate-x-0"
@@ -137,7 +138,7 @@ const AppNavigation = ({ views }: AppNavigationProps) => {
                 appear={true}
                 unmount={true}
             >
-                <div className="w-full min-h-[calc(100%-2rem)] transform overflow-hidden rounded-2xl bg-white p-6 text-left align-start shadow-xl transition-all col-span-12 lg:col-span-3 pointer-events-auto">
+                <div className="w-full min-h-[calc(100%-2rem)] transform overflow-hidden rounded-2xl bg-white p-6 text-left align-start shadow-xl transition-all col-span-12 pointer-events-auto">
                     <AppLogo />
                     <Link href="/threads" prefetch={true} onClick={() => setMainOpen(false)} className="text-shade-500 hover:text-shade-700 flex gap-2 items-center py-3">
                         <span>Threads</span>

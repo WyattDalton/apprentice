@@ -18,7 +18,6 @@ import GeneratorContent from "./GeneratorContent";
 import GeneratorSettings from "./GeneratorSettings";
 import { GeneratorArrowIcon, InfoIcon, PlusIcon, SettingsIcon } from "@/components/_elements/icons";
 import LoadingSpinner from "@/components/_elements/LoadingSpinner";
-import { set } from "lodash";
 
 
 // ### Generator Prop types
@@ -635,7 +634,7 @@ export default function Generator({
                         </Transition>
 
                         {!threadsData?.headThread ? (
-                            !headThread.length ? (<GeneratorGrid />) : (<GeneratorContent thread={headThread} className="" />)
+                            (!headThread.length && !input.length) ? (<GeneratorGrid />) : (<GeneratorContent thread={headThread} className="" />)
                         ) : (<GeneratorContent thread={headThread} className="" />)}
                     </div>
                 </div>

@@ -15,7 +15,9 @@ export async function fetchMetaData(threadId: string) {
         const _id = new ObjectId(threadId);
         const thread = await threads.findOne({ _id: _id });
         const threadMeta = {} as any;
-        thread.title ? threadMeta['title'] = thread.title : null;
+
+        thread?.title ? threadMeta['title'] = thread.title : null;
+
         if (!threadMeta) return null;
         const cleanThreadMeta = { _id: thread._id.toString(), ...threadMeta };
         return cleanThreadMeta;

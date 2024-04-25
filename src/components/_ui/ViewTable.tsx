@@ -29,12 +29,6 @@ export default function ViewTable(
     const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
-        if (!!data) {
-            setAllItems(data);
-        }
-    }, [data]);
-
-    useEffect(() => {
         try {
             const handleBackToViewTable = async (update: any) => {
 
@@ -109,6 +103,14 @@ export default function ViewTable(
         setDeleting(false);
         handleCloseModal();
     }
+
+    useEffect(() => {
+        data.forEach((item: any) => {
+            let route = !!viewItemRoutePrefix ? viewItemRoutePrefix : '';
+            const url = `${route}/${item._id}`;
+            router.prefetch(url);
+        });
+    }, [data]);
 
     return (
         <>

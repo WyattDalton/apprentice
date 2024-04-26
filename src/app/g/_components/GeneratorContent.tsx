@@ -16,7 +16,7 @@ type GeneratorContentProps = {
 const GeneratorContent = ({ thread, className }: GeneratorContentProps) => {
 
     return (
-        <div className={`${className}`}>
+        <div id="gen-content" className={`${className}`}>
             {thread.map((item: any, index: any) => (
 
                 <div className="flex flex-col gap-6 justify-start" key={index}>

@@ -108,6 +108,7 @@ export default function Generator({
     const [loading, setLoading] = useState<any>(false);
     const [progress, setProgress] = useState<any>('');
     const [generatorError, setGeneratorError] = useState<any>(false);
+    const [displayScrollBottom, setDisplayScrollBottom] = useState<any>(false);
 
     const [sources, setSources] = useState<any>(null);
     let inputSources = [] as any;
@@ -142,6 +143,37 @@ export default function Generator({
     useEffect(() => {
         return () => {
             document.body.style.overflow = 'unset';
+        };
+    }, []);
+
+
+    useEffect(() => {
+        const checkScrollPosition = () => {
+            const genContent = document.getElementById('gen-content');
+            if (genContent) {
+                const rect = genContent.getBoundingClientRect();
+                const windowBottomPosition = window.innerHeight || document.documentElement.clientHeight;
+                const genContentBottomPosition = rect.bottom;
+
+                if (genContentBottomPosition - windowBottomPosition > 50) {
+                    setDisplayScrollBottom(true);
+                } else {
+                    setDisplayScrollBottom(false);
+                }
+            }
+        };
+
+        // Check the scroll position initially
+        checkScrollPosition();
+
+        // Check the scroll position whenever the window is scrolled or resized
+        window.addEventListener('scroll', checkScrollPosition);
+        window.addEventListener('resize', checkScrollPosition);
+
+        // Clean up the event listeners when the component is unmounted
+        return () => {
+            window.removeEventListener('scroll', checkScrollPosition);
+            window.removeEventListener('resize', checkScrollPosition);
         };
     }, []);
 
@@ -416,6 +448,24 @@ export default function Generator({
                 // } as any;
                 // !!generation ? payload['generation'] = generation : null;
                 // preserveThread(payload);
+
+                const genContent = document.getElementById('gen-content');
+                if (genContent) {
+                    const rect = genContent.getBoundingClientRect();
+                    const windowBottomPosition = window.innerHeight || document.documentElement.clientHeight;
+                    const genContentBottomPosition = rect.bottom;
+
+                    if (windowBottomPosition >= genContentBottomPosition - 50) {
+                        console.log('scrolling')
+                        window.scrollTo({
+                            top: document.body.scrollHeight,
+                            behavior: 'smooth'
+                        });
+                    } else {
+                        console.log('not scrolling')
+                    }
+                }
+
             }
         } catch (error) {
             console.log('Error in conversation update: ', error)
@@ -469,8 +519,7 @@ export default function Generator({
                     ...messages[lastUserMessageIndex],
                     settings: false,
                 } as any;
-        }
-
+            }
 
             const payload = {
                 "initial_prompt": firstUserMessage?.content,
@@ -673,6 +722,33 @@ export default function Generator({
                             styleLibrary={styleLibrary}
                             formulaLibrary={formulaLibrary}
                         />
+                    </Transition>
+
+                    {/* Scroll bottom arrow */}
+                    <Transition
+                        show={displayScrollBottom}
+                        className="flex justify-center items-center"
+                        enter="transition-opacity duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="transition-opacity duration-300"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                        unmount={true}
+                        appear={true}
+                    >
+                        <button
+                            className="backdrop-blur-sm bg-white bg-opacity-50 text-gray-700 rounded-lg flex gap-2 justify-center items-center cursor-pointer hover:text-white hover:bg-gray-700 hover:bg-opacity-75 transition-all duration-300 shadow-lg p-4"
+                            onClick={() => {
+                                window.scrollTo({
+                                    top: document.body.scrollHeight,
+                                    behavior: 'smooth'
+                                });
+                            }}
+                        >
+                            <span className="font-semibold">Scroll to bottom</span>
+                            <GeneratorArrowIcon className="h-4 w-4 rotate-90 aspect-square rounded-full border border-gray-700 hover:border-white p-1" />
+                        </button>
                     </Transition>
 
                     {/* Error display */}

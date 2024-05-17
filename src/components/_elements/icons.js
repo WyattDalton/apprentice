@@ -22,7 +22,14 @@ import {
 	faCheck,
 	faEdit,
 	faRefresh,
+	faBug,
 } from '@fortawesome/free-solid-svg-icons';
+
+export const BugIcon = ({ className }) => {
+	return (
+		<FontAwesomeIcon className={!!className ? className : ''} icon={faBug} />
+	);
+};
 
 export const BackChevronIcon = ({ className }) => {
 	return (

@@ -1,7 +1,7 @@
 'use client';
 
 import { Transition } from '@headlessui/react';
-import { GeneratorArrowIcon, NavMenuIcon } from '../_elements/icons';
+import { BugIcon, GeneratorArrowIcon, NavMenuIcon, UserIcon } from '../_elements/icons';
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -50,6 +50,16 @@ const AppNavigation = ({ views }: AppNavigationProps) => {
                 >
                     <NavMenuIcon className={'w-4 h-4'} /> Menu
                 </button>
+                <div className='hidden md:flex items-center justify-end gap-2 flex-grow'>
+                    <Link href="https://makerdigital.io/report-a-bug/" prefetch={true} className={`flex items-center gap-2 border border-shade rounded-full py-2 px-4`} target='_blank'>
+                        <BugIcon className="w-5 h-5" />
+                        <span>Report a bug</span>
+                    </Link>
+                    <Link href="https://makerdigital.io/my-account/" prefetch={true} className={`flex items-center gap-2 text-shade py-2 px-4`} target='_blank'>
+                        <UserIcon className="w-5 h-5" />
+                        <span className="border-b  border-shade">My Account</span>
+                    </Link>
+                </div>
                 {/* </Transition> */}
             </div>
 
@@ -132,6 +142,16 @@ const AppNavigation = ({ views }: AppNavigationProps) => {
                         <SparklesIcon className="w-5 h-5" />
                         <span>Formulas</span>
                     </Link>
+                    <div className='flex flex-col md:hidden items-start justify-end gap-2 flex-grow mt-2 pt-6 border-t border-shade'>
+                        <Link href="https://makerdigital.io/report-a-bug/" prefetch={true} className={`flex items-center gap-2 border border-shade rounded-full py-2 px-4`} target='_blank'>
+                            <BugIcon className="w-5 h-5" />
+                            <span>Report a bug</span>
+                        </Link>
+                        <Link href="https://makerdigital.io/my-account/" prefetch={true} className={`flex items-center gap-2 text-shade py-2 px-4`} target='_blank'>
+                            <UserIcon className="w-5 h-5" />
+                            <span className="border-b  border-shade">My Account</span>
+                        </Link>
+                    </div>
                 </div>
             </Transition>
         </>

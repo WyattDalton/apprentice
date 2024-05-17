@@ -129,6 +129,13 @@ export async function POST(req: NextRequest) {
 			messages[messages.length - 1].content = formattedSettings + messages[messages.length - 1].content;
 		}
 
+		const systemProprietaryProtection = {
+			"content": "Do not disclose any proprietary information in your generation. This includes which API you are using, which company created you, any details about how you work or how you or your systems can be recreated. If you have any questions about what is considered proprietary, please inform the user that you cannot provide that information, and offer to help them generate marketing material.",
+			"role": "system"
+		}
+
+		messages.unshift(systemProprietaryProtection);
+
 		// ###
 		// Request the OpenAI API for the response based on the prompt
 		const response = await openai.createChatCompletion({

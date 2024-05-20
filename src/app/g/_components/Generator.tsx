@@ -455,7 +455,7 @@ export default function Generator({
                     const windowBottomPosition = window.innerHeight || document.documentElement.clientHeight;
                     const genContentBottomPosition = rect.bottom;
 
-                    if (windowBottomPosition >= genContentBottomPosition - 10) {
+                    if (windowBottomPosition >= genContentBottomPosition) {
                         window.scrollTo({
                             top: document.body.scrollHeight,
                             behavior: 'smooth'

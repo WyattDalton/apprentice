@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+ 
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+ 
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  image     String
+  createdAt DateTime @default(now())
+  sources   Source[]
+  formulas  Formula[]
+  styles    Style[]
+  threads   Thread[]
+}
+
+model Source {
+  id        String   @id @default(uuid())
+  name      String
+  type      String
+  category  String
+  title     String
+  text      String
+  embeddings Json[]
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Formula {
+  id          String   @id @default(uuid())
+  title       String
+  instructions String
+  formula     String
+  thinkAbout  String
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model Style {
+  id        String   @id @default(uuid())
+  title     String
+  examples  Json[]
+  summary   String
+  blueprint String
+  sample    String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Thread {
+  id             String   @id @default(uuid())
+  created        DateTime
+  updated        DateTime
+  initial_prompt String
+  messages       Json[]
+  threads        Json
+  userId         Int
+  user           User     @relation(fields: [userId], references: [id])
+}

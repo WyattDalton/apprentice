@@ -1,19 +1,30 @@
 "use server"
 
-import { getMongoDB } from "@/utils/getMongo";
+import prisma from "@/utils/getPrisma";
+import getLoggedInUser from "@/utils/getLoggedInUser";
 
 export default async function createFormula(data: any) {
     'use server'
-    const db = await getMongoDB() as any;
     try {
-        const rawData = await db.collection("formulas").insertOne(data);
-        const cleaned_id = rawData.insertedId.toString()
+
+        const user = await getLoggedInUser();
+        const userId = user.id;
+        const payload = data;
+        payload.userId = userId;
+
+        console.log('payload', payload);
+
+        const newFormula = await prisma.formula.create({
+            data: payload
+        });
 
         return {
             'success': true,
-            'formula': cleaned_id,
+            'formula': newFormula.id
         };
+
     } catch (error) {
+        console.log('Error in createFormula:', error);
         return {
             'success': false
         };

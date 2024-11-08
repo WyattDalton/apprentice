@@ -11,7 +11,7 @@ export default async function AddFormula() {
     const handleAddFormula = async () => {
         const rawNewFormula = {
             title: '',
-            instructions: [],
+            instructions: '',
             formula: '',
         }
         const newFormula = await createFormula(rawNewFormula);

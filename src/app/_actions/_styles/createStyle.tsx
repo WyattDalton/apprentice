@@ -1,5 +1,6 @@
 'use server'
-import { getMongoDB } from "@/utils/getMongo";
+import prisma from "@/utils/getPrisma";
+import getLoggedInUser from "@/utils/getLoggedInUser";
 
 /**
  * Creates a new style in the database.
@@ -9,12 +10,16 @@ import { getMongoDB } from "@/utils/getMongo";
 export async function createStyle(payload: any) {
     'use server'
     try {
-        const db = await getMongoDB() as any;
-        const style = await db.collection("styles").insertOne(payload);
-        const cleanedStyle = { ...style, _id: style.insertedId.toString() };
+        const user = await getLoggedInUser();
+        const userId = user.id.toString();
+        payload.userId = userId;
+
+        const style = await prisma.style.create({
+            data: payload
+        });
         return {
             success: true,
-            insertedId: cleanedStyle._id,
+            insertedId: style.id,
         };
     } catch (error: any) {
         console.error('Error in POST:', error.message);

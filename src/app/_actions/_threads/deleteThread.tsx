@@ -1,22 +1,36 @@
 "use server"
-import { getMongoDB } from '@/utils/getMongo'
-import { ObjectId } from 'mongodb';
+
+import prisma from '@/utils/getPrisma'
+import getLoggedInUser from '@/utils/getLoggedInUser';
 
 /**
  * Deletes a thread from the database.
- * @param data - The data object containing the thread ID.
+ * @param id - The thread ID.
  * @returns An object indicating the success of the operation and the updated list of threads.
 */
-export async function deleteThread(data: any) {
+export async function deleteThread(id: any) {
     "use server"
-    const db = await getMongoDB() as any;
     try {
-        const threadToDelete = await db.collection('threads').deleteOne({ _id: new ObjectId(data._id) });
-        const threads = await db.collection('threads').find({}).sort({ created: -1 }).toArray();
-        const cleanThreads = threads.map(({ _id, ...rest }: any) => ({ _id: _id.toString(), ...rest })) as any;
+        const user = await getLoggedInUser();
+        const userId = user.id;
+        const threadToDelete = await prisma.thread.delete({
+            where: {
+                id: id
+            }
+        });
+
+        const threads = await prisma.thread.findMany({
+            where: {
+                userId: userId
+            },
+            orderBy: {
+                created: "desc"
+            }
+        });
+
         return {
             'success': true,
-            'data': cleanThreads,
+            'data': threads,
         };
     } catch (error) {
         return {

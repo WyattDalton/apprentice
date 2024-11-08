@@ -1,6 +1,6 @@
 "use server";
-import { getMongoDB } from "@/utils/getMongo";
-import { ObjectId } from "mongodb";
+import prisma from "@/utils/getPrisma";
+import getLoggedInUser from "@/utils/getLoggedInUser";
 
 /**
  * Updates a thread in the database.
@@ -10,18 +10,29 @@ import { ObjectId } from "mongodb";
 export async function updateThread(data: any) {
     "use server";
     try {
-        const { _id, update } = data;
-        const db = await getMongoDB() as any;
-        const collection = db.collection("threads");
-        const res = await collection.updateOne({ _id: new ObjectId(_id) }, { $set: update }, { upsert: true });
-        const threads = await collection.find({}).toArray();
-        const cleanThreads = threads.map(({ _id, ...rest }: any) => ({ _id: _id.toString(), ...rest }));
-        const cleanThread = { _id: _id.toString(), ...update };
+
+        const update = data as any;
+        const id = update.id;
+        const user = await getLoggedInUser();
+        const userId = user.id;
+
+        const thread = await prisma.thread.update({
+            where: {
+                id: id
+            },
+            data: update
+        });
+        const threads = await prisma.thread.findMany({
+            where: {
+                userId: userId
+            }
+        });
+
         return ({
             'success': true,
-            'thread': cleanThread,
-            'threads': cleanThreads,
-        });
+            'thread': thread,
+            'threads': threads
+        })
     } catch (err) {
         console.error("Error in updateThread: ", err);
     }

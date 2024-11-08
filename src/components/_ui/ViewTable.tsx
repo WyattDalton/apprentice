@@ -88,8 +88,8 @@ export default function ViewTable(
 
     const handleDeleteItem = async (itemId: string) => {
         setDeleting(true);
-        const payload = { _id: itemId }
-        const rawData = await deleteItem(payload);
+
+        const rawData = await deleteItem(itemId);
 
         if (!rawData.success) {
             console.error(rawData.error);
@@ -177,8 +177,6 @@ export default function ViewTable(
 
             <div className="relative overflow-x-auto shadow-md rounded-lg m-4 pb-4 bg-white">
 
-
-
                 {!!allItems.length ? (
                     <>
                         <div className="flex justify-between items-center p-6 bg-white">
@@ -202,7 +200,6 @@ export default function ViewTable(
                                     <th scope="col" className="bg-gray-50 px-6 py-3 text-right rounded-r-lg">Actions</th>
                                 </tr>
                             </thead>
-
 
                             <tbody className="">
                                 {allItems.map((item: any, index: any) => {

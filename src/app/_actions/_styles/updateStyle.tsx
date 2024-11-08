@@ -1,6 +1,5 @@
 'use server'
-import { getMongoDB } from "@/utils/getMongo";
-import { ObjectId } from "mongodb";
+import prisma from "@/utils/getPrisma";
 
 /**
  * Updates a style in the database.
@@ -11,12 +10,13 @@ import { ObjectId } from "mongodb";
 export async function updateStyle(id: string, payload: any) {
     'use server'
     try {
-        const db = await getMongoDB() as any;
-        const _id = new ObjectId(id);
-        const style = await db.collection("styles").updateOne({ _id: _id }, { $set: payload });
-        const updatedStyle = await db.collection("styles").findOne({ _id: _id });
-        const cleanedStyle = { ...updatedStyle, _id: updatedStyle._id.toString() };
-        return cleanedStyle;
+        const style = await prisma.style.update({
+            where: {
+                id: id
+            },
+            data: payload
+        });
+        return style;
     } catch (error: any) {
         console.error('Error in PUT:', error.message);
     }

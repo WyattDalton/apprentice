@@ -1,11 +1,17 @@
 'use server'
-import { getMongoDB } from "@/utils/getMongo";
-import { ObjectId } from 'mongodb';
+
+import prisma from "@/utils/getPrisma";
 
 export async function updateFormula(id: any, data: any) {
     try {
-        const db = await getMongoDB() as any;
-        const res = await db.collection("formulas").updateOne({ _id: new ObjectId(id) }, { $set: data }, { upsert: true });
+
+        const res = await prisma.formula.update({
+            where: {
+                id: id
+            },
+            data: data
+        });
+
         return {
             'success': true,
             'formula': res,

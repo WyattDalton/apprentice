@@ -66,8 +66,8 @@ function Style({ style, setStyle, settingFocus, setSettingFocus, styleLibrary, c
                     {!!styleLibrary ? (
                         styleLibrary.map((styleOption) => (
                             <label
-                                key={styleOption._id}
-                                className={`mr-2 mb-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${style === styleOption._id
+                                key={styleOption.id}
+                                className={`mr-2 mb-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${style === styleOption.id
                                     ? 'bg-gray text-white'
                                     : 'bg-gray-200 text-gray-700'
                                     }`}
@@ -76,10 +76,10 @@ function Style({ style, setStyle, settingFocus, setSettingFocus, styleLibrary, c
                                     type="radio"
                                     className="form-radio h-4 w-4 text-gray-700 transition duration-150 ease-in-out"
                                     name="style"
-                                    value={styleOption._id}
-                                    checked={style === styleOption._id}
+                                    value={styleOption.id}
+                                    checked={style === styleOption.id}
                                     onChange={(e) => {
-                                        setStyle(styleOption._id);
+                                        setStyle(styleOption.id);
                                         setStyleSetting(styleOption.title);
                                         setSettingFocus(false);
                                         setActive(false);

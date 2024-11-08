@@ -1,9 +1,9 @@
 "use server"
 
-import { getMongoDB } from "@/utils/getMongo";
+import prisma from "@/utils/getPrisma";
+import getLoggedInUser from "@/utils/getLoggedInUser";
 import { createChunks, getEmbedding } from "./utilities";
 const cheerio = require('cheerio');
-
 
 /**
  * Fetches HTML content from a given URL.
@@ -31,6 +31,7 @@ export async function fetchHtmlFromUrl(src: any) {
  */
 export async function processHtmlFromUrl(obj: any) {
     "use server"
+
 
     // ###
     // ### Fetch the url, load the HTML, and parse it with Cheerio. change "rawContent" if no error.
@@ -108,7 +109,7 @@ export async function processHtmlFromUrl(obj: any) {
 }
 
 /**
- * Adds a URL to the MongoDB collection.
+ * Adds a URL to the DB.
  * @param url The URL to be added.
  * @returns A Promise that resolves to the newly added source.
  */
@@ -118,9 +119,9 @@ export async function addUrl(obj: any) {
     try {
         // ###
         // ### Init variables
-        const db = await getMongoDB() as any;
-        const sourcesCollection = db.collection("sources");
         const sourcePayload = {} as any;
+        const user = await getLoggedInUser();
+        const userId = user.id;
 
         // ###
         // ### Get the data
@@ -139,27 +140,20 @@ export async function addUrl(obj: any) {
         sourcePayload.text = text;
         sourcePayload.embeddings = embeddings;
         sourcePayload.category = 'general';
+        sourcePayload.userId = userId;
+
 
         /* * * * * * * * * * * * * */
-        /* Add to MongoDB
+        /* Add to Prisma
         /* * * * * * * * * * * * * */
-        const newSource = await sourcesCollection.updateOne(
-            { name: sourcePayload.name, type: sourcePayload.type }, // Filter
-            { $set: sourcePayload },     // Update
-            { upsert: true }             // Options: if no match is found, create a new document
-        );
+        const newSource = await prisma.source.create({
+            data: sourcePayload
+        })
 
         /* * * * * * * * * * * * * */
         /* Return new source
         /* * * * * * * * * * * * * */
-        const new_id = newSource.upsertedId;
-        const returnSource = await sourcesCollection.findOne(
-            { _id: new_id }, {
-            projection: { category: 1, name: 1, text: 1, title: 1, type: 1, _id: 1 },
-        }
-        );
-        const cleanedSource = { ...returnSource, _id: returnSource._id.toString() };
-        return { success: true, source: cleanedSource };
+        return { success: true, source: newSource };
     } catch (err) {
         return {
             "err": err,

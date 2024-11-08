@@ -193,7 +193,6 @@ export default function Generator({
         try {
             setLoading(true);
 
-
             const currentThread = [...headThread];
             const knotIndex = currentThread.length;
             const knotPayload = {} as any;
@@ -241,7 +240,7 @@ export default function Generator({
             }
 
             // Get formula from formula library
-            const formula = formulaLibrary.find((formula: any) => formula._id.toString() === settings.formula);
+            const formula = formulaLibrary.find((formula: any) => formula.id.toString() === settings.formula);
             const thinkAbout = !!formula?.thinkAbout ? formula.thinkAbout : null;
             const outline = !!formula?.outline ? formula.outline : null;
             setFormulaInstructions(formula?.instructions);
@@ -443,12 +442,6 @@ export default function Generator({
                     setHeadThread(currentThread);
                 }
 
-                // const payload = {
-                //     "threads": { headThread, splitThreads }
-                // } as any;
-                // !!generation ? payload['generation'] = generation : null;
-                // preserveThread(payload);
-
                 const genContent = document.getElementById('gen-content');
                 if (genContent) {
                     const rect = genContent.getBoundingClientRect();
@@ -481,58 +474,17 @@ export default function Generator({
     const preserveThread = async (payload: any) => {
         try {
             // Save the thread
+            setProgress('Saving...')
             const data = await saveThread(payload);
-
+            console.log('Thread saved: ', data.id)
             // On the initial save of the thread, a mongoDB _id is returned. This id is assigned to the generation state & the url is updated.
-            if (generation != data._id && window.location.pathname !== `/g/${generation}`) {
-                window.history.pushState({ page: 1 }, data.initial_prompt, `/g/${data._id}`);
-                setGeneration(await data._id);
+            if (generation != data.id && window.location.pathname !== `/g/${generation}`) {
+                window.history.pushState({ page: 1 }, data.initial_prompt, `/g/${data.id}`);
+                setGeneration(await data.id);
             }
-
+            setProgress('')
         } catch (error) {
             console.log(error);
-        }
-    }
-
-    /**
-     * Generate step 5: Save the thread after generation is finished
-     * 
-     * Handles the generation finish event.
-     * 
-     * @param messages - The array of messages.
-     * @param generation - The generation object.
-     */
-    const preserveOnGenerateFinish = async (messages: any, generation: any) => {
-        try {
-            setProgress('Done! Saving thread!')
-            const firstUserMessage = messages.find((message: any) => message.role === 'user');
-            const lastUserMessageIndex = messages.map((message: any) => message.role).lastIndexOf('user');
-
-            if (!!settings.enabled) {
-                messages[lastUserMessageIndex] = {
-                    ...messages[lastUserMessageIndex],
-                    settings: settings,
-                } as any;
-            } else {
-                messages[lastUserMessageIndex] = {
-                    ...messages[lastUserMessageIndex],
-                    settings: false,
-                } as any;
-            }
-
-            const payload = {
-                "initial_prompt": firstUserMessage?.content,
-                "created": firstUserMessage?.createdAt,
-                "messages": messages,
-                "threads": { headThread, splitThreads }
-            }
-
-            preserveThread(payload);
-
-            setProgress('');
-
-        } catch (error) {
-            console.log('Error when finished: ', error)
         }
     }
 
@@ -582,19 +534,19 @@ export default function Generator({
     /* Handle current response change
     /* * * * * * * * * * * * * * * * * * * */
     useEffect(() => {
-        if (isLoading && !!messages.length) {
-            try {
-                setLoading(true);
+        try {
+            if (!!messages.length) {
+
                 const firstUserMessage = messages.find((message) => message.role === 'user');
                 const lastUserMessageIndex = messages.map((message) => message.role).lastIndexOf('user');
                 if (!!settings.enabled) {
 
                     if (!!settings.style) {
-                        const style = styleLibrary.find((style: any) => style._id.toString() === settings.style);
+                        const style = styleLibrary.find((style: any) => style.id.toString() === settings.style);
                         settings.style = style.title;
                     }
                     if (!!settings.formula) {
-                        const formula = formulaLibrary.find((formula: any) => formula._id.toString() === settings.formula);
+                        const formula = formulaLibrary.find((formula: any) => formula.id.toString() === settings.formula);
                         settings.formula = !!formula.title ? formula.title : 'Unknown fomula';
                     }
 
@@ -616,43 +568,20 @@ export default function Generator({
                     "threads": { headThread, splitThreads }
                 } as any;
 
-                !!generation ? payload['generation'] = generation : null;
+                !!generation ? payload['id'] = generation : null;
 
-                preserveThread(payload);
-
-            } catch (error) {
-                console.log('Error while loading: ', error)
+                if (isLoading) {
+                    setLoading(true);
+                    preserveThread(payload);
+                } else if (!isLoading && !!generation) {
+                    preserveThread(payload);
+                    setLoading(false);
+                } 
             }
-
-            // Saves the thread when the generator is finished loading
-        } else if (!isLoading && !!messages.length) {
-            try {
-                setLoading(false);
-                const firstUserMessage = messages.find((message) => message.role === 'user');
-                const lastUserMessageIndex = messages.map((message) => message.role).lastIndexOf('user');
-
-                if (!!settings.enabled) {
-                    messages[lastUserMessageIndex] = {
-                        ...messages[lastUserMessageIndex],
-                        settings: settings,
-                    } as any;
-                } else {
-                    messages[lastUserMessageIndex] = {
-                        ...messages[lastUserMessageIndex],
-                        settings: false,
-                    } as any;
-                }
-                const payload = {
-                    "initial_prompt": firstUserMessage?.content,
-                    "created": firstUserMessage?.createdAt,
-                    "messages": messages,
-                    "threads": { headThread, splitThreads }
-                }
-                preserveThread(payload);
-            } catch (error) {
-                console.log('Error when finished: ', error)
-            }
+        } catch (error) {
+            console.log('Error while loading: ', error)
         }
+
     }, [isLoading])
 
 
@@ -681,9 +610,8 @@ export default function Generator({
                             {meta?.title}
                         </Transition>
 
-                        {!threadsData?.headThread ? (
-                            (!headThread.length && !input.length) ? (<GeneratorGrid />) : (<GeneratorContent thread={headThread} className="" />)
-                        ) : (<GeneratorContent thread={headThread} className="" />)}
+                        {(!headThread.length && !input.length) ? (<GeneratorGrid />) : (<GeneratorContent thread={headThread} className="" />)}
+
                     </div>
                 </div>
 

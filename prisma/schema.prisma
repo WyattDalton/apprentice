@@ -6,8 +6,8 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = "postgres://default:KqIWVxmAp1s6@ep-round-cake-a6gy4naz-pooler.us-west-2.aws.neon.tech/verceldb?pgbouncer=true&connect_timeout=15&sslmode=require"
-  directUrl = "postgres://default:KqIWVxmAp1s6@ep-round-cake-a6gy4naz.us-west-2.aws.neon.tech/verceldb?sslmode=require"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model User {
@@ -29,18 +29,18 @@ model Source {
   title      String?
   text       String?
   embeddings Json[]
-  userId     String
-  user       User   @relation(fields: [userId], references: [id])
+  userId     String?
+  user       User?   @relation(fields: [userId], references: [id])
 }
 
 model Formula {
   id           String @id @default(uuid())
   title        String?
   instructions String?
-  formula      String?
+  outline      Boolean?
   thinkAbout   String?
-  userId       String
-  user         User   @relation(fields: [userId], references: [id])
+  userId       String?
+  user         User?   @relation(fields: [userId], references: [id])
 }
 
 model Style {
@@ -50,17 +50,18 @@ model Style {
   summary   String?
   blueprint String?
   sample    String?
-  userId    String
-  user      User   @relation(fields: [userId], references: [id])
+  userId    String?
+  user      User?   @relation(fields: [userId], references: [id])
 }
 
 model Thread {
   id             String   @id @default(uuid())
   created        DateTime @default(now())
   updated        DateTime @updatedAt
+  title          String?
   initial_prompt String?
   messages       Json[]
   threads        Json?
-  userId         String
-  user           User     @relation(fields: [userId], references: [id])
+  userId         String?
+  user           User?     @relation(fields: [userId], references: [id])
 }

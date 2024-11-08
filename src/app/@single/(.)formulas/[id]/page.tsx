@@ -16,7 +16,7 @@ export default async function FormulaLibrary({ params }: { params: { id: string 
         }
     }
 
-    const { _id, title, instructions, formula, thinkAbout, outline } = rawData.formula;
+    const { id, title, instructions, formula, thinkAbout, outline } = rawData.formula;
 
     /* * * * * * * * * * */
     // Render
@@ -28,7 +28,7 @@ export default async function FormulaLibrary({ params }: { params: { id: string 
             thinkAboutData={thinkAbout}
             instructionsData={instructions}
             formulaData={formula}
-            _id={_id}
+            _id={id}
             deleteFormula={deleteFormula}
             updateFormula={updateFormula}
         />

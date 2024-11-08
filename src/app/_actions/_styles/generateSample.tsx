@@ -16,7 +16,7 @@ export async function generateSample(style: any, prompt = 'Generate a sample of 
         const styleForPrompt = await getStyleForPrompt(style, promptEmbeddingVectors);
 
         let styleString = `### Use the following notes to guide the style of your response ###\n
-            %%% Instructions for the style you should use: %%%\n${styleForPrompt.bluePrint} \n\n`;
+            %%% Instructions for the style you should use: %%%\n${styleForPrompt.blueprint} \n\n`;
 
         if (!!styleForPrompt.example) {
             styleString += `%%% Example of a response with the appropriate style: %%%\n

@@ -58,10 +58,10 @@ function Formula({ formula, setFormula, formulaLibrary, settingFocus, setSetting
                 <div className="flex flex-wrap w-full">
                     {formulaLibrary &&
                         formulaLibrary.map(
-                            ({ _id, examples, instructions, summary, title }) => (
+                            ({ id, examples, instructions, summary, title }) => (
                                 <label
-                                    key={_id}
-                                    className={`mr-2 mb-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${formula === _id
+                                    key={id}
+                                    className={`mr-2 mb-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${formula === id
                                         ? 'bg-gray text-white'
                                         : 'bg-gray-200 text-gray-700'
                                         }`}
@@ -70,10 +70,10 @@ function Formula({ formula, setFormula, formulaLibrary, settingFocus, setSetting
                                         type="radio"
                                         className="form-radio h-4 w-4 text-gray transition duration-150 ease-in-out"
                                         name="formula"
-                                        value={_id}
-                                        checked={formula === _id}
+                                        value={id}
+                                        checked={formula === id}
                                         onChange={(e) => {
-                                            setFormula(_id);
+                                            setFormula(id);
                                             setFormulaSetting(title);
                                             setActive(false);
                                         }}

@@ -63,7 +63,7 @@ export async function getStyleForPrompt(style: any, promptEmbeddingVectors: stri
 
         const payload = {} as any;
         payload["example"] = !!examplePool[0] ? examplePool[0].content : null;
-        payload["bluePrint"] = style.bluePrint;
+        payload["blueprint"] = style.blueprint;
 
         return payload;
     } catch (error) {

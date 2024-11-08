@@ -42,7 +42,7 @@ export async function getStyle(styleId: any, promptEmbeddingVectors: string, sty
 
         const payload = {} as any;
         payload["example"] = !!examplePool[0] ? examplePool[0].content : null;
-        payload["bluePrint"] = style.bluePrint;
+        payload["blueprint"] = style.blueprint;
         return payload;
 
 

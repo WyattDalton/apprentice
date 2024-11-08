@@ -1,7 +1,6 @@
 'use server'
 
-import { getMongoDB } from "@/utils/getMongo"
-import { ObjectId } from "mongodb"
+import prisma from '@/utils/getPrisma';
 
 /**
  * Retrieves style data from the database based on the provided ID.
@@ -11,20 +10,22 @@ import { ObjectId } from "mongodb"
 export async function getStyleData(id: string) {
     'use server'
     try {
-        const db = await getMongoDB() as any;
-        const _id = new ObjectId(id);
-        const style = await db.collection("styles").findOne({ _id: _id });
-        const cleanStyle = { _id: style._id.toString(), ...style };
+
+        const style = await prisma.style.findUnique({
+            where: {
+                id: id
+            }
+        });
 
         const payload = {} as any;
 
-        !!cleanStyle.title ? payload.title = cleanStyle.title : false;
-        !!cleanStyle.examples ? payload.examples = cleanStyle.examples : false;
-        !!cleanStyle.description ? payload.description = cleanStyle.description : false;
-        !!cleanStyle.keywords ? payload.keywords = cleanStyle.keywords : false;
-        !!cleanStyle.bluePrint ? payload.bluePrint = cleanStyle.bluePrint : false;
-        !!cleanStyle.sample ? payload.sample = cleanStyle.sample : false;
-        !!cleanStyle.iteration ? payload.iteration = cleanStyle.iteration : false;
+        !!style.title ? payload.title = style.title : false;
+        !!style.examples ? payload.examples = style.examples : false;
+        !!style.description ? payload.description = style.description : false;
+        !!style.keywords ? payload.keywords = style.keywords : false;
+        !!style.blueprint ? payload.blueprint = style.blueprint : false;
+        !!style.sample ? payload.sample = style.sample : false;
+        !!style.iteration ? payload.iteration = style.iteration : false;
 
         return payload;
     } catch (error: any) {

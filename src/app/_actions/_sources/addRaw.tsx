@@ -1,17 +1,20 @@
 "use server"
 
-import { getMongoDB } from "@/utils/getMongo";
+import prisma from "@/utils/getPrisma";
 import { createChunks, getEmbedding } from "./utilities";
+import getLoggedInUser from "@/utils/getLoggedInUser";
 
 /**
- * Adds raw sources to the MongoDB collection.
+ * Adds raw sources to the db.
  * @param sources - The array of sources to be added.
  * @returns A Promise that resolves to an array of objects containing the success status and the cleaned source.
  */
 export async function addRaw(source: any) {
     "use server"
-    const db = await getMongoDB() as any;
-    const sourcesCollection = db.collection("sources");
+
+
+    const user = await getLoggedInUser();
+    const userId = user.id.toString();
 
     const sourcePayload = {} as any;
 
@@ -27,26 +30,20 @@ export async function addRaw(source: any) {
     sourcePayload.text = text;
     sourcePayload.embeddings = embeddings;
     sourcePayload.category = 'general';
+    sourcePayload.userId = userId;
+
 
     /* * * * * * * * * * * * * */
-    /* Add to MongoDB
+    /* Add to Prisma
     /* * * * * * * * * * * * * */
-    const newSourceawait = await sourcesCollection.updateOne(
-        { name: name, type: 'raw' }, // Filter
-        { $set: sourcePayload },     // Update
-        { upsert: true }             // Options: if no match is found, create a new document
-    );
+    const newSourceawait = await prisma.source.create({
+        data: sourcePayload
+    });
+
+    console.log('newSourceawait: ', newSourceawait);
 
     /* * * * * * * * * * * * * */
     /* Return new source
     /* * * * * * * * * * * * * */
-    const returnSource = await sourcesCollection.findOne({
-        _id: newSourceawait.upsertedId,
-        type: 'raw'
-    },
-        {
-            projection: { category: 1, name: 1, text: 1, title: 1, type: 1, _id: 1 }
-        });
-    const cleanedSource = { ...returnSource, _id: returnSource._id.toString() };
-    return { success: true, source: cleanedSource };
+    return { success: true, source: newSourceawait };
 }

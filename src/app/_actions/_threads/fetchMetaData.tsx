@@ -1,6 +1,6 @@
 "use server";
-import { getMongoDB } from "@/utils/getMongo";
-import { ObjectId } from "mongodb";
+
+import prisma from "@/utils/getPrisma";
 
 /**
  * Fetches metadata for a thread.
@@ -10,17 +10,15 @@ import { ObjectId } from "mongodb";
 export async function fetchMetaData(threadId: string) {
     "use server";
     try {
-        const db = await getMongoDB() as any;
-        const threads = db.collection("threads");
-        const _id = new ObjectId(threadId);
-        const thread = await threads.findOne({ _id: _id });
+        const thread = await prisma.thread.findUnique({
+            where: {
+                id: threadId
+            }
+        });
         const threadMeta = {} as any;
-
         thread?.title ? threadMeta['title'] = thread.title : null;
-
         if (!threadMeta) return null;
-        const cleanThreadMeta = { _id: thread._id.toString(), ...threadMeta };
-        return cleanThreadMeta;
+        return thread;
     } catch (err) {
         console.error("Error in fetchMetaData: ", err);
     }

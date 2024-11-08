@@ -1,6 +1,4 @@
 "use server";
-import { getMongoDB } from "@/utils/getMongo";
-
 
 /**
  * Retrieves sources from the database based on cosine similarity to prompt embedding.

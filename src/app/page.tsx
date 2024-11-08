@@ -22,10 +22,10 @@ import Generator from "@/app/g/_components/Generator";
  */
 export default async function Page() {
 
-  const threads = await fetchThreads();
-  const styles = await fetchStyles();
-  const formulas = await fetchFormulas();
-  const sources = await fetchSources();
+  const threads = await fetchThreads() ?? [];
+  const styles = await fetchStyles() ?? [];
+  const formulas = await fetchFormulas() ?? [];
+  const sources = await fetchSources() ?? [];
 
   return <Generator
     threadsData={threads || []}

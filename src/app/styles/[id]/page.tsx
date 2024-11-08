@@ -22,6 +22,8 @@ async function Page({ params }: { params: { id: string } }) {
     // Get style data
     const data = await getStyleData(params.id);
 
+    console.log(data);
+
     return (
 
         <SingleStyleUi
@@ -31,7 +33,7 @@ async function Page({ params }: { params: { id: string } }) {
             examplesData={data.examples || []}
             descriptionData={data.description || ''}
             keywordsData={data.keywords || []}
-            bluePrintData={data.bluePrint || []}
+            blueprintData={data.blueprint || []}
             sampleData={data.sample || ''}
             iterationData={data.iteration || []}
 

@@ -11,13 +11,11 @@ import { updateThread } from "@/app/_actions/_threads/updatethread";
 import { fetchStyles } from "@/app/_actions/_styles/fetchStyles";
 import { retrieveSources } from "@/app/_actions/_generator/retrieveSources";
 import { retrievePromptEmbedding } from "@/app/_actions/_generator/retrievePromptEmbedding";
+import prisma from "@/utils/getPrisma";
 
 // Import the Generator component.
 import Generator from "@/app/g/_components/Generator";
 
-// Import the getMongoDB functions.
-import { getMongoDB } from "@/utils/getMongo";
-import { ObjectId } from 'mongodb';
 
 /**
  * Retrieves messages from the database for a given ID.
@@ -26,11 +24,13 @@ import { ObjectId } from 'mongodb';
  */
 const getMessages = async (idString: any) => {
     try {
-        const db = await getMongoDB() as any;
-        const id = new ObjectId(idString);
-        const thread = await db.collection("threads").findOne({ _id: id });
-        const cleanThread = { _id: thread._id.toString(), ...thread };
-        return { messages: cleanThread.messages };
+        const thread = await prisma.thread.findUnique({
+            where: {
+                id: idString
+            }
+        })
+        const messages = thread?.messages;
+        return { messages: messages };
     } catch (error) {
         console.log(error);
     }
@@ -43,11 +43,12 @@ const getMessages = async (idString: any) => {
  */
 const getThreads = async (idString: any) => {
     try {
-        const db = await getMongoDB() as any;
-        const id = new ObjectId(idString);
-        const rawdata = await db.collection("threads").findOne({ _id: id });
-        const threads = rawdata.threads;
-        return threads;
+        const threadsData = await prisma.thread.findUnique({
+            where: {
+                id: idString
+            }
+        });
+        return threadsData.threads;
     } catch (err) {
         return null;
     }

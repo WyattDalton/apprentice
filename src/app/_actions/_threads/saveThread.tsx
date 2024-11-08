@@ -1,6 +1,6 @@
 'use server';
-import { getMongoDB } from "@/utils/getMongo";
-import { ObjectId } from "mongodb";
+import prisma from "@/utils/getPrisma";
+import getLoggedInUser from "@/utils/getLoggedInUser";
 
 /**
  * Saves a thread to the database.
@@ -10,8 +10,10 @@ import { ObjectId } from "mongodb";
 export async function saveThread(data: any) {
     'use server';
     try {
-        const db = await getMongoDB() as any;
-        const threads = db.collection("threads");
+
+        let thread;
+        const user = await getLoggedInUser();
+        const userId = user.id;
 
         // ### 
         // ### Dynamic data
@@ -23,7 +25,7 @@ export async function saveThread(data: any) {
         // ### Init setup data
         const initial_prompt = data.initial_prompt ? data.initial_prompt : null;
         const created = data.created ? data.created : null;
-        const _id = !!data._id ? new ObjectId(data._id) : null;
+        const id = !!data.id ? data.id : null;
 
         // ###
         // ### Init payload
@@ -31,24 +33,22 @@ export async function saveThread(data: any) {
         if (!!saved) saved == 'true' ? payload['saved'] = true : payload['saved'] = false;
         if (!!messages) payload['messages'] = messages;
         if (!!genThreads) payload['threads'] = genThreads;
+        if (!!initial_prompt) payload['initial_prompt'] = initial_prompt;
 
-        if (!!_id) {
-            const response = await threads.updateOne(
-                { _id: _id }, // filter
-                { $set: payload }, // update
-                { upsert: true } // options
-            );
+        if (!!id) {
+            thread = await prisma.thread.update({
+                where: {
+                    id: id
+                },
+                data: payload
+            });
         } else {
-            await threads.updateOne(
-                { initial_prompt: initial_prompt, created: created }, // filter
-                { $set: payload }, // update
-                { upsert: true } // options
-            );
+            payload.userId = userId;
+            thread = await prisma.thread.create({
+                data: payload
+            });
         }
-        // Retrieve the updated document from the database
-        const updatedItem = await threads.findOne({ initial_prompt: initial_prompt, created: created });
-        const cleanedId = updatedItem._id.toString();
-        return { "_id": cleanedId };
+        return thread;
     } catch (err) {
         console.error("Error in saveThread: ", err);
         return null;

@@ -1,5 +1,7 @@
 "use server";
-import { getMongoDB } from "@/utils/getMongo";
+
+import prisma from "@/utils/getPrisma";
+import getLoggedInUser from "@/utils/getLoggedInUser";
 
 /**
  * Fetches threads from the server.
@@ -8,11 +10,19 @@ import { getMongoDB } from "@/utils/getMongo";
 export async function fetchThreads() {
     "use server";
     try {
-        const db = await getMongoDB() as any;
-        const threads = db.collection("threads");
-        const allThreads = await threads.find({}).sort({ created: -1 }).toArray();
-        const cleanThreads = allThreads.map(({ _id, ...rest }: any) => ({ _id: _id.toString(), ...rest }));
-        return cleanThreads;
+        const user = await getLoggedInUser();
+        const userId = user.id;
+
+        const allThreads = await prisma.thread.findMany({
+            where: {
+                userId: userId
+            },
+            orderBy: {
+                created: "desc"
+            }
+        });
+
+        return allThreads;
     } catch (err) {
         console.error("Error in fetchThreads: ", err);
     }

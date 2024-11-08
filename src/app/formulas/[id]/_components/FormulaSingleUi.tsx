@@ -42,6 +42,7 @@ export default function FormulaSingleUi({
     const titleTimerRef = useRef<NodeJS.Timeout | undefined>();
     const handleUpdateTitle = async (titleData: string) => {
         try {
+
             setLoading(true);
             setProgress('Updating title...');
             setTitle(titleData);
@@ -69,6 +70,9 @@ export default function FormulaSingleUi({
     const thinkAboutTimerRef = useRef<NodeJS.Timeout | undefined>();
     const handleUpdateThinkAbout = async (thinkAboutData: string) => {
         try {
+
+
+
             setLoading(true);
             setProgress('Updating think about...');
             setThinkAbout(thinkAboutData);

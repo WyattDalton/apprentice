@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
 					settingsString += `
 					### Use the following notes to guide the style of voice for the response ###\n
 						%%% Instructions for the style you should use: %%%\n
-						${styleData.bluePrint}\n\n`;
+						${styleData.blueprint}\n\n`;
 
 					if (!!styleData.example) {
 						settingsString += `%%% Example of a response with the appropriate style: %%%\n

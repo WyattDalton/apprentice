@@ -1,18 +1,21 @@
 "use server"
 
-import { getMongoDB } from "@/utils/getMongo";
+import prisma from "@/utils/getPrisma";
+import getLoggedInUser from "@/utils/getLoggedInUser";
+
 import { createChunks, getEmbedding } from "./utilities";
 const pdfParse = require('pdf-parse');
 const mammoth = require("mammoth");
 
 /**
- * Adds files to the MongoDB collection.
+ * Adds files to the DB.
  * @param sources An array of sources to be added.
  * @returns A Promise that resolves to an array of newly added sources.
  */
 export async function addFile(data: any) {
     "use server"
-    const db = await getMongoDB() as any;
+    const user = await getLoggedInUser();
+    const userId = user.id;
     try {
 
         const sources = await Promise.all(data.map(async (source: any) => {
@@ -53,29 +56,20 @@ export async function addFile(data: any) {
             sourcePayload.text = content;
             sourcePayload.embeddings = embeddings;
             sourcePayload.category = 'general';
-
+            sourcePayload.userId = userId;
 
             /* * * * * * * * * * * * * */
-            /* Add to MongoDB
+            /* Add to Prisma
             /* * * * * * * * * * * * * */
-            const newSourceawait = await db.collection("sources").updateOne(
-                { name: name, type: 'file' }, // Filter
-                { $set: sourcePayload },     // Update
-                { upsert: true }             // Options: if no match is found, create a new document
-            );
+
+            const newSource = await prisma.source.create({
+                data: sourcePayload
+            })
 
             /* * * * * * * * * * * * * */
             /* Return new source
             /* * * * * * * * * * * * * */
-            const returnSource = await db.collection("sources").findOne({
-                _id: newSourceawait.upsertedId,
-                type: 'file'
-            },
-                {
-                    projection: { category: 1, name: 1, text: 1, title: 1, type: 1, _id: 1 }
-                });
-            const cleanedSource = { ...returnSource, _id: returnSource._id.toString() };
-            return cleanedSource;
+            return newSource;
 
         }));
 

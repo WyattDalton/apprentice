@@ -16,7 +16,7 @@ type UiProps = {
     keywordsData: any,
     sampleData: any,
     iterationData: any,
-    bluePrintData: any,
+    blueprintData: any,
     deleteStyle: any,
     id: any,
     getEmbedding: any,
@@ -34,7 +34,7 @@ function SingleStyleUi({
     keywordsData,
     sampleData,
     iterationData,
-    bluePrintData,
+    blueprintData,
     deleteStyle,
     id,
     getEmbedding,
@@ -51,7 +51,7 @@ function SingleStyleUi({
     const [examples, setExamples] = useState(examplesData || []);
     const [description, setDescription] = useState(descriptionData || '');
     const [keywords, setKeywords] = useState(keywordsData || []);
-    const [bluePrint, setBluePrint] = useState(bluePrintData || '');
+    const [blueprint, setBluePrint] = useState(blueprintData || '');
     const [iteration, setIteration] = useState(iterationData || []);
     const [sample, setSample] = useState(sampleData || '');
 
@@ -155,21 +155,21 @@ function SingleStyleUi({
         try {
             // ###
             // ### Process blueprint
-            let bluePrintString = await generateBlueprint(iterationArray) as any;
-            setBluePrint(bluePrintString);
+            let blueprintString = await generateBlueprint(iterationArray) as any;
+            setBluePrint(blueprintString);
 
             // ###
             // ### Add initial blueprint to iteration
-            const bluePrintMessage = {
+            const blueprintMessage = {
                 "role": "system",
-                "content": bluePrint
+                "content": blueprint
             }
 
             // ###
             // ### Set the initial iteration messages
-            iterationArray.push(bluePrintMessage);
+            iterationArray.push(blueprintMessage);
             setIteration(iterationArray);
-            return bluePrintString;
+            return blueprintString;
         } catch (error) {
             console.log('error in processBlueprint: ', error);
         }
@@ -177,13 +177,13 @@ function SingleStyleUi({
 
     /**
      * Processes a sample by generating it, adding it to the iteration, and returning the sample and iteration.
-     * @param bluePrintString - The blue print string.
+     * @param blueprintString - The blue print string.
      * @param examplesArray - The examples array.
      * @param iterationArray - The iteration array.
      * @returns An object containing the generated sample and the updated iteration array.
      */
     const processSample = async (
-        bluePrintString = bluePrint as any,
+        blueprintString = blueprint as any,
         examplesArray = examples as any,
         iterationArray = iteration as any
     ) => {
@@ -192,7 +192,7 @@ function SingleStyleUi({
             // Generate sample
             setProgress('Generating sample...');
             const sampleResponse = await generateSample(
-                { "examples": examplesArray, "bluePrint": bluePrintString },
+                { "examples": examplesArray, "blueprint": blueprintString },
                 'Generate a sample of the style'
             )
             setSample(sampleResponse);
@@ -224,7 +224,7 @@ function SingleStyleUi({
             setProgress('Regenerating sample...');
 
             const sampleResponse = await generateSample(
-                { "examples": examples, "bluePrint": bluePrint },
+                { "examples": examples, "blueprint": blueprint },
                 prompt
             )
 
@@ -277,9 +277,9 @@ function SingleStyleUi({
             }
 
             setProgress('Generating blueprint...');
-            const bluePrintString = await processBlueprint(iterationArray.iteration);
-            if (!!bluePrintString) {
-                newStyle['bluePrint'] = bluePrintString;
+            const blueprintString = await processBlueprint(iterationArray.iteration);
+            if (!!blueprintString) {
+                newStyle['blueprint'] = blueprintString;
             } else {
                 setProgress('Error processing blueprint');
                 return;
@@ -288,7 +288,7 @@ function SingleStyleUi({
             // ###
             // ### If sample does not exist, generate a new sample
             setProgress('Generating sample...');
-            const sampleString = await processSample(bluePrintString, examplesArray, iterationArray.iteration);
+            const sampleString = await processSample(blueprintString, examplesArray, iterationArray.iteration);
             if (!!sampleString) {
                 newStyle['sample'] = sampleString;
             } else {
@@ -376,7 +376,7 @@ function SingleStyleUi({
             // ### Generate a new sample
             setProgress('Generating new sample...');
             const newSample = await generateSample(
-                { "examples": examples, "bluePrint": bluePrint },
+                { "examples": examples, "blueprint": blueprint },
                 'Generate a sample of the style that matches the other examples'
             );
 
@@ -397,7 +397,7 @@ function SingleStyleUi({
         }
     }
 
-    const bluePrintTimerRef = useRef<NodeJS.Timeout | undefined>();
+    const blueprintTimerRef = useRef<NodeJS.Timeout | undefined>();
     const handleUpdateBluePrint = async (newBluePrint: any) => {
         try {
             setLoading(true);
@@ -406,13 +406,13 @@ function SingleStyleUi({
             setBluePrint(newBluePrint);
 
             // Clear the previous timeout
-            if (bluePrintTimerRef.current) {
-                clearTimeout(bluePrintTimerRef.current);
+            if (blueprintTimerRef.current) {
+                clearTimeout(blueprintTimerRef.current);
             }
 
             // Set a new timeout
-            bluePrintTimerRef.current = setTimeout(async () => {
-                const payload = { "bluePrint": newBluePrint };
+            blueprintTimerRef.current = setTimeout(async () => {
+                const payload = { "blueprint": newBluePrint };
                 const data = await updateStyle(id, payload);
 
                 setLoading(false);
@@ -583,7 +583,7 @@ function SingleStyleUi({
                         </ReactMarkdown>
                     </div>
                 )}
-                {!!bluePrint && (
+                {!!blueprint && (
                     <div className="flex flex-col gap-4 p-4 mb-4 text-gray-500">
                         <div className="flex justify-between items-center gap-4">
                             <h2 className="text-xl font-semibold">Blueprint</h2>
@@ -594,13 +594,13 @@ function SingleStyleUi({
                         </div>
                         <TextareaAutosize
                             className="text-gray-800 bg-transparent text-lg pb-4 border-b border-gray-800 border-dashed resize-none transition-all duration-300 ease-in-out focus:border-gray-300 focus:ring-0"
-                            value={refinedBlueprint || bluePrint}
+                            value={refinedBlueprint || blueprint}
                             onChange={(e: any) => handleUpdateBluePrint(e.target.value)}
                             placeholder="Type here to change the blueprint..."
                         />
                     </div>
                 )}
-                {(!!examples.length && !bluePrint) && (
+                {(!!examples.length && !blueprint) && (
                     <div className="flex flex-col gap-4 p-4 bg-neutral-100 rounded-lg justify-center items-center text-gray-500">
                         <h2 className="text-xl font-semibold">Generate the style blueprint</h2>
                         <p>Now that you&rsquo;ve given Apprentice some examples, it has everything it needs to do a deep stylistic analysis and generate a style blueprint. The style blueprint makes it possible for apprentice to replicate the desired style when generating content!</p>

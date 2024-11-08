@@ -26,13 +26,13 @@ export async function generateBlueprint(iteration: any) {
         ];
 
         // Create the chat completion
-        const bluePrint = await openai.chat.completions.create({
+        const blueprint = await openai.chat.completions.create({
             model: `${process.env.PROCESSING_MODEL}`,
             messages: messages,
         });
 
         // Return the blueprint
-        const response = bluePrint.choices[0].message.content;
+        const response = blueprint.choices[0].message.content;
         return response;
     } catch (error) {
         console.log("error in processBluePrint: ", error);

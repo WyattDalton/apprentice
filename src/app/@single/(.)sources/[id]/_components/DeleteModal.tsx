@@ -26,7 +26,6 @@ export default function DeleteModal({ _id, title, handleCloseViewModal, deleteSo
             setOpenModal(false);
             setDeleting(false);
             handleCloseViewModal();
-
         }
         catch (error) {
             console.log(error);

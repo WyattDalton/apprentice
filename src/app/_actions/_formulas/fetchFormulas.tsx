@@ -1,5 +1,8 @@
 "use server";
-import { getMongoDB } from "@/utils/getMongo";
+
+import prisma from "@/utils/getPrisma";
+import getLoggedInUser from "@/utils/getLoggedInUser";
+
 /**
  * Fetches formulas from the server.
  * @returns {Promise<Array<Object>>} A promise that resolves to an array of clean formulas.
@@ -7,11 +10,18 @@ import { getMongoDB } from "@/utils/getMongo";
 export async function fetchFormulas() {
     "use server";
     try {
-        const db = await getMongoDB() as any;
-        const formulas = db.collection("formulas");
-        const allFormulas = await formulas.find({}).toArray();
-        const cleanFormulas = allFormulas.map(({ _id, ...rest }: any) => ({ _id: _id.toString(), ...rest }));
-        return cleanFormulas;
+
+        const user = await getLoggedInUser();
+        const userId = user.id;
+
+        const formulas = await prisma.formula.findMany({
+            where: {
+                userId: userId
+            }
+        });
+
+        return formulas;
+
     } catch (err) {
         console.error("Error in fetchFormulas: ", err);
     }

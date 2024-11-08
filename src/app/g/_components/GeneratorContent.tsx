@@ -14,7 +14,6 @@ type GeneratorContentProps = {
 };
 
 const GeneratorContent = ({ thread, className }: GeneratorContentProps) => {
-
     return (
         <div id="gen-content" className={`${className}`}>
             {thread.map((item: any, index: any) => (

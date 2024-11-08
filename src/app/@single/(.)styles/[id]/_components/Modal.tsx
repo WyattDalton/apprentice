@@ -45,7 +45,7 @@ export default function Modal({ params, data, deleteStyle, updateStyle, getEmbed
                     examplesData={data.examples || []}
                     descriptionData={data.description || ''}
                     keywordsData={data.keywords || []}
-                    bluePrintData={data.bluePrint || []}
+                    blueprintData={data.blueprint || []}
                     sampleData={data.sample || ''}
                     iterationData={data.iteration || []}
 

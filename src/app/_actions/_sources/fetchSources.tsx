@@ -1,6 +1,7 @@
 "use server";
 
-import { getMongoDB } from "@/utils/getMongo";
+import prisma from "@/utils/getPrisma";
+import getLoggedInUser from "@/utils/getLoggedInUser";
 
 /**
  * Fetches sources from the database.
@@ -9,11 +10,16 @@ import { getMongoDB } from "@/utils/getMongo";
 export async function fetchSources() {
     "use server"
     try {
-        const db = await getMongoDB() as any;
-        const sources = db.collection("sources");
-        const allSources = await sources.find({}).toArray();
-        const cleanSources = allSources.map(({ _id, ...rest }: any) => ({ _id: _id.toString(), ...rest }));
-        return cleanSources;
+        const user = await getLoggedInUser();
+        const userId = user.id;
+
+        const allSources = await prisma.source.findMany({
+            where: {
+                userId: userId
+            }
+        });
+
+        return allSources;
     } catch (err) {
         console.error("Error in fetchSources: ", err);
     }

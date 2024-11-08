@@ -2,21 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 // import { getMongoDB } from '@/utils/getMongo';
 import prisma from '@/utils/getPrisma';
 
-// const createMongoUser = async (userId: string, username: string) => {
-//     //### Init db
-//     let db;
-
-//     //### Get db for {userId}-{organization}
-//     db = await getMongoDB(userId, username) as any;
-
-//     //### Access the users collection
-//     const collection = db.collection("users");
-
-//     // ### Upsert the user to the collection with information from request body
-//     const res = await collection.updateOne({ userId: userId }, { $set: { userId: userId, username: username } }, { upsert: true });
-//     return res;
-// }
-
 const createPrismaUser = async (userId: string, username: string) => {
     // Convert data to strings
     if (typeof userId !== 'string' || typeof username !== 'string') {

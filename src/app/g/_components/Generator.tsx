@@ -327,11 +327,8 @@ export default function Generator({
                     setOutline(fullOutlineResponse);
 
                     currentThread[knotIndex] = knotPayload;
-
                     setHeadThread(currentThread);
                 }
-
-
 
             } else {
                 const outline = null;
@@ -431,7 +428,6 @@ export default function Generator({
                 setProgress('Generating response...')
                 setConversation(messages)
 
-
                 const currentThread = [...headThread];
                 const knotIndex = currentThread.length - 1;
                 const knotPayload = !!currentThread[knotIndex] ? currentThread[knotIndex] : {} as any;
@@ -476,13 +472,14 @@ export default function Generator({
             // Save the thread
             setProgress('Saving...')
             const data = await saveThread(payload);
-            console.log('Thread saved: ', data.id)
+
             // On the initial save of the thread, a mongoDB _id is returned. This id is assigned to the generation state & the url is updated.
             if (generation != data.id && window.location.pathname !== `/g/${generation}`) {
                 window.history.pushState({ page: 1 }, data.initial_prompt, `/g/${data.id}`);
                 setGeneration(await data.id);
             }
             setProgress('')
+
         } catch (error) {
             console.log(error);
         }
@@ -570,13 +567,16 @@ export default function Generator({
 
                 !!generation ? payload['id'] = generation : null;
 
+
                 if (isLoading) {
+                    console.log('creating: ', payload)
                     setLoading(true);
                     preserveThread(payload);
-                } else if (!isLoading && !!generation) {
+                } else if (!isLoading && !!messages.length) {
+                    console.log('updating: ', payload)
                     preserveThread(payload);
                     setLoading(false);
-                } 
+                }
             }
         } catch (error) {
             console.log('Error while loading: ', error)

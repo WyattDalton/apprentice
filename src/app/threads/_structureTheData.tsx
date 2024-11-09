@@ -10,8 +10,8 @@ export default async function structureTheData(data: any) {
     const bodyData = data.map((thread: any) => {
         const payload = {} as any;
 
-        payload['_id'] = !!thread._id ? thread._id : false;
-        payload['id'] = !!thread._id ? thread._id.slice(-5).toUpperCase() : false;
+        payload['_id'] = !!thread.id ? thread.id : false;
+        payload['id'] = !!thread.id ? thread.id.slice(-5).toUpperCase() : false;
         payload['created'] = !!thread.created ? new Date(thread.created).toLocaleDateString() : false;
         payload['title'] = !!thread.title ? thread.title : false;
 

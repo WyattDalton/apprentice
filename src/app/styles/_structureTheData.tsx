@@ -9,8 +9,8 @@ export default async function structureTheData(data: any) {
 
     const bodyData = data.map((style: any) => {
         const payload = {} as any;
-        payload['_id'] = !!style._id ? style._id : false;
-        payload['id'] = !!style._id ? style._id.slice(-5).toUpperCase() : false;
+        payload['_id'] = !!style.id ? style._id : false;
+        payload['id'] = !!style.id ? style._id.slice(-5).toUpperCase() : false;
         payload['title'] = !!style.title ? style.title : false;
         payload['tags'] = !!style.tags ? style.tags : false;
         return payload;

@@ -4,6 +4,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { usePathname, useRouter } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import LoadingText from "../_elements/LoadingText";
+import { raw } from "@prisma/client/runtime/library";
 
 type ViewTableProps = {
     viewTitle: string | "View Table";
@@ -87,6 +88,7 @@ export default function ViewTable(
     }
 
     const handleDeleteItem = async (itemId: string) => {
+
         setDeleting(true);
 
         const rawData = await deleteItem(itemId);
@@ -97,7 +99,10 @@ export default function ViewTable(
             handleCloseModal();
             return;
         }
+
         const structuredData = await structureTheData(rawData.data);
+        console.log('Structured data: ', structuredData);
+
         const data = structuredData.body;
         setAllItems(data);
         setDeleting(false);
@@ -203,6 +208,7 @@ export default function ViewTable(
 
                             <tbody className="">
                                 {allItems.map((item: any, index: any) => {
+                                    console.log(item);
                                     return (
                                         <tr key={index} className="p-2 mb-4 rounded-lg md:rounded-none bg-gray-50 md:bg-white md:border-b dark:bg-gray-800 dark:border-gray-700 flex flex-col gap-2 md:table-row relative cursor-pointer hover:bg-gray-100 md:hover:bg-gray-50 transition-300">
                                             {headers.map((valueKey: any, index: any) => {

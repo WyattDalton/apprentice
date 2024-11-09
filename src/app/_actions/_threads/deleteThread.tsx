@@ -33,6 +33,7 @@ export async function deleteThread(id: any) {
             'data': threads,
         };
     } catch (error) {
+        console.log(error);
         return {
             'success': false,
             'error': error,

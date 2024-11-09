@@ -22,8 +22,6 @@ async function Page({ params }: { params: { id: string } }) {
     // Get style data
     const data = await getStyleData(params.id);
 
-    console.log(data);
-
     return (
 
         <SingleStyleUi

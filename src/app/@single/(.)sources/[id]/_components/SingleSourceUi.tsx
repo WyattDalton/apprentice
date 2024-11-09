@@ -48,7 +48,6 @@ function SingleSourceUi({ _id, sourceData, deleteSource, updateSource, handleClo
                 clearTimeout(titleTimerRef.current);
             }
 
-            console.log('Updating title: ', _id, payload);
             titleTimerRef.current = setTimeout(async () => {
                 await updateSource(_id, payload)
 

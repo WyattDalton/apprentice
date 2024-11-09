@@ -12,8 +12,6 @@ export default async function createFormula(data: any) {
         const payload = data;
         payload.userId = userId;
 
-        console.log('payload', payload);
-
         const newFormula = await prisma.formula.create({
             data: payload
         });

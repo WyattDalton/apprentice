@@ -101,7 +101,6 @@ export default function ViewTable(
         }
 
         const structuredData = await structureTheData(rawData.data);
-        console.log('Structured data: ', structuredData);
 
         const data = structuredData.body;
         setAllItems(data);
@@ -208,7 +207,6 @@ export default function ViewTable(
 
                             <tbody className="">
                                 {allItems.map((item: any, index: any) => {
-                                    console.log(item);
                                     return (
                                         <tr key={index} className="p-2 mb-4 rounded-lg md:rounded-none bg-gray-50 md:bg-white md:border-b dark:bg-gray-800 dark:border-gray-700 flex flex-col gap-2 md:table-row relative cursor-pointer hover:bg-gray-100 md:hover:bg-gray-50 transition-300">
                                             {headers.map((valueKey: any, index: any) => {

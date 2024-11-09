@@ -16,8 +16,6 @@ import prisma from "@/utils/getPrisma";
 export async function getTitle(messages: any, id: any) {
     'use server';
     try {
-        // const db = await getMongoDB() as any;
-        // const collection = db.collection("threads");
 
         const cleanedMessages = messages.map(({ createdAt, id, settings, ...rest }: any) => rest);
         const instructions = 'Create a descriptive title for this thread that summarizes the previous messages. Limit the response to less than 100 characters. It should be as short as possible while also being descriptive enough to be useful. IMPORTANT: Your response should only include text. No special characters, and no numbers.';

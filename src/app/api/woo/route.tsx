@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-// import { getMongoDB } from '@/utils/getMongo';
 import prisma from '@/utils/getPrisma';
 
 const createPrismaUser = async (userId: string, username: string) => {

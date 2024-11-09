@@ -17,7 +17,7 @@ export async function getStyle(styleId: any, promptEmbeddingVectors: string, sty
         const minCosine = 0.78;
         const examplePool = [] as any;
         // Get style with an _id key that matches styleId from array of objects
-        const style = styles.find((style: { _id: any; }) => style._id === styleId);
+        const style = styles.find((style: { id: any; }) => style.id === styleId);
         const examples = style.examples;
 
         examples.forEach((obj: any, index: number) => {

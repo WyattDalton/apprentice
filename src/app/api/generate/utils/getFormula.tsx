@@ -4,7 +4,7 @@
 export async function templatize(_id: any, formulaLibrary: any) {
     try {
         // Get formula object from formulaLibrary by finding the "_id" key
-        const t = formulaLibrary.find((formula: any) => formula._id === _id) || formulaLibrary.find((formula: any) => formula.title === _id);
+        const t = formulaLibrary.find((formula: any) => formula.id === _id) || formulaLibrary.find((formula: any) => formula.title === _id);
 
         if (!t) {
             return { "success": false, "message": "Formula not found!" };
